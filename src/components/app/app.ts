@@ -4,6 +4,7 @@ import MainPage from '../../pages/mainPage/mainPage';
 import SearchPage from '../../pages/searchPage/searchPage';
 import MixerPage from '../../pages/mixerPage/mixerPage';
 import AccountPage from '../../pages/accountPage/accountPage';
+import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 
@@ -30,7 +31,7 @@ class App {
   private drawNewPage(location: string): void {
     this.wrapper.innerHTML = '';
 
-    let changePage;
+    let changePage: InterfaceContainerElement;
 
     if (location === LocationPath.MainPage) {
       changePage = new MainPage();
@@ -40,6 +41,8 @@ class App {
       changePage = new MixerPage();
     } else if (location === LocationPath.AccountPage) {
       changePage = new AccountPage();
+    } else {
+      changePage = new ErrorPage();
     }
 
     if (changePage) {
