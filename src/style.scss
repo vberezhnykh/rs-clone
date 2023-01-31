@@ -1,0 +1,24 @@
+@import "./style/_header.scss";
+@import "./style/_footer.scss";
+
+
+:root {
+	--color-header: #62c1d3;
+	--color-footer: #94ff99;
+}
+
+* {
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.main {
+  min-height: 89vh;
+  background-color: bisque;
+  font-size: 30px;
+  text-align: center;
+  padding-top: 100px;
+}

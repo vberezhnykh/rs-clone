@@ -1,0 +1,15 @@
+.header {
+  &__container {
+    width: 100%;
+    min-height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-header);
+  }
+  & a {
+    font-size: 26px;
+    text-decoration: none;
+    color: rgb(70, 61, 61);
+  }
+}
