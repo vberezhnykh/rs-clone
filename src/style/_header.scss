@@ -24,6 +24,17 @@
           text-decoration: none;
           color: var(--color-font);
           text-transform: uppercase;
+          cursor: pointer;
+        }
+        a:hover {
+          text-decoration: solid;
+          text-decoration-line: underline;
+          text-decoration-color: var(--color-font);
+          text-decoration-thickness: 3px;
+          text-underline-offset: 12px;
+        }
+        .active {
+          color: #92aff9;
         }
       }
     }
