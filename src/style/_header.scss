@@ -3,13 +3,30 @@
     width: 100%;
     min-height: 80px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    background-color: var(--color-header);
+    .header__logo{
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    nav {
+      flex-grow: 3;
+        ul {
+          display: flex;
+          justify-content: space-evenly;
+          align-items: center;
+          list-style: none;
+  
+        a {
+          font-size: 20px;
+          text-decoration: none;
+          color: var(--color-font);
+          text-transform: uppercase;
+        }
+      }
+    }
   }
-  & a {
-    font-size: 26px;
-    text-decoration: none;
-    color: rgb(70, 61, 61);
-  }
+
 }
