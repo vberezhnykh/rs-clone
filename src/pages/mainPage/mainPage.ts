@@ -12,6 +12,7 @@ class MainPage implements InterfaceContainerElement {
 
     main.innerHTML = `
     <div class="main__container">
+    <img src="${this.api.getImage('./images/Chabacco/9.webp')}">
       Main Page
     </div>
     `;
