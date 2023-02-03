@@ -8,12 +8,17 @@ import {
   TabBtnId,
   Tabs,
   SearchCategory,
+  Mix,
+  Flavor,
+  Brand,
 } from '../../components/types/types';
 import Api from '../../components/api/api';
 import searchImgSrc from '../../assets/images/search.svg';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
+/* TO-DO: Добавить статистику настоящих популярных поисковых запросов */
+const FAKE_POPULAR_QUERIES = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
 
 class SearchPage implements InterfaceContainerElement {
   private brands?: Brands;
@@ -30,9 +35,42 @@ class SearchPage implements InterfaceContainerElement {
     const main = createHTMLElement('main', 'main');
     const container = createHTMLElement(['main__container', 'container']);
     main.appendChild(container);
-    const searchInput = this.createSearchPanel();
-    container.appendChild(searchInput);
+    const searchPanel = this.createSearchPanel();
+    container.appendChild(searchPanel);
+    const aside = this.createAsidePanel();
+    container.appendChild(aside);
     return main;
+  }
+
+  private createAsidePanel() {
+    const aside = createHTMLElement('search-aside', 'aside');
+    const popularQueries = this.createPopularQueries();
+    aside.appendChild(popularQueries);
+    return aside;
+  }
+
+  private createPopularQueries() {
+    const popularQueries = createHTMLElement('queries');
+    const title = createHTMLElement('queries__title', 'h3');
+    title.textContent = 'Популярные запросы';
+    popularQueries.appendChild(title);
+    const buttons = createHTMLElement('queries-buttons');
+    for (let i = 0; i < FAKE_POPULAR_QUERIES.length; i++) {
+      const button = createHTMLElement('queries-buttons__button', 'button');
+      button.textContent = FAKE_POPULAR_QUERIES[i].toUpperCase();
+      buttons.appendChild(button);
+      button.onclick = () => this.handleClickOnQueryButton(button as HTMLButtonElement);
+    }
+    popularQueries.appendChild(buttons);
+    return popularQueries;
+  }
+
+  private handleClickOnQueryButton(button: HTMLButtonElement) {
+    document.querySelector('.search-aside')?.remove();
+    const input = document.querySelector('.search__input');
+    if (!(input instanceof HTMLInputElement)) return;
+    input.value = button.textContent?.toLowerCase() ?? '';
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
   }
 
   private createSearchPanel() {
@@ -44,7 +82,7 @@ class SearchPage implements InterfaceContainerElement {
     innerSearchPanelContainer.appendChild(image);
     const searchInput = <HTMLInputElement>createHTMLElement('search__input', 'input');
     searchInput.placeholder = 'Бренд, микс, вкус';
-    searchInput.onkeydown = (event) => this.handleInput(event);
+    searchInput.onkeydown = (event) => this.handleInputSumbit(event);
     innerSearchPanelContainer.appendChild(searchInput);
     searchPanelContainer.appendChild(innerSearchPanelContainer);
     return searchPanelContainer;
@@ -53,25 +91,27 @@ class SearchPage implements InterfaceContainerElement {
   private createSearchTabs() {
     const searchTabs = createHTMLElement('tabs', 'div');
     for (let i = 1; i <= 4; i++) {
-      const input = <HTMLInputElement>createHTMLElement('', 'input');
-      input.type = 'radio';
-      input.name = 'tab=btn';
-      input.id = `tab-btn-${i}`;
-      input.value = Tabs[i];
-      if (i === 1) input.checked = true;
-      if (i === 4) input.disabled = true;
+      const tab = <HTMLInputElement>createHTMLElement('', 'input');
+      tab.type = 'radio';
+      tab.name = 'tab=btn';
+      tab.id = `tab-btn-${i}`;
+      tab.value = Tabs[i];
+      if (i === 1) tab.checked = true;
+      if (i === 4) tab.disabled = true;
       const label = <HTMLLabelElement>createHTMLElement('', 'label');
       label.htmlFor = `tab-btn-${i}`;
       label.textContent = Tabs[i];
-      searchTabs.appendChild(input);
+      searchTabs.appendChild(tab);
       searchTabs.appendChild(label);
-      input.onclick = () => {
-        const container = document.querySelector('.main__container');
-        if (!container) return;
-        container.appendChild(this.createListOfResults(input.id as TabBtnId));
-      };
+      tab.onclick = () => this.handleClickOnTab(tab.id);
     }
     return searchTabs;
+  }
+
+  private handleClickOnTab(tabId: string) {
+    const container = document.querySelector('.main__container');
+    if (!container) return;
+    container.appendChild(this.createListOfResults(tabId as TabBtnId));
   }
 
   private createListOfResults(tabBtnId: TabBtnId) {
@@ -186,9 +226,17 @@ class SearchPage implements InterfaceContainerElement {
   private searchBy(inputValue: string, category: SearchCategory) {
     const property = this[`${category}`];
     if (!property) return;
-    const searchedValue = inputValue.trim().toLowerCase();
+    const searchedValue = inputValue.trim().toLowerCase().slice(0, 4);
     if (searchedValue.length === 0) return;
-    const filteredArr = property.filter((elem) => elem.name.toLowerCase().includes(searchedValue));
+    const filteredArr = property.filter((elem: Brand | Flavor | Mix) => {
+      return (
+        elem.name.toLowerCase().includes(searchedValue) ||
+        (category === 'flavors' &&
+          ((elem as Flavor).description.includes(searchedValue) ||
+            (elem as Flavor).flavor.join('').includes(searchedValue))) ||
+        (category === 'mixes' && (elem as Mix).description.includes(searchedValue))
+      );
+    });
     return filteredArr.length > 0 ? filteredArr : null;
   }
 
@@ -212,7 +260,7 @@ class SearchPage implements InterfaceContainerElement {
     /* spinner-OFF */ console.log('End of the search...');
   }
 
-  private async handleInput(event: KeyboardEvent) {
+  private async handleInputSumbit(event: KeyboardEvent) {
     if (event.key !== 'Enter') return;
     const input = event.currentTarget;
     if (!(input instanceof HTMLInputElement)) return;
@@ -229,6 +277,10 @@ class SearchPage implements InterfaceContainerElement {
     if (!tabsInTheDOM) container.appendChild(this.createSearchTabs());
     const tabs = document.querySelector('.tabs');
     if (!tabs) return;
+    this.makePreviouslyCheckedTabActive(tabs);
+  }
+
+  private makePreviouslyCheckedTabActive(tabs: Element) {
     tabs.childNodes.forEach((tab) => {
       if (!(tab instanceof HTMLInputElement)) return;
       tab.checked === true ? tab.click() : false;

@@ -2,30 +2,27 @@
   height: 60px;
   border-radius: 100px;
   background-color: hsla(0, 0%, 100%, 0.06);
-  padding: 14px;
+  padding: 0 1rem;
   margin: 0 40px;
   -webkit-transition: color 350ms ease, background-color 350ms ease;
   transition: color 350ms ease, background-color 350ms ease;
 
   &__inner {
-    color: #bebdd4;
     font-size: 20px;
     display: flex;
     align-items: center;
+    height: 100%;
 
     img {
-      flex-grow: 1;
-      height: 2rem;
+      height: 1.5rem;
     }
 
-    input {
-      padding: 0;
-      flex-grow: 9;
+    .search__input {
+      padding: 0 0 0 1rem;
+      flex-grow: 1;
       background-color: transparent;
       color: #ffffff;
-      font-size: 1.6rem;
       outline: none;
-      background-color: hsla(0, 0%, 100%, 0.06);
     }
 
   }
@@ -35,12 +32,6 @@
     color: var(--color-font)
   }
 
-}
-
-.search__input {
-  border-radius: 0 !important;
-  padding: 0 !important;
-  background-color: transparent !important;
 }
 
 .search-list {
@@ -60,7 +51,7 @@
 
   &:hover {
     cursor: pointer;
-    color: greenyellow;
+    color: var(--color-accent);
     opacity: 0.8;
   }
 }
@@ -103,14 +94,14 @@
     }
 
     &:hover {
-      background-color: rgba(173, 255, 47, 0.5);
+      background-color: var(--color-accent--lighter);
     }
 
   }
 
   input[type="radio"]:checked+label {
-    background-color: hsla(0, 0%, 100%, 0.14);
-    border-bottom: 1px solid #fff;
+    color: var(--color-accent);
+    border-bottom: 1px solid var(--color-accent);
   }
 
 }
@@ -149,7 +140,7 @@
 }
 
 .flavors-count {
-  color: greenyellow
+  color: var(--color-accent)
 }
 
 .mixes-list {
@@ -196,6 +187,9 @@
 
     .mixes-list__button {
       width: 150px;
+      color: #ffffff;
+      text-transform: uppercase;
+      border-radius: 1rem;
 
       &:hover {
         cursor: pointer;
@@ -228,3 +222,28 @@
   }
 } */
 
+.search-aside {
+  margin: 2rem 3rem;
+}
+
+.queries__title {
+  margin-bottom: 1rem;
+}
+
+.queries-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.queries-buttons__button {
+  padding: 0.3rem;
+  border-radius: 0.7rem;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--color-accent);
+  }
+}
