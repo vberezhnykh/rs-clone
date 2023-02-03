@@ -1,0 +1,230 @@
+.search {
+  height: 60px;
+  border-radius: 100px;
+  background-color: hsla(0, 0%, 100%, 0.06);
+  padding: 14px;
+  margin: 0 40px;
+  -webkit-transition: color 350ms ease, background-color 350ms ease;
+  transition: color 350ms ease, background-color 350ms ease;
+
+  &__inner {
+    color: #bebdd4;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+
+    img {
+      flex-grow: 1;
+      height: 2rem;
+    }
+
+    input {
+      padding: 0;
+      flex-grow: 9;
+      background-color: transparent;
+      color: #ffffff;
+      font-size: 1.6rem;
+      outline: none;
+      background-color: hsla(0, 0%, 100%, 0.06);
+    }
+
+  }
+
+  &:hover {
+    background-color: hsla(0, 0%, 100%, 0.14);
+    color: var(--color-font)
+  }
+
+}
+
+.search__input {
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+}
+
+.search-list {
+  text-align: center;
+  margin: 0 40px 0 40px;
+
+  &--error-message {
+    padding-top: 2rem;
+  }
+}
+
+.flavors-list__item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px dotted #222450;
+
+  &:hover {
+    cursor: pointer;
+    color: greenyellow;
+    opacity: 0.8;
+  }
+}
+
+.tabs {
+  font-size: 0;
+  margin: 30px 40px 0 40px;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  & > div {
+    /* скрыть контент по умолчанию */
+    display: none;
+    padding: 10px 15px;
+  }
+
+  label {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: hsla(0deg, 0%, 100%, 0.06);
+    padding: 10px;
+    width: 25%;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    top: 1px;
+
+    &:nth-of-type(1){
+      border-radius: 25px 0 0;
+    }
+
+    &:nth-of-type(4){
+      border-radius: 0 25px 0 0;
+    }
+
+    &:hover {
+      background-color: rgba(173, 255, 47, 0.5);
+    }
+
+  }
+
+  input[type="radio"]:checked+label {
+    background-color: hsla(0, 0%, 100%, 0.14);
+    border-bottom: 1px solid #fff;
+  }
+
+}
+
+.brands-list{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .brands-list__item {
+    display: flex;
+    background-color: rgba(23, 15, 48, 0.5294117647);
+    box-shadow: 0 5px 40px 0 rgb(0 0 0 / 40%), inset 0 -76px 80px -44px rgb(255 255 255 / 1%), inset -1px -9px 48px 0 rgb(255 255 255 / 6%);
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    img {
+      border-radius: 25px;
+      padding: 15px;
+      width: 7rem;
+      height: 7rem;
+    }
+
+    .brands-list__item-container {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: baseline;
+    }
+
+  }
+}
+
+.flavors-count {
+  color: greenyellow
+}
+
+.mixes-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  @media (width <= 900px) {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+.mixes-list__card {
+  display: flex;
+  align-items: center;
+  padding: 20px 20px 0;
+  background-color: #170f3087;
+  box-shadow: 0 5px 40px 0 rgb(0 0 0 / 40%), inset 0 -76px 80px -44px rgb(255 255 255 / 1%), inset -1px -9px 48px 0 rgb(255 255 255 / 6%);
+
+  .mixes-list__card-img {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 25px;
+  }
+
+  .mixes-list__card-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-grow: 1;
+  }
+
+  .mixes-list__title {
+    padding: 20px;
+  }
+
+  .mixes-list__card-footer {
+    display: flex;
+    flex-grow: 1;
+    padding: 20px;
+    justify-content: space-between;
+    width: 100%;
+
+    .mixes-list__button {
+      width: 150px;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+.mixes-list__rating-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* .collection-list{
+  display: flex;
+  flex-direction: column;
+  gap: 15px 0;
+  .collection-list__item{
+    background-image: url(https\:\/\/hookahapp\.ru\/Images\/MixCompilation\/MaxVozduh\.jpg);
+    border-radius: 10px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 20px 30px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+} */
+

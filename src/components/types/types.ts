@@ -34,3 +34,20 @@ export interface Mix {
 }
 
 export type Mixes = Mix[];
+
+export type FoundResults = {
+  foundFlavors: Flavors | null;
+  foundMixes: Mixes | null;
+  foundBrands: Brands | null;
+};
+
+export enum Tabs {
+  'Вкусы' = 1,
+  'Миксы',
+  'Бренды',
+  'Подборки',
+}
+
+export type TabBtnId = 'tab-btn-1' | 'tab-btn-2' | 'tab-btn-3';
+
+export type SearchCategory = 'flavors' | 'mixes' | 'brands';

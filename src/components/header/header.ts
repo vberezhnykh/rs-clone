@@ -3,7 +3,6 @@ import { InterfaceContainerElement } from '../types/types';
 const logo = require('../../assets/images/logo.svg');
 
 class Header implements InterfaceContainerElement {
-
   private handlerHash = (): void => {
     const hash = window.location.hash.slice(1);
     const menuItems = document.querySelectorAll('.header__menu a');
