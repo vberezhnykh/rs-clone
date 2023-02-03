@@ -261,7 +261,11 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private async handleInputSumbit(event: KeyboardEvent) {
-    if (event.key !== 'Enter') return;
+    if (event.key !== 'Enter') {
+      /* TO-DO: добавить prediction подсказки */
+      return;
+    }
+    document.querySelector('.search-aside')?.remove();
     const input = event.currentTarget;
     if (!(input instanceof HTMLInputElement)) return;
     await this.checkDataBase();
