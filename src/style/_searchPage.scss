@@ -23,6 +23,7 @@
       background-color: transparent;
       color: #ffffff;
       outline: none;
+      height: 100%;
     }
 
   }
@@ -224,6 +225,10 @@
 
 .search-aside {
   margin: 2rem 3rem;
+
+  &--hidden {
+    display: none;
+  }
 }
 
 .queries__title {
@@ -246,4 +251,29 @@
     cursor: pointer;
     background-color: var(--color-accent);
   }
+}
+
+.suggestions-container {
+  &--hidden {
+    display: none;
+  }
+}
+
+.suggestions-list {
+  list-style: none;
+  margin: 2rem 3rem 0;
+}
+
+.suggestions-list__item {
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    cursor: pointer;
+    color: var(--color-accent)
+  }
+  
 }

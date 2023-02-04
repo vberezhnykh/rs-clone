@@ -15,6 +15,7 @@ import {
 import Api from '../../components/api/api';
 import searchImgSrc from '../../assets/images/search.svg';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
+import { sortFoundBrandResults, sortFoundFlavorResults, sortFoundMixResults } from '../../utils/sortFoundResults';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 /* TO-DO: Добавить статистику настоящих популярных поисковых запросов */
@@ -26,9 +27,12 @@ class SearchPage implements InterfaceContainerElement {
   private mixes?: Mixes;
   private api: Api;
   private foundResults?: FoundResults | null = null;
+  private suggestions: string[] = [];
 
   constructor() {
     this.api = new Api();
+    /* TO-DO: далее код не для продакшена */
+    this.checkDataBase().then(() => this.getSuggestions());
   }
 
   draw(): HTMLElement {
@@ -43,10 +47,10 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private createAsidePanel() {
-    const aside = createHTMLElement('search-aside', 'aside');
+    const asidePanel = createHTMLElement('search-aside', 'aside');
     const popularQueries = this.createPopularQueries();
-    aside.appendChild(popularQueries);
-    return aside;
+    asidePanel.appendChild(popularQueries);
+    return asidePanel;
   }
 
   private createPopularQueries() {
@@ -66,11 +70,11 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private handleClickOnQueryButton(button: HTMLButtonElement) {
-    document.querySelector('.search-aside')?.remove();
+    document.querySelector('.search-aside')?.classList.add('search-aside--hidden');
     const input = document.querySelector('.search__input');
     if (!(input instanceof HTMLInputElement)) return;
     input.value = button.textContent?.toLowerCase() ?? '';
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
   }
 
   private createSearchPanel() {
@@ -82,7 +86,7 @@ class SearchPage implements InterfaceContainerElement {
     innerSearchPanelContainer.appendChild(image);
     const searchInput = <HTMLInputElement>createHTMLElement('search__input', 'input');
     searchInput.placeholder = 'Бренд, микс, вкус';
-    searchInput.onkeydown = (event) => this.handleInputSumbit(event);
+    searchInput.onkeyup = (event) => this.handleInputSumbit(event, searchInput);
     innerSearchPanelContainer.appendChild(searchInput);
     searchPanelContainer.appendChild(innerSearchPanelContainer);
     return searchPanelContainer;
@@ -244,6 +248,9 @@ class SearchPage implements InterfaceContainerElement {
     const foundFlavors = <Flavors | null>this.searchBy(inputValue, 'flavors');
     const foundMixes = <Mixes | null>this.searchBy(inputValue, 'mixes');
     const foundBrands = <Brands | null>this.searchBy(inputValue, 'brands');
+    if (foundFlavors instanceof Array) foundFlavors.sort((a, b) => sortFoundFlavorResults(a, b, inputValue));
+    if (foundMixes instanceof Array) foundMixes.sort((a, b) => sortFoundMixResults(a, b, inputValue));
+    if (foundBrands instanceof Array) foundBrands.sort((a, b) => sortFoundBrandResults(a, b, inputValue));
     return {
       foundFlavors,
       foundMixes,
@@ -260,18 +267,69 @@ class SearchPage implements InterfaceContainerElement {
     /* spinner-OFF */ console.log('End of the search...');
   }
 
-  private async handleInputSumbit(event: KeyboardEvent) {
-    if (event.key !== 'Enter') {
-      /* TO-DO: добавить prediction подсказки */
-      return;
-    }
-    document.querySelector('.search-aside')?.remove();
+  private async handleEnterKeyOnSearchInput(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+    document.querySelector('.search-aside')?.classList.add('search-aside--hidden');
     const input = event.currentTarget;
     if (!(input instanceof HTMLInputElement)) return;
     await this.checkDataBase();
     const result = this.searchByAll(input.value);
     this.foundResults = result;
     this.showSearchResults();
+  }
+
+  private autoCompleteMatch(inputValue: string) {
+    const reg = new RegExp(inputValue.toLowerCase());
+    return this.suggestions.filter((term) => (term.match(reg) ? term : false));
+  }
+
+  private handleClickOnSuggestionsItem(suggestion: HTMLLIElement) {
+    const searchInput = document.querySelector('.search__input');
+    if (!(searchInput instanceof HTMLInputElement)) return;
+    searchInput.value = suggestion.textContent ?? '';
+    searchInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
+    document.querySelector('.suggestions-container')?.classList.add('suggestions-container--hidden');
+  }
+
+  private createSuggestionsList(predictedQueries: string[]) {
+    const suggestionsList = createHTMLElement('suggestions-list');
+    const suggestionsListLenght = predictedQueries.length > 10 ? 10 : predictedQueries.length;
+    for (let i = 0; i < suggestionsListLenght; i++) {
+      const suggestionsListItem = createHTMLElement('suggestions-list__item', 'li');
+      suggestionsListItem.textContent = predictedQueries[i];
+      suggestionsList.append(suggestionsListItem);
+      suggestionsListItem.onclick = () => this.handleClickOnSuggestionsItem(suggestionsListItem as HTMLLIElement);
+    }
+    return suggestionsList;
+  }
+
+  private handleAnyKeyExceptEnterOnSearchInput(input: HTMLInputElement) {
+    const asideContainer = document.querySelector('.search-aside');
+    if (!asideContainer) return;
+    asideContainer.classList.add('search-aside--hidden');
+    document.querySelector('.tabs')?.remove();
+    document.querySelector('.search-list')?.remove();
+    if (this.suggestions.length === 0) return;
+    if (!document.querySelector('.suggestions-container')) {
+      document.querySelector('.main__container')?.append(createHTMLElement('suggestions-container'));
+    }
+    const suggestionsContainer = document.querySelector('.suggestions-container');
+    if (!suggestionsContainer) return;
+    suggestionsContainer.innerHTML = '';
+    suggestionsContainer.classList.remove('suggestions-container--hidden');
+    console.log(1);
+    const predictedQueries = this.autoCompleteMatch(input.value);
+    suggestionsContainer.append(this.createSuggestionsList(predictedQueries));
+  }
+
+  private async handleInputSumbit(event: KeyboardEvent, input: HTMLInputElement) {
+    const asideContainer = document.querySelector('.search-aside');
+    if (input.value === '') {
+      asideContainer?.classList.remove('search-aside--hidden');
+      document.querySelector('.suggestions-container')?.remove();
+    }
+    if (event.key === 'Enter') return this.handleEnterKeyOnSearchInput(event);
+    if (event.key !== 'Enter' && input.value !== '') return this.handleAnyKeyExceptEnterOnSearchInput(input);
   }
 
   private showSearchResults() {
@@ -289,6 +347,17 @@ class SearchPage implements InterfaceContainerElement {
       if (!(tab instanceof HTMLInputElement)) return;
       tab.checked === true ? tab.click() : false;
     });
+  }
+
+  private getSuggestions() {
+    if (!this.brands || !this.flavors || !this.mixes) return;
+    const brandsNamesArr = this.brands.map((brand) => brand.name.toLowerCase());
+    const flavorsNamesArr = this.flavors.map((flavor) => flavor.name.toLowerCase());
+    // const flavorsFlavorsArr = this.flavors.map((flavor) => [...flavor.flavor] /* .join(', ').toLowerCase() */);
+    const mixesNamesArr = this.mixes.map((mix) => mix.name.toLowerCase());
+    this.suggestions = Array.from(
+      new Set([...brandsNamesArr, ...flavorsNamesArr, /* ...flavorsFlavorsArr,  */ ...mixesNamesArr])
+    );
   }
 }
 
