@@ -1,418 +1,364 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement } from '../../components/types/types';
-const searchimg = require('../../assets/images/search.svg');
-const starempty = require('../../assets/images/star-empty.svg');
+import {
+  Brands,
+  Flavors,
+  FoundResults,
+  InterfaceContainerElement,
+  Mixes,
+  TabBtnId,
+  Tabs,
+  SearchCategory,
+  Mix,
+  Flavor,
+  Brand,
+} from '../../components/types/types';
+import Api from '../../components/api/api';
+import searchImgSrc from '../../assets/images/search.svg';
+import ratingStarIconSrc from '../../assets/images/star-empty.svg';
+import { sortFoundBrandResults, sortFoundFlavorResults, sortFoundMixResults } from '../../utils/sortFoundResults';
+
+const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
+/* TO-DO: Добавить статистику настоящих популярных поисковых запросов */
+const FAKE_POPULAR_QUERIES = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
 
 class SearchPage implements InterfaceContainerElement {
+  private brands?: Brands;
+  private flavors?: Flavors;
+  private mixes?: Mixes;
+  private api: Api;
+  private foundResults?: FoundResults | null = null;
+  private suggestions: string[] = [];
+
+  constructor() {
+    this.api = new Api();
+    /* TO-DO: далее код не для продакшена */
+    this.checkDataBase().then(() => this.getSuggestions());
+  }
+
   draw(): HTMLElement {
     const main = createHTMLElement('main', 'main');
-
-    main.innerHTML = `
-    <div class="main__container container">
-      <div class="search">
-        <div class="search__inner">
-          <img src="${searchimg}" alt="search" height="32">
-          <input type="text" class="search__input" placeholder="Бренд, микс, вкус">
-        </div>
-      </div>
-      
-      <div class="tabs">
-          <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
-          <label for="tab-btn-1">Вкусы</label>
-          <input type="radio" name="tab-btn" id="tab-btn-2" value="">
-          <label for="tab-btn-2">Миксы</label>
-          <input type="radio" name="tab-btn" id="tab-btn-3" value="">
-          <label for="tab-btn-3">Бренды</label>
-          <input type="radio" name="tab-btn" id="tab-btn-4" value="">
-          <label for="tab-btn-4">Подборки</label>
-        <div id="tastes">
-          <div class="tastes-list">
-            <div class="tastes-list__item">
-              <div class="brand-name">Black Burn</div>
-              <div class="taste-name">Something Berry (Что-то Ягодное)</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Black Burn</div>
-              <div class="taste-name">Tropic Jack</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Banger</div>
-              <div class="taste-name">Cherry Plum</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Burn</div>
-              <div class="taste-name">Flower &amp; Honey</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Tangier's</div>
-              <div class="taste-name">Blue Flower</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Tangier's</div>
-              <div class="taste-name">Marigold (Seasonal)</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Eleon</div>
-              <div class="taste-name">Blue Misterio</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Black Burn</div>
-              <div class="taste-name">Something Fresh</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Al Fakher</div>
-              <div class="taste-name">Fresh Flavor</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">DarkSide</div>
-              <div class="taste-name">Центральный бит</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Tangier's</div>
-              <div class="taste-name">Lemon Blossom</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Tangier's</div>
-              <div class="taste-name">Prince of Gray</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Jam</div>
-              <div class="taste-name">Спелая Маракуйя</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Jam</div>
-              <div class="taste-name">Спелая Фейхоа</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Северный</div>
-              <div class="taste-name">Свежий Бабл</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Serbetli</div>
-              <div class="taste-name">ICE-BODRUM TANGERINE (СВЕЖИЙ МАНДАРИН СО ЛЬДОМ)</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Serbetli</div>
-              <div class="taste-name">BODRUM TANGERINE (СВЕЖИЙ МАНДАРИН)</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Serbetli</div>
-              <div class="taste-name">FRESH POWER (СВЕЖАЯ ЭНЕРГИЯ)</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Северный</div>
-              <div class="taste-name">Север</div>
-            </div>
-            <div class="tastes-list__item">
-              <div class="brand-name">Serbetli</div>
-              <div class="taste-name">SOURSOP (СМЕТАННОЕ ЯБЛОКО)</div>
-            </div>
-          </div>
-        </div>
-        <div id="mixes">
-          <div class="mixes-list">
-            <div class="mixes-list__cards">
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/MixOld/mixPlaceholder6.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Medium
-                      Redberry / Black Currant / Medium Barvy Citrus / Medium Polar Cream</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/Mix/users/Mix/users/mix_xXGESrz.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Свежая
-                      клубника</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/Mix/users/Mix/users/mix_YFHGF3W.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Тропический
-                      бренди</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img
-                  src="https://hookahapp.ru/Images/Mix/users/Mix/users/image_20220302_205525_2221441036225768819.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Цветочный
-                      отвар</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/MixOld/mixPlaceholder3.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span id="mixes-list__title-span-id"
-                      class="mixes-list__title-span">кисло-сладко-свежий виноград</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/MixOld/mixPlaceholder4.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Medium
-                      Cosmo Flower / Medium Blueberry Blast / Grapefruit / Rare Grape Core</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/MixOld/mixPlaceholder4.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Цветочный
-                      ананас</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">4.0</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/MixOld/mixPlaceholder2.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>кисло
-                      свежий кайф</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img src="https://hookahapp.ru/Images/MixOld/mixPlaceholder8.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>свежая
-                      дыня</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img
-                  src="https://hookahapp.ru/Images/Mix/users/image_20220825_194132_6715037461538863279.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Очень
-                      свежий</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img
-                  src="https://hookahapp.ru/Images/Mix/users/Mix/users/image_20211001_211259_7143178088290625338.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>Свежая
-                      кола</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="mixes-list__card"><img
-                  src="https://hookahapp.ru/Images/Mix/users/56023BD5-26F1-4F13-BF70-A7B07284253C.jpg"
-                  class="mixes-list__card-img">
-                <div class="mixes-list__card-container">
-                  <div class="mixes-list__title"><span>50 оттенков
-                      серого</span></div>
-                  <div class="mixes-list__card-footer">
-                    <div class="mixes-list__button"><button
-                        class="button button-1"><span
-                          class="mixes-list__button-text">Пробовать</span></button></div>
-                    <div class="mixes-list__marks">
-                      <div class="mixes-list__like">
-                        <div><img src="${starempty}" alt="star"></div>
-                        <div class="mixes-list__rate">5.0</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-            </div>
-          </div>
-        </div>
-        <div id="brands">
-          
-          <div class="brands-list">
-            <div class="brands-list__item">
-              <img src="https://hookahapp.ru/Images/Brand/duft.jpg" alt="brand-name">
-              <div class="brands-list__item-container">
-                <div class="brand-name">Duft</div>
-                <div class="taste-count">40 вкусов</div>
-              </div>
-            </div>
-            <div class="brands-list__item">
-              <img src="https://hookahapp.ru/Images/Brand/duft.jpg" alt="brand-name">
-              <div class="brands-list__item-container">
-                <div class="brand-name">Duft</div>
-                <div class="taste-count">40 вкусов</div>
-              </div>
-            </div>
-            <div class="brands-list__item">
-              <img src="https://hookahapp.ru/Images/Brand/duft.jpg" alt="brand-name">
-              <div class="brands-list__item-container">
-                <div class="brand-name">Duft</div>
-                <div class="taste-count">40 вкусов</div>
-              </div>
-            </div>
-            <div class="brands-list__item">
-              <img src="https://hookahapp.ru/Images/Brand/duft.jpg" alt="brand-name">
-              <div class="brands-list__item-container">
-                <div class="brand-name">Duft</div>
-                <div class="taste-count">40 вкусов</div>
-              </div>
-            </div>
-            <div class="brands-list__item">
-              <img src="https://hookahapp.ru/Images/Brand/duft.jpg" alt="brand-name">
-              <div class="brands-list__item-container">
-                <div class="brand-name">Duft</div>
-                <div class="taste-count">40 вкусов</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <div id="collection">
-          
-          <div class="collection-list">
-            <div class="collection-list__item">
-              <div class="collection-name">Свежий Vozduh</div>
-              <div class="collcetion-desc">Миксы на все случаи жизни от Макса - кальянного гуру Vozduh Lounge Bar</div>
-            </div>
-            <div class="collection-list__item">
-              <div class="collection-name">Свежий Vozduh</div>
-              <div class="collcetion-desc">Миксы на все случаи жизни от Макса - кальянного гуру Vozduh Lounge Bar</div>
-            </div>
-
-
-          </div>
-          
-
-        </div>
-      </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </div>
-    `;
-
+    const container = createHTMLElement(['main__container', 'container']);
+    main.appendChild(container);
+    const searchPanel = this.createSearchPanel();
+    container.appendChild(searchPanel);
+    const aside = this.createAsidePanel();
+    container.appendChild(aside);
     return main;
+  }
+
+  private createAsidePanel() {
+    const asidePanel = createHTMLElement('search-aside', 'aside');
+    const popularQueries = this.createPopularQueries();
+    asidePanel.appendChild(popularQueries);
+    return asidePanel;
+  }
+
+  private createPopularQueries() {
+    const popularQueries = createHTMLElement('queries');
+    const title = createHTMLElement('queries__title', 'h3');
+    title.textContent = 'Популярные запросы';
+    popularQueries.appendChild(title);
+    const buttons = createHTMLElement('queries-buttons');
+    for (let i = 0; i < FAKE_POPULAR_QUERIES.length; i++) {
+      const button = createHTMLElement('queries-buttons__button', 'button');
+      button.textContent = FAKE_POPULAR_QUERIES[i].toUpperCase();
+      buttons.appendChild(button);
+      button.onclick = () => this.handleClickOnQueryButton(button as HTMLButtonElement);
+    }
+    popularQueries.appendChild(buttons);
+    return popularQueries;
+  }
+
+  private handleClickOnQueryButton(button: HTMLButtonElement) {
+    document.querySelector('.search-aside')?.classList.add('search-aside--hidden');
+    const input = document.querySelector('.search__input');
+    if (!(input instanceof HTMLInputElement)) return;
+    input.value = button.textContent?.toLowerCase() ?? '';
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
+  }
+
+  private createSearchPanel() {
+    const searchPanelContainer = createHTMLElement('search', 'div');
+    const innerSearchPanelContainer = createHTMLElement('search__inner', 'div');
+    const image = new Image();
+    image.src = searchImgSrc;
+    image.alt = 'search';
+    innerSearchPanelContainer.appendChild(image);
+    const searchInput = <HTMLInputElement>createHTMLElement('search__input', 'input');
+    searchInput.placeholder = 'Бренд, микс, вкус';
+    searchInput.onkeyup = (event) => this.handleInputSumbit(event, searchInput);
+    innerSearchPanelContainer.appendChild(searchInput);
+    searchPanelContainer.appendChild(innerSearchPanelContainer);
+    return searchPanelContainer;
+  }
+
+  private createSearchTabs() {
+    const searchTabs = createHTMLElement('tabs', 'div');
+    for (let i = 1; i <= 4; i++) {
+      const tab = <HTMLInputElement>createHTMLElement('', 'input');
+      tab.type = 'radio';
+      tab.name = 'tab=btn';
+      tab.id = `tab-btn-${i}`;
+      tab.value = Tabs[i];
+      if (i === 1) tab.checked = true;
+      if (i === 4) tab.disabled = true;
+      const label = <HTMLLabelElement>createHTMLElement('', 'label');
+      label.htmlFor = `tab-btn-${i}`;
+      label.textContent = Tabs[i];
+      searchTabs.appendChild(tab);
+      searchTabs.appendChild(label);
+      tab.onclick = () => this.handleClickOnTab(tab.id);
+    }
+    return searchTabs;
+  }
+
+  private handleClickOnTab(tabId: string) {
+    const container = document.querySelector('.main__container');
+    if (!container) return;
+    container.appendChild(this.createListOfResults(tabId as TabBtnId));
+  }
+
+  private createListOfResults(tabBtnId: TabBtnId) {
+    const listInTheDOM = document.querySelector('.search-list');
+    if (listInTheDOM) listInTheDOM.remove();
+    const list = createHTMLElement('search-list', 'ul');
+    if (!this.foundResults) return showErrorMessage();
+    let resultByTab;
+    if (tabBtnId === 'tab-btn-1') {
+      resultByTab = this.foundResults.foundFlavors;
+      if (!resultByTab) return showErrorMessage();
+      this.createResultListForFlavorTab(resultByTab, list);
+    } else if (tabBtnId === 'tab-btn-2') {
+      resultByTab = this.foundResults.foundMixes;
+      if (!resultByTab) return showErrorMessage();
+      this.createResultListForMixesTab(resultByTab, list);
+    } else if (tabBtnId === 'tab-btn-3') {
+      resultByTab = this.foundResults.foundBrands;
+      if (!resultByTab) return showErrorMessage();
+      this.createResultListForBrandTab(resultByTab, list);
+    }
+    return list;
+
+    function showErrorMessage() {
+      list.classList.add('search-list--error-message');
+      list.textContent = NOT_FOUND_ERROR;
+      return list;
+    }
+  }
+
+  private createResultListForFlavorTab(resultByTab: Flavors, list: HTMLElement) {
+    list.classList.add('flavors-list');
+    for (let i = 0; i < resultByTab.length; i++) {
+      const listItem = createHTMLElement('flavors-list__item', 'li');
+      const brandName = createHTMLElement('brand-name', 'span');
+      brandName.textContent = resultByTab[i].brand;
+      listItem.appendChild(brandName);
+      const flavorName = createHTMLElement('flavor-name', 'span');
+      flavorName.textContent = resultByTab[i].name;
+      listItem.appendChild(flavorName);
+      list.appendChild(listItem);
+      listItem.onclick = () => this.openFlavorCard();
+    }
+  }
+
+  private openFlavorCard() {
+    /* TO-DO */
+  }
+
+  private createResultListForMixesTab(resultByTab: Mixes, list: HTMLElement) {
+    list.classList.add('mixes-list');
+    for (let i = 0; i < resultByTab.length; i++) {
+      const listItem = createHTMLElement('mixes-list__card', 'li');
+      const mixImg = <HTMLImageElement>createHTMLElement('mixes-list__card-img', 'img');
+      mixImg.src = this.api.getImage(resultByTab[i].image);
+      listItem.appendChild(mixImg);
+      const container = createHTMLElement('mixes-list__card-container');
+      const mixTitle = createHTMLElement('mixes-list__title', 'span');
+      mixTitle.textContent = resultByTab[i].name;
+      container.appendChild(mixTitle);
+      const listItemFooter = createHTMLElement('mixes-list__card-footer');
+      const button = createHTMLElement(['mixes-list__button', 'button-1'], 'button');
+      button.textContent = 'Попробовать';
+      listItemFooter.appendChild(button);
+      const ratingContainer = createHTMLElement('mixes-list__rating-container');
+      const ratingStarIcon = <HTMLImageElement>createHTMLElement('mixes-list__rating-icon', 'img');
+      ratingStarIcon.src = ratingStarIconSrc;
+      ratingContainer.appendChild(ratingStarIcon);
+      const ratingNum = createHTMLElement('mixes-list__rating-num', 'span');
+      /* добавить в БД рейтинг миксам */
+      ratingNum.innerText = '5.0';
+      ratingContainer.appendChild(ratingNum);
+      listItemFooter.appendChild(ratingContainer);
+      container.appendChild(listItemFooter);
+      listItem.appendChild(container);
+      list.appendChild(listItem);
+      listItem.onclick = () => this.openMixCard();
+    }
+  }
+
+  private openMixCard() {
+    /* TO-DO */
+  }
+
+  private createResultListForBrandTab(resultByTab: Brands, list: HTMLElement) {
+    list.classList.add('brands-list');
+    for (let i = 0; i < resultByTab.length; i++) {
+      const listItem = createHTMLElement('brands-list__item', 'li');
+      const brandImg = new Image();
+      brandImg.src = this.api.getImage(resultByTab[i].image);
+      brandImg.alt = 'brand-name';
+      listItem.appendChild(brandImg);
+      const container = createHTMLElement('brands-list__item-container');
+      const brandName = createHTMLElement('brand-name', 'span');
+      brandName.textContent = resultByTab[i].name;
+      container.appendChild(brandName);
+      const flavorsNum = createHTMLElement('flavors-count', 'span');
+      if (!this.flavors) return;
+      flavorsNum.textContent = `${this.flavors.filter((flavor) => flavor.brand === resultByTab[i].name).length} вкусов`;
+      container.appendChild(flavorsNum);
+      listItem.appendChild(container);
+      list.appendChild(listItem);
+      listItem.onclick = () => this.openBrandCard();
+    }
+  }
+
+  private openBrandCard() {
+    /* TO-DO */
+    /* открывается страница миксер => бренд */
+  }
+
+  private searchBy(inputValue: string, category: SearchCategory) {
+    const property = this[`${category}`];
+    if (!property) return;
+    const searchedValue = inputValue.trim().toLowerCase().slice(0, 4);
+    if (searchedValue.length === 0) return;
+    const filteredArr = property.filter((elem: Brand | Flavor | Mix) => {
+      return (
+        elem.name.toLowerCase().includes(searchedValue) ||
+        (category === 'flavors' &&
+          ((elem as Flavor).description.includes(searchedValue) ||
+            (elem as Flavor).flavor.join('').includes(searchedValue))) ||
+        (category === 'mixes' && (elem as Mix).description.includes(searchedValue))
+      );
+    });
+    return filteredArr.length > 0 ? filteredArr : null;
+  }
+
+  private searchByAll(inputValue: string): FoundResults {
+    const foundFlavors = <Flavors | null>this.searchBy(inputValue, 'flavors');
+    const foundMixes = <Mixes | null>this.searchBy(inputValue, 'mixes');
+    const foundBrands = <Brands | null>this.searchBy(inputValue, 'brands');
+    if (foundFlavors instanceof Array) foundFlavors.sort((a, b) => sortFoundFlavorResults(a, b, inputValue));
+    if (foundMixes instanceof Array) foundMixes.sort((a, b) => sortFoundMixResults(a, b, inputValue));
+    if (foundBrands instanceof Array) foundBrands.sort((a, b) => sortFoundBrandResults(a, b, inputValue));
+    return {
+      foundFlavors,
+      foundMixes,
+      foundBrands,
+    };
+  }
+
+  private async checkDataBase() {
+    if (this.brands && this.flavors && this.mixes) return;
+    /* TO-DO: spinner-ON */ console.log('Start of the search...');
+    this.brands = await this.api.getAllBrands();
+    this.flavors = await this.api.getAllFlavors();
+    this.mixes = await this.api.getAllMixes();
+    /* spinner-OFF */ console.log('End of the search...');
+  }
+
+  private async handleEnterKeyOnSearchInput(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+    document.querySelector('.search-aside')?.classList.add('search-aside--hidden');
+    const input = event.currentTarget;
+    if (!(input instanceof HTMLInputElement)) return;
+    await this.checkDataBase();
+    const result = this.searchByAll(input.value);
+    this.foundResults = result;
+    this.showSearchResults();
+  }
+
+  private autoCompleteMatch(inputValue: string) {
+    const reg = new RegExp(inputValue.toLowerCase());
+    return this.suggestions.filter((term) => (term.match(reg) ? term : false));
+  }
+
+  private handleClickOnSuggestionsItem(suggestion: HTMLLIElement) {
+    const searchInput = document.querySelector('.search__input');
+    if (!(searchInput instanceof HTMLInputElement)) return;
+    searchInput.value = suggestion.textContent ?? '';
+    searchInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
+    document.querySelector('.suggestions-container')?.classList.add('suggestions-container--hidden');
+  }
+
+  private createSuggestionsList(predictedQueries: string[]) {
+    const suggestionsList = createHTMLElement('suggestions-list');
+    const suggestionsListLenght = predictedQueries.length > 10 ? 10 : predictedQueries.length;
+    for (let i = 0; i < suggestionsListLenght; i++) {
+      const suggestionsListItem = createHTMLElement('suggestions-list__item', 'li');
+      suggestionsListItem.textContent = predictedQueries[i];
+      suggestionsList.append(suggestionsListItem);
+      suggestionsListItem.onclick = () => this.handleClickOnSuggestionsItem(suggestionsListItem as HTMLLIElement);
+    }
+    return suggestionsList;
+  }
+
+  private handleAnyKeyExceptEnterOnSearchInput(input: HTMLInputElement) {
+    const asideContainer = document.querySelector('.search-aside');
+    if (!asideContainer) return;
+    asideContainer.classList.add('search-aside--hidden');
+    document.querySelector('.tabs')?.remove();
+    document.querySelector('.search-list')?.remove();
+    if (this.suggestions.length === 0) return;
+    if (!document.querySelector('.suggestions-container')) {
+      document.querySelector('.main__container')?.append(createHTMLElement('suggestions-container'));
+    }
+    const suggestionsContainer = document.querySelector('.suggestions-container');
+    if (!suggestionsContainer) return;
+    suggestionsContainer.innerHTML = '';
+    suggestionsContainer.classList.remove('suggestions-container--hidden');
+    const predictedQueries = this.autoCompleteMatch(input.value);
+    suggestionsContainer.append(this.createSuggestionsList(predictedQueries));
+  }
+
+  private async handleInputSumbit(event: KeyboardEvent, input: HTMLInputElement) {
+    const asideContainer = document.querySelector('.search-aside');
+    if (input.value === '') {
+      document.querySelector('.tabs')?.remove();
+      asideContainer?.classList.remove('search-aside--hidden');
+      document.querySelector('.suggestions-container')?.remove();
+      document.querySelector('.search-list')?.remove();
+    }
+    if (event.key === 'Enter') return this.handleEnterKeyOnSearchInput(event);
+    if (event.key !== 'Enter' && input.value !== '') return this.handleAnyKeyExceptEnterOnSearchInput(input);
+  }
+
+  private showSearchResults() {
+    const container = document.querySelector('.main__container');
+    if (!container) return;
+    const tabsInTheDOM = document.querySelector('.tabs');
+    if (!tabsInTheDOM) container.appendChild(this.createSearchTabs());
+    const tabs = document.querySelector('.tabs');
+    if (!tabs) return;
+    this.makePreviouslyCheckedTabActive(tabs);
+  }
+
+  private makePreviouslyCheckedTabActive(tabs: Element) {
+    tabs.childNodes.forEach((tab) => {
+      if (!(tab instanceof HTMLInputElement)) return;
+      tab.checked === true ? tab.click() : false;
+    });
+  }
+
+  private getSuggestions() {
+    if (!this.brands || !this.flavors || !this.mixes) return;
+    const brandsNamesArr = this.brands.map((brand) => brand.name.toLowerCase());
+    const flavorsNamesArr = this.flavors.map((flavor) => flavor.name.toLowerCase());
+    const flavorsFlavorsArr = this.flavors.map((flavor) => flavor.flavor).flat(2);
+    const mixesNamesArr = this.mixes.map((mix) => mix.name.toLowerCase());
+    this.suggestions = Array.from(
+      new Set([...brandsNamesArr, ...flavorsNamesArr, ...flavorsFlavorsArr, ...mixesNamesArr])
+    );
   }
 }
 

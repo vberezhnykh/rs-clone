@@ -13,6 +13,6 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "src/**/*.*"
+    "src/**/*.*", "src/components/types/custom.d.ts"
   ]
 }

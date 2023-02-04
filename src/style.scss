@@ -1,10 +1,13 @@
 @import "./style/_header.scss";
 @import "./style/_footer.scss";
+@import './style/searchPage';
 
 
 :root {
 	--color-bg: #03041A;
   --color-font: #ffffff;
+  --color-accent: #92aff9;
+  --color-accent--lighter: rgba(146, 175, 249, 0.7);
 }
 
 * {
@@ -28,11 +31,8 @@ body{
 
 .main {
   min-height: 89vh;
-  // background-color: #03041A;
   font-size: 1rem;
-  // text-align: center;
-  padding-top: 100px;
-  .button{
+  .button {
     width: 100%;
     padding: 2px;
     border-radius: 25px;
@@ -43,7 +43,8 @@ body{
     cursor: pointer;
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
-    span,a{
+    
+    span, a{
       text-decoration: none;
       border-radius: 25px;
       background-color: var(--color-bg);
@@ -57,11 +58,13 @@ body{
       align-items: center;
     }
   }
-  .button-1{
+
+  .button-1 {
     background-image: linear-gradient(65deg, #edb8ff, #6148ff);
     box-shadow: 0 24px 34px 0 rgb(74 58 255 / 5%), 0 9px 24px 0 rgb(0 0 0 / 45%);
   }
-  input{
+
+  input {
     background-color: hsla(0, 0%, 100%, 0.06);
     -webkit-transition: color 350ms ease, background-color 350ms ease;
     transition: color 350ms ease, background-color 350ms ease;
@@ -71,169 +74,6 @@ body{
     border-radius: 25px;
     padding: 10px 25px;
   }
-  .search{
-    height: 60px;
-    border-radius: 100px;
-    background-color: hsla(0, 0%, 100%, 0.06);
-    padding: 14px;
-    margin: 0 40px;
-    -webkit-transition: color 350ms ease, background-color 350ms ease;
-    transition: color 350ms ease, background-color 350ms ease;
-    &__inner{
-      color: #bebdd4;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      img{
-        flex-grow: 1;
-      }
-      input{
-        padding: 0;
-        flex-grow: 9;
-        background-color: transparent;
-        color: #ffffff;
-        font-size: 1.6rem;
-        outline: none;
-      }
-    }
-    &:hover{
-      background-color: hsla(0, 0%, 100%, 0.14);
-      color: var(--color-font)
-    }
-  }
-
-  .tabs {
-      font-size: 0;
-      margin: 30px 40px 0 40px;
-      input[type="radio"] {
-        display: none;
-      }
-      &>div {
-        /* скрыть контент по умолчанию */
-        display: none;
-        // border: 1px solid #e0e0e0;
-        padding: 10px 15px;
-        font-size: 16px;
-      }
-      label {
-        display: inline-block;
-        text-align: center;
-        vertical-align: middle;
-        user-select: none;
-        background-color: hsla(0deg, 0%, 100%, 0.06);
-        padding: 10px;
-        width: 25%;
-        font-size: 16px;
-        line-height: 1.5;
-        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
-        cursor: pointer;
-        position: relative;
-        top: 1px;
-        // &:not(:first-of-type) {
-        //   border-left: none;
-        // }
-        &:nth-of-type(1){
-          border-radius: 25px 0 0;
-        }
-        &:nth-of-type(4){
-          border-radius: 0 25px 0 0;
-        }
-      }
-      input[type="radio"]:checked+label {
-        background-color: hsla(0, 0%, 100%, 0.14);
-        border-bottom: 1px solid #fff;
-      }
-      /* отобразить контент, связанный с вабранной радиокнопкой (input type="radio") */
-      #tab-btn-1:checked~#tastes,
-      #tab-btn-2:checked~#mixes,
-      #tab-btn-3:checked~#brands,
-      #tab-btn-4:checked~#collection {
-        display: block;
-     }
-     .tastes-list__item{
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      border-bottom: 1px dotted #222450;
-     }
-    }
-    .mixes-list__cards{
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      gap: 20px 10px;
-    }
-    .mixes-list__card{
-      display: flex;
-      padding: 20px 20px 0;
-      background-color: #170f3087;
-      box-shadow: 0 5px 40px 0 rgb(0 0 0 / 40%), inset 0 -76px 80px -44px rgb(255 255 255 / 1%), inset -1px -9px 48px 0 rgb(255 255 255 / 6%);
-      border-radius: 25px;
-      .mixes-list__card-img{
-        width: 128px;
-        height: 128px;
-        border-radius: 25px;
-      }
-      .mixes-list__card-container{
-        width: 530px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-      .mixes-list__title{
-        padding: 20px;
-      }
-      .mixes-list__card-footer{
-        display: flex;
-        padding: 20px;
-        justify-content: space-between;
-        .mixes-list__button{
-          width: 150px;
-        }
-      }
-      .mixes-list__like{
-        display: flex;
-      }
-    }
-    .brands-list{
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      .brands-list__item{
-        display: flex;
-        background-color: rgba(23, 15, 48, 0.5294117647);
-        box-shadow: 0 5px 40px 0 rgb(0 0 0 / 40%), inset 0 -76px 80px -44px rgb(255 255 255 / 1%), inset -1px -9px 48px 0 rgb(255 255 255 / 6%);
-        border-radius: 25px;
-        img{
-          width: 96px;
-          height: 96px;
-          border-radius: 25px;
-          padding: 15px;
-        }
-        .brands-list__item-container{
-          padding: 15px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-      }
-    }
-    .collection-list{
-      display: flex;
-      flex-direction: column;
-      gap: 15px 0;
-      .collection-list__item{
-        background-image: url(https\:\/\/hookahapp\.ru\/Images\/MixCompilation\/MaxVozduh\.jpg);
-        border-radius: 10px;
-        background-repeat: no-repeat;
-        background-size: cover;
-        padding: 20px 30px;
-        height: 180px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-    }
     
   // mixerPage
   .mixer{
