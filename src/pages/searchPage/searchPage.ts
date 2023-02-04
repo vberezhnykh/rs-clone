@@ -317,7 +317,6 @@ class SearchPage implements InterfaceContainerElement {
     if (!suggestionsContainer) return;
     suggestionsContainer.innerHTML = '';
     suggestionsContainer.classList.remove('suggestions-container--hidden');
-    console.log(1);
     const predictedQueries = this.autoCompleteMatch(input.value);
     suggestionsContainer.append(this.createSuggestionsList(predictedQueries));
   }
@@ -325,8 +324,10 @@ class SearchPage implements InterfaceContainerElement {
   private async handleInputSumbit(event: KeyboardEvent, input: HTMLInputElement) {
     const asideContainer = document.querySelector('.search-aside');
     if (input.value === '') {
+      document.querySelector('.tabs')?.remove();
       asideContainer?.classList.remove('search-aside--hidden');
       document.querySelector('.suggestions-container')?.remove();
+      document.querySelector('.search-list')?.remove();
     }
     if (event.key === 'Enter') return this.handleEnterKeyOnSearchInput(event);
     if (event.key !== 'Enter' && input.value !== '') return this.handleAnyKeyExceptEnterOnSearchInput(input);
