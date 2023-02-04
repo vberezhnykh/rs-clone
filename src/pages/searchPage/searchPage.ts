@@ -353,10 +353,10 @@ class SearchPage implements InterfaceContainerElement {
     if (!this.brands || !this.flavors || !this.mixes) return;
     const brandsNamesArr = this.brands.map((brand) => brand.name.toLowerCase());
     const flavorsNamesArr = this.flavors.map((flavor) => flavor.name.toLowerCase());
-    // const flavorsFlavorsArr = this.flavors.map((flavor) => [...flavor.flavor] /* .join(', ').toLowerCase() */);
+    const flavorsFlavorsArr = this.flavors.map((flavor) => flavor.flavor).flat(2);
     const mixesNamesArr = this.mixes.map((mix) => mix.name.toLowerCase());
     this.suggestions = Array.from(
-      new Set([...brandsNamesArr, ...flavorsNamesArr, /* ...flavorsFlavorsArr,  */ ...mixesNamesArr])
+      new Set([...brandsNamesArr, ...flavorsNamesArr, ...flavorsFlavorsArr, ...mixesNamesArr])
     );
   }
 }
