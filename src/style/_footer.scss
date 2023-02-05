@@ -1,10 +1,21 @@
 .footer {
   &__container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.2rem;
     width: 100%;
     min-height: 60px;
-    // background-color: var(--color-bg);
-    font-size: 30px;
+    padding: 14px;
+    gap: 10px;
     text-align: center;
-    padding-top: 10px;
+    // background-color: var(--color-bg);
+  }
+  &__github,&__rs{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
   }
 }

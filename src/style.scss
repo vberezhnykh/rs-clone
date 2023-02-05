@@ -1,11 +1,25 @@
 @import "./style/_header.scss";
 @import "./style/_footer.scss";
+@import "pages/mixPage/mixPage.scss";
 @import './style/searchPage';
 
 
 :root {
 	--color-bg: #03041A;
   --color-font: #ffffff;
+  --green:  #bada55;
+  --yellow: #ffd049;
+  --light-yellow: #fdf2d2;
+  --orange: #ffa929;
+  --light-gray: #e3e4e8;
+  --gray: #71738b;
+  --light-blue: #7a7c93;
+  --blue: #34385a;
+  --slider-handle-size: 14px;
+  --slider-handle-border-radius: 2px;
+  --slider-handle-margin-top: -4px;
+  --slider-track-height: 6px;
+  --slider-track-border-radius: 4px;
   --color-accent: #92aff9;
   --color-accent--lighter: rgba(146, 175, 249, 0.7);
 }
@@ -63,8 +77,21 @@ body{
     background-image: linear-gradient(65deg, #edb8ff, #6148ff);
     box-shadow: 0 24px 34px 0 rgb(74 58 255 / 5%), 0 9px 24px 0 rgb(0 0 0 / 45%);
   }
-
-  input {
+  .button-2{
+    background-color: #7759f3;
+    color: var(--color-font);
+    font-size: 1rem;
+  }
+  .button-2.active{
+    background-color: #bada55;
+  }
+  .button-3{
+    font-size: 1.3rem;
+    background-color: #bada55;
+    border-radius: 8px;
+    color: var(--color-font);
+  }
+  input:not(input[type="range"]){
     background-color: hsla(0, 0%, 100%, 0.06);
     -webkit-transition: color 350ms ease, background-color 350ms ease;
     transition: color 350ms ease, background-color 350ms ease;
