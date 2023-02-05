@@ -1,6 +1,8 @@
 @import "./style/_header.scss";
 @import "./style/_footer.scss";
 @import './style/mainPageTopBlock';
+@import './style/mixesList';
+@import './style/usersMixes';
 @import './style/searchPage';
 
 
@@ -23,6 +25,10 @@ body{
   background-color: var(--color-bg);
   color: var(--color-font);
   font-family: 'Rosario', sans-serif;
+}
+
+.body--unscrollable {
+  overflow: hidden;
 }
 
 .container{

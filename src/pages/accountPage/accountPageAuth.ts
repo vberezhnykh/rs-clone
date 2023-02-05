@@ -44,7 +44,6 @@ class AccountPage implements InterfaceContainerElement {
             }
           });
         }
-
       }
     }
   };

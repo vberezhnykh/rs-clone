@@ -15,6 +15,7 @@ enum LocationPath {
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   AccountPage = `/account`,
+  CompilationPage = `/compilation`,
 }
 
 class App {

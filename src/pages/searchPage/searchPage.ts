@@ -14,8 +14,8 @@ import {
 } from '../../components/types/types';
 import Api from '../../components/api/api';
 import searchImgSrc from '../../assets/images/search.svg';
-import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 import { sortFoundBrandResults, sortFoundFlavorResults, sortFoundMixResults } from '../../utils/sortFoundResults';
+import { MixesList } from '../../components/mixesList/mixesList';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 /* TO-DO: Добавить статистику настоящих популярных поисковых запросов */
@@ -120,33 +120,39 @@ class SearchPage implements InterfaceContainerElement {
 
   private createListOfResults(tabBtnId: TabBtnId) {
     const listInTheDOM = document.querySelector('.search-list');
-    if (listInTheDOM) listInTheDOM.remove();
-    const list = createHTMLElement('search-list', 'ul');
+    listInTheDOM?.remove();
+    const errorMessage = document.querySelector('.search-error-message');
+    errorMessage?.remove();
     if (!this.foundResults) return showErrorMessage();
     let resultByTab;
+    let list: HTMLElement;
     if (tabBtnId === 'tab-btn-1') {
       resultByTab = this.foundResults.foundFlavors;
       if (!resultByTab) return showErrorMessage();
-      this.createResultListForFlavorTab(resultByTab, list);
+      list = this.createResultListForFlavorTab(resultByTab);
+      return list;
     } else if (tabBtnId === 'tab-btn-2') {
       resultByTab = this.foundResults.foundMixes;
       if (!resultByTab) return showErrorMessage();
-      this.createResultListForMixesTab(resultByTab, list);
+      list = this.createResultListForMixesTab(resultByTab);
+      return list;
     } else if (tabBtnId === 'tab-btn-3') {
       resultByTab = this.foundResults.foundBrands;
       if (!resultByTab) return showErrorMessage();
-      this.createResultListForBrandTab(resultByTab, list);
+      list = this.createResultListForBrandTab(resultByTab);
+      return list;
     }
-    return list;
+    return showErrorMessage();
 
     function showErrorMessage() {
-      list.classList.add('search-list--error-message');
-      list.textContent = NOT_FOUND_ERROR;
-      return list;
+      const errorMessage = createHTMLElement('search-error-message');
+      errorMessage.textContent = NOT_FOUND_ERROR;
+      return errorMessage;
     }
   }
 
-  private createResultListForFlavorTab(resultByTab: Flavors, list: HTMLElement) {
+  private createResultListForFlavorTab(resultByTab: Flavors) {
+    const list = createHTMLElement('search-list', 'ul');
     list.classList.add('flavors-list');
     for (let i = 0; i < resultByTab.length; i++) {
       const listItem = createHTMLElement('flavors-list__item', 'li');
@@ -159,48 +165,23 @@ class SearchPage implements InterfaceContainerElement {
       list.appendChild(listItem);
       listItem.onclick = () => this.openFlavorCard();
     }
+    return list;
   }
 
   private openFlavorCard() {
     /* TO-DO */
   }
 
-  private createResultListForMixesTab(resultByTab: Mixes, list: HTMLElement) {
-    list.classList.add('mixes-list');
-    for (let i = 0; i < resultByTab.length; i++) {
-      const listItem = createHTMLElement('mixes-list__card', 'li');
-      const mixImg = <HTMLImageElement>createHTMLElement('mixes-list__card-img', 'img');
-      mixImg.src = this.api.getImage(resultByTab[i].image);
-      listItem.appendChild(mixImg);
-      const container = createHTMLElement('mixes-list__card-container');
-      const mixTitle = createHTMLElement('mixes-list__title', 'span');
-      mixTitle.textContent = resultByTab[i].name;
-      container.appendChild(mixTitle);
-      const listItemFooter = createHTMLElement('mixes-list__card-footer');
-      const button = createHTMLElement(['mixes-list__button', 'button-1'], 'button');
-      button.textContent = 'Попробовать';
-      listItemFooter.appendChild(button);
-      const ratingContainer = createHTMLElement('mixes-list__rating-container');
-      const ratingStarIcon = <HTMLImageElement>createHTMLElement('mixes-list__rating-icon', 'img');
-      ratingStarIcon.src = ratingStarIconSrc;
-      ratingContainer.appendChild(ratingStarIcon);
-      const ratingNum = createHTMLElement('mixes-list__rating-num', 'span');
-      /* добавить в БД рейтинг миксам */
-      ratingNum.innerText = '5.0';
-      ratingContainer.appendChild(ratingNum);
-      listItemFooter.appendChild(ratingContainer);
-      container.appendChild(listItemFooter);
-      listItem.appendChild(container);
-      list.appendChild(listItem);
-      listItem.onclick = () => this.openMixCard();
-    }
+  private createResultListForMixesTab(resultByTab: Mixes) {
+    return new MixesList(resultByTab).create(true);
   }
 
   private openMixCard() {
     /* TO-DO */
   }
 
-  private createResultListForBrandTab(resultByTab: Brands, list: HTMLElement) {
+  private createResultListForBrandTab(resultByTab: Brands /* , list: HTMLElement */) {
+    const list = createHTMLElement('search-list', 'ul');
     list.classList.add('brands-list');
     for (let i = 0; i < resultByTab.length; i++) {
       const listItem = createHTMLElement('brands-list__item', 'li');
@@ -213,13 +194,14 @@ class SearchPage implements InterfaceContainerElement {
       brandName.textContent = resultByTab[i].name;
       container.appendChild(brandName);
       const flavorsNum = createHTMLElement('flavors-count', 'span');
-      if (!this.flavors) return;
+      if (!this.flavors) return list;
       flavorsNum.textContent = `${this.flavors.filter((flavor) => flavor.brand === resultByTab[i].name).length} вкусов`;
       container.appendChild(flavorsNum);
       listItem.appendChild(container);
       list.appendChild(listItem);
       listItem.onclick = () => this.openBrandCard();
     }
+    return list;
   }
 
   private openBrandCard() {
@@ -324,6 +306,8 @@ class SearchPage implements InterfaceContainerElement {
 
   private async handleInputSumbit(event: KeyboardEvent, input: HTMLInputElement) {
     const asideContainer = document.querySelector('.search-aside');
+    const errorMessage = document.querySelector('.search-error-message');
+    errorMessage?.remove();
     if (input.value === '') {
       document.querySelector('.tabs')?.remove();
       asideContainer?.classList.remove('search-aside--hidden');
