@@ -1,5 +1,6 @@
 @import "./style/_header.scss";
 @import "./style/_footer.scss";
+@import './style/mainPageTopBlock';
 @import './style/searchPage';
 
 
@@ -32,6 +33,7 @@ body{
 .main {
   min-height: 89vh;
   font-size: 1rem;
+
   .button {
     width: 100%;
     padding: 2px;
