@@ -1,11 +1,14 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import ApiUsers from '../../components/api/apiUsers';
+import AccountPageAuth from '../accountPage/accountPageAuth';
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
+  private accountPageAuth;
   constructor() {
     this.apiUsers = new ApiUsers();
+    this.accountPageAuth = new AccountPageAuth();
   }
 
   private handler = (e: Event): void => {
@@ -41,7 +44,9 @@ class AccountPage implements InterfaceContainerElement {
           this.apiUsers.getAuth(email, password).then((data) => {
             if (data.token) {
               window.localStorage.setItem('blender', JSON.stringify(data.token));
-              location.reload();
+              this.accountPageAuth.draw;
+              window.location.hash = `/account/`;
+              // location.reload();
             }
           });
         }
