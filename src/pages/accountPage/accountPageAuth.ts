@@ -41,7 +41,6 @@ class AccountPage implements InterfaceContainerElement {
           this.apiUsers.getAuth(email, password).then((data) => {
             if (data.token) {
               window.localStorage.setItem('blender', JSON.stringify(data.token));
-              location.reload();
             }
           });
         }
@@ -58,7 +57,7 @@ class AccountPage implements InterfaceContainerElement {
     <form id="form">
       <div class="account">
         <div class="account__inner">
-          <h3>Вход</h3>
+          <h3>Uhoooo!</h3>
             <input type="email" name="email" placeholder="Электронная почта" class="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$" title="Enter valid email address" required>
             <input type="password" name="password" placeholder="Пароль" class="password" minlength="5" required>
             <button class="button submit-btn" type="submit"><span class="submit-btn">Войти</span></button>
@@ -70,14 +69,6 @@ class AccountPage implements InterfaceContainerElement {
     </div>
     `;
     main.addEventListener('click', this.handler);
-    // const localStorage = window.localStorage.getItem('blender');
-    // if (localStorage) {
-    //   const token = JSON.parse(localStorage);
-    //   console.log(token)
-    //   this.apiUsers.checkAuth(token).then((data) => {
-    //     console.log(data)
-    //   })
-    // }
     return main;
   }
 }
