@@ -81,10 +81,6 @@ class App {
 
 export default App;
 
-
-
-
-
 // import Header from '../header/header';
 // import Footer from '../footer/footer';
 // import MainPage from '../../pages/mainPage/mainPage';

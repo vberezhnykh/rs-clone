@@ -270,6 +270,7 @@ class SearchPage implements InterfaceContainerElement {
   private async handleEnterKeyOnSearchInput(event: KeyboardEvent) {
     if (event.key !== 'Enter') return;
     document.querySelector('.search-aside')?.classList.add('search-aside--hidden');
+    document.querySelector('.suggestions-container')?.remove();
     const input = event.currentTarget;
     if (!(input instanceof HTMLInputElement)) return;
     await this.checkDataBase();
