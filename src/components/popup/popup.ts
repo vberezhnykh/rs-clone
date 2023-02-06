@@ -20,24 +20,18 @@ export function createPopup(elem:HTMLElement):void{
         </div>
       </div>`;
       elem.appendChild(flavor);
+      flavor.onclick=(e)=>{
+        if((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel'))
+          (<HTMLElement>document.querySelector('.popup-flavor')).style.display='none';
+      }
   }
 }
 
-export function fillFlavorPopup(flaverObj:Flavor):void{
+export function openFlavorPopup(flaverObj:Flavor):void{
   const api = new Api();
   (<HTMLElement>document.querySelector('.popup-flavor__img')).setAttribute('src',api.getImage(flaverObj.image));
   (<HTMLElement>document.querySelector('.popup-flavor__title')).innerHTML=`${flaverObj.name}`;
   (<HTMLElement>document.querySelector('.popup-flavor__desc')).innerHTML=`${flaverObj.description}`;
   (<HTMLElement>document.querySelector('.popup-flavor__must')).children[0].innerHTML=`${flaverObj.brand}`;
+  (<HTMLElement>document.querySelector('.popup-flavor')).style.display='block';
 }
-
-// export function openCloseFlavorPopup(e:Event,flaverObj:Flavor){
-//   if((<HTMLElement>e.target).classList.contains('more')){
-//     const index= Array.from(document.querySelectorAll('.more')).indexOf(e.target as HTMLElement);
-//     fillFlavorPopup(flaverObj as Flavor);
-//     (<HTMLElement>document.querySelector('.popup-flavor')).style.display='block';
-//   }
-//   else if((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel')){
-//     (<HTMLElement>document.querySelector('.popup-flavor')).style.display='none';
-//   }
-// }

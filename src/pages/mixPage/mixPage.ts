@@ -9,7 +9,7 @@ import Chart from 'chart.js/auto';
 import '../../../node_modules/chartjs-plugin-outerlabels';
 import {Mix,PromiseFlavors,Flavor} from '../../components/types/types';
 import Api from '../../components/api/api';
-import {createPopup,fillFlavorPopup} from '../../components/popup/popup';
+import {createPopup,openFlavorPopup} from '../../components/popup/popup';
 
 class MixPage implements InterfaceContainerElement {
   private api;
@@ -50,15 +50,12 @@ class MixPage implements InterfaceContainerElement {
     else
     (<HTMLElement>document.querySelector('.mix-card__buttons-row')).style.display='none';
   }
-  private popupOpenClose=(e:Event):void=>{
+  private popup=(e:Event):void=>{
     if((<HTMLElement>e.target).classList.contains('more')){
       const index= Array.from(document.querySelectorAll('.more')).indexOf(e.target as HTMLElement);
-      fillFlavorPopup(this.flavorsOfMix[index].value as Flavor);
-      (<HTMLElement>document.querySelector('.popup-flavor')).style.display='block';
+      openFlavorPopup(this.flavorsOfMix[index].value as Flavor);
     }
-    else if((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel')){
-      (<HTMLElement>document.querySelector('.popup-flavor')).style.display='none';
-    }
+    
   }
   private doughnutChart = (): void => {
     const ctx = document.getElementById('myChart');
@@ -225,7 +222,7 @@ class MixPage implements InterfaceContainerElement {
     </div>
     `;
     
-    main.addEventListener('click',this.popupOpenClose);
+    main.addEventListener('click',this.popup);
     setTimeout(()=>{
       createPopup(main);
       initSlider();
