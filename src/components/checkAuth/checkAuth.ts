@@ -8,7 +8,7 @@ class CheckAuth {
   }
 
   public async checkUserAuth(): Promise<boolean> {
-    // window.localStorage.clear();
+    window.localStorage.clear();
     const localStorage: string | null = window.localStorage.getItem('blender');
     if (localStorage) {
       const token: string = JSON.parse(localStorage);
