@@ -16,7 +16,7 @@ import Api from '../../components/api/api';
 import searchImgSrc from '../../assets/images/search.svg';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 import { sortFoundBrandResults, sortFoundFlavorResults, sortFoundMixResults } from '../../utils/sortFoundResults';
-import {createPopup,openFlavorPopup} from '../../components/popup/popup';
+import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 /* TO-DO: Добавить статистику настоящих популярных поисковых запросов */
@@ -159,10 +159,9 @@ class SearchPage implements InterfaceContainerElement {
       flavorName.textContent = resultByTab[i].name;
       listItem.appendChild(flavorName);
       list.appendChild(listItem);
-      listItem.onclick = ()=>openFlavorPopup(resultByTab[i]);
+      listItem.onclick = () => openFlavorPopup(resultByTab[i]);
     }
   }
-
 
   private createResultListForMixesTab(resultByTab: Mixes, list: HTMLElement) {
     list.classList.add('mixes-list');
@@ -191,7 +190,7 @@ class SearchPage implements InterfaceContainerElement {
       container.appendChild(listItemFooter);
       listItem.appendChild(container);
       list.appendChild(listItem);
-      listItem.onclick = () => window.location.hash=`/mix/${resultByTab[i].id}`;
+      listItem.onclick = () => (window.location.hash = `/mix/${resultByTab[i].id}`);
     }
   }
 
