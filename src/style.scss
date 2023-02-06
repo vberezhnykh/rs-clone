@@ -1,6 +1,7 @@
 @import "./style/_header.scss";
 @import "./style/_footer.scss";
 @import './style/searchPage';
+@import './style/message';
 
 
 :root {
@@ -104,6 +105,7 @@ body{
   }
   // accountPage
   .account {
+    position: relative;
     margin: 25px 25%;
     background-image: linear-gradient(65deg, #edb8ff, #6148ff);
     box-shadow: 0 24px 34px 0 rgb(74 58 255 / 5%), 0 9px 24px 0 rgb(0 0 0 / 45%);
