@@ -125,6 +125,7 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
+      font-size: 1.8rem;
       .component__must{
         width: 130px;
       }
@@ -368,7 +369,7 @@
   }
 }
 
-.popup-taste{
+.popup-flavor{
   display: none;
   position: fixed;
   top: 0;
@@ -377,30 +378,30 @@
   height: 100%;
   background-color: var(--color-bg);
   z-index: 999;
-  .popup-taste__inner{
-    .popup-taste__img{
+  .popup-flavor__inner{
+    .popup-flavor__img{
       width: 100%;
       height: 250px;
       object-fit: cover;
     }
-    .popup-taste__img-cancel{
+    .popup-flavor__img-cancel{
       position: absolute;
       top: 20px;
       left: 20px;
     }
-    .popup-tase__info{
+    .popup-flavor__info{
       display: flex;
       flex-direction: column;
       gap: 20px;
       padding: 25px;
     }
-    .popup-taste__title{
+    .popup-flavor__title{
       font-size: 2rem;
     }
-    .popup-tase__must{
+    .popup-flavor__must{
       width: 140px;
     }
-    .popup-taste__buttons{
+    .popup-flavor__buttons{
       position: absolute;
       bottom: 0;
       width: 100%;

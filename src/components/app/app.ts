@@ -4,11 +4,8 @@ import MainPage from '../../pages/mainPage/mainPage';
 import SearchPage from '../../pages/searchPage/searchPage';
 import MixerPage from '../../pages/mixerPage/mixerPage';
 import AccountPage from '../../pages/accountPage/accountPage';
-<<<<<<< Updated upstream
 import AccountPageAuth from '../../pages/accountPage/accountPageAuth';
-=======
 import MixPage from '../../pages/mixPage/mixPage';
->>>>>>> Stashed changes
 import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
@@ -49,18 +46,14 @@ class App {
     } else if (location === LocationPath.MixerPage) {
       changePage = new MixerPage();
     } else if (location === LocationPath.AccountPage) {
-<<<<<<< Updated upstream
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();
       } else {
         changePage = new AccountPage();
       }
-=======
-      changePage = new AccountPage();
     } else if (location === LocationPath.MixPage) {
-      changePage = new MixPage();
->>>>>>> Stashed changes
-    } else {
+      changePage = new MixPage();}
+      else {
       changePage = new ErrorPage();
     }
 
