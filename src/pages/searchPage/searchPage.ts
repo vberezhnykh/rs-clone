@@ -191,12 +191,8 @@ class SearchPage implements InterfaceContainerElement {
       container.appendChild(listItemFooter);
       listItem.appendChild(container);
       list.appendChild(listItem);
-      listItem.onclick = () => this.openMixCard();
+      listItem.onclick = () => window.location.hash=`/mix/${resultByTab[i].id}`;
     }
-  }
-
-  private openMixCard() {
-    /* TO-DO */
   }
 
   private createResultListForBrandTab(resultByTab: Brands, list: HTMLElement) {

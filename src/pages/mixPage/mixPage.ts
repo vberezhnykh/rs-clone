@@ -21,11 +21,12 @@ class MixPage implements InterfaceContainerElement {
   private flavorsBrands:string[]=[];
   private flavorsStrength:number[]=[];
   constructor() {
+    const mixId = window.location.hash.split('mix/')[window.location.hash.split('mix/').length-1];
     this.api = new Api();
-    this.getData();
+    this.getData(Number(mixId));
   }
-  private async getData(){
-    this.mix=await this.api.getMix(2);
+  private async getData(mixId:number){
+    this.mix=await this.api.getMix(mixId);
     this.flavorsIds=Object.values(this.mix.compositionById);
     this.flavorsPercentages=Object.values(this.mix.compositionByPercentage);
     this.flavorsOfMix=await Promise.allSettled(this.flavorsIds.map(id => this.api.getFlavor(id))).then(results=>results);
@@ -50,17 +51,16 @@ class MixPage implements InterfaceContainerElement {
     else
     (<HTMLElement>document.querySelector('.mix-card__buttons-row')).style.display='none';
   }
-  private popup=(e:Event):void=>{
+  private popupOpenClose=(e:Event):void=>{
     if((<HTMLElement>e.target).classList.contains('more')){
       const index= Array.from(document.querySelectorAll('.more')).indexOf(e.target as HTMLElement);
       openFlavorPopup(this.flavorsOfMix[index].value as Flavor);
     }
-    
   }
   private doughnutChart = (): void => {
     const ctx = document.getElementById('myChart');
     const colorsArray=['#06a396','#fa320a','#f6bc25','#202d91','#f96509','#987e41','#914198'];
-    const colors=[];
+    const colors:string[]=[];
     for(let i:number=0;i<this.flavorsIds.length;i++){
       if(i<colorsArray.length)colors.push(colorsArray[i]);
       else colors.push('#'+(Math.random() * 0x1000000 | 0x1000000).toString(16).slice(1));
@@ -222,7 +222,7 @@ class MixPage implements InterfaceContainerElement {
     </div>
     `;
     
-    main.addEventListener('click',this.popup);
+    main.addEventListener('click',this.popupOpenClose);
     setTimeout(()=>{
       createPopup(main);
       initSlider();

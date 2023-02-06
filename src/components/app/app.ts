@@ -51,7 +51,7 @@ class App {
       } else {
         changePage = new AccountPage();
       }
-    } else if (location === LocationPath.MixPage) {
+    } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();}
       else {
       changePage = new ErrorPage();
