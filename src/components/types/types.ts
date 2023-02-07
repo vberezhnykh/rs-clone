@@ -52,9 +52,8 @@ export type TabBtnId = 'tab-btn-1' | 'tab-btn-2' | 'tab-btn-3';
 
 export type SearchCategory = 'flavors' | 'mixes' | 'brands';
 
-export interface PromiseFlavor{
-  status:string;
-  value?:Flavor;
-  }
-export type PromiseFlavors=PromiseFlavor[];
-
+export interface PromiseFlavor {
+  status: string;
+  value?: Flavor;
+}
+export type PromiseFlavors = PromiseFlavor[];

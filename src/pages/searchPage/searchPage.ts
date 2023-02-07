@@ -170,42 +170,15 @@ class SearchPage implements InterfaceContainerElement {
     return list;
   }
 
-  private createResultListForMixesTab(resultByTab: Mixes, list: HTMLElement) {
-    list.classList.add('mixes-list');
-    for (let i = 0; i < resultByTab.length; i++) {
-      const listItem = createHTMLElement('mixes-list__card', 'li');
-      const mixImg = <HTMLImageElement>createHTMLElement('mixes-list__card-img', 'img');
-      mixImg.src = this.api.getImage(resultByTab[i].image);
-      listItem.appendChild(mixImg);
-      const container = createHTMLElement('mixes-list__card-container');
-      const mixTitle = createHTMLElement('mixes-list__title', 'span');
-      mixTitle.textContent = resultByTab[i].name;
-      container.appendChild(mixTitle);
-      const listItemFooter = createHTMLElement('mixes-list__card-footer');
-      const button = createHTMLElement(['mixes-list__button', 'button-1'], 'button');
-      button.textContent = 'Попробовать';
-      listItemFooter.appendChild(button);
-      const ratingContainer = createHTMLElement('mixes-list__rating-container');
-      const ratingStarIcon = <HTMLImageElement>createHTMLElement('mixes-list__rating-icon', 'img');
-      ratingStarIcon.src = ratingStarIconSrc;
-      ratingContainer.appendChild(ratingStarIcon);
-      const ratingNum = createHTMLElement('mixes-list__rating-num', 'span');
-      /* добавить в БД рейтинг миксам */
-      ratingNum.innerText = '5.0';
-      ratingContainer.appendChild(ratingNum);
-      listItemFooter.appendChild(ratingContainer);
-      container.appendChild(listItemFooter);
-      listItem.appendChild(container);
-      list.appendChild(listItem);
-      listItem.onclick = () => (window.location.hash = `/mix/${resultByTab[i].id}`);
-    }
+  private createResultListForMixesTab(resultByTab: Mixes) {
+    return new MixesList(resultByTab).create();
   }
 
   private openMixCard() {
     /* TO-DO */
   }
 
-  private createResultListForBrandTab(resultByTab: Brands /* , list: HTMLElement */) {
+  private createResultListForBrandTab(resultByTab: Brands) {
     const list = createHTMLElement('search-list', 'ul');
     list.classList.add('brands-list');
     for (let i = 0; i < resultByTab.length; i++) {

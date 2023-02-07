@@ -52,11 +52,13 @@ export class MixesList {
     listItemFooter.appendChild(ratingContainer);
     container.appendChild(listItemFooter);
     listItem.appendChild(container);
-    listItem.onclick = () => this.openMixCard();
+    listItem.onclick = () => this.openMixCard(i, this.mixes);
     return listItem;
   }
 
-  private openMixCard() {
-    /*  */
+  private openMixCard(i: number, mixes?: Mixes) {
+    document.body.classList.remove('body--unscrollable');
+    document.querySelector('.user-mixes-container')?.remove();
+    if (mixes) window.location.hash = `/mix/${mixes[i].id}`;
   }
 }
