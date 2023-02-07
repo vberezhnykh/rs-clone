@@ -5,6 +5,7 @@ import SearchPage from '../../pages/searchPage/searchPage';
 import MixerPage from '../../pages/mixerPage/mixerPage';
 import AccountPage from '../../pages/accountPage/accountPage';
 import AccountPageAuth from '../../pages/accountPage/accountPageAuth';
+import MixPage from '../../pages/mixPage/mixPage';
 import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
@@ -16,6 +17,7 @@ enum LocationPath {
   MixerPage = `/mixer`,
   AccountPage = `/account`,
   CompilationPage = `/compilation`,
+  MixPage = `/mix`,
 }
 
 class App {
@@ -50,6 +52,8 @@ class App {
       } else {
         changePage = new AccountPage();
       }
+    } else if (location.includes(LocationPath.MixPage)) {
+      changePage = new MixPage();
     } else {
       changePage = new ErrorPage();
     }

@@ -1,0 +1,257 @@
+import { createHTMLElement } from '../../utils/createHTMLElement';
+import { InterfaceContainerElement } from '../../components/types/types';
+import starempty from '../../assets/images/star-empty.svg';
+import info from '../../assets/images/info.svg';
+import cancel from '../../assets/images/cancel.svg';
+import { initSlider } from '../../components/slider/slider';
+import { onResizeSlider } from '../../components/slider/slider';
+import Chart from 'chart.js/auto';
+import '../../../node_modules/chartjs-plugin-outerlabels';
+import {Mix,PromiseFlavors,Flavor} from '../../components/types/types';
+import Api from '../../components/api/api';
+import {createPopup,openFlavorPopup} from '../../components/popup/popup';
+
+class MixPage implements InterfaceContainerElement {
+  private api;
+  private mix:Mix;
+  private flavorsIds:number[];
+  private flavorsPercentages:number[];
+  private flavorsOfMix:PromiseFlavors;
+  private flavorsNames:string[]=[];
+  private flavorsBrands:string[]=[];
+  private flavorsStrength:number[]=[];
+  constructor() {
+    const mixId = window.location.hash.split('mix/')[window.location.hash.split('mix/').length-1];
+    this.api = new Api();
+    this.getData(Number(mixId));
+  }
+  private async getData(mixId:number){
+    this.mix=await this.api.getMix(mixId);
+    this.flavorsIds=Object.values(this.mix.compositionById);
+    this.flavorsPercentages=Object.values(this.mix.compositionByPercentage);
+    this.flavorsOfMix=await Promise.allSettled(this.flavorsIds.map(id => this.api.getFlavor(id))).then(results=>results);
+    
+    this.flavorsIds.forEach((_,index)=>{
+      this.flavorsNames.push(String(this.flavorsOfMix[index].value?.name));
+      this.flavorsBrands.push(String(this.flavorsOfMix[index].value?.brand));
+      if(this.flavorsOfMix[index].value?.strength==='крепкий')
+        this.flavorsStrength.push(3);
+      else if(this.flavorsOfMix[index].value?.strength==='средний')
+        this.flavorsStrength.push(2);
+      if(this.flavorsOfMix[index].value?.strength==='легкий')
+        this.flavorsStrength.push(1);
+      
+    })
+    
+    this.draw();
+  }
+  private switcher=():void=>{
+    if((<HTMLInputElement>document.querySelector('#switch')).checked)
+      (<HTMLElement>document.querySelector('.mix-card__buttons-row')).style.display='flex';
+    else
+    (<HTMLElement>document.querySelector('.mix-card__buttons-row')).style.display='none';
+  }
+  private popupOpenClose=(e:Event):void=>{
+    if((<HTMLElement>e.target).classList.contains('more')){
+      const index= Array.from(document.querySelectorAll('.more')).indexOf(e.target as HTMLElement);
+      openFlavorPopup(this.flavorsOfMix[index].value as Flavor);
+    }
+  }
+  private doughnutChart = (): void => {
+    const ctx = document.getElementById('myChart');
+    const colorsArray=['#06a396','#fa320a','#f6bc25','#202d91','#f96509','#987e41','#914198'];
+    const colors:string[]=[];
+    for(let i:number=0;i<this.flavorsIds.length;i++){
+      if(i<colorsArray.length)colors.push(colorsArray[i]);
+      else colors.push('#'+(Math.random() * 0x1000000 | 0x1000000).toString(16).slice(1));
+    }
+    
+    new Chart(<HTMLCanvasElement>ctx, {
+      type: 'doughnut',
+      data:  {
+        labels: this.flavorsNames,
+        datasets: [{
+          // label: 'My First Dataset',
+          data: this.flavorsPercentages,
+          backgroundColor: colors,
+          // hoverOffset: 4
+        }]
+      },
+      options: {
+        plugins: {
+          outerLabels: {
+            fontNormalSize: 18,
+            fontNormalColor: '#FFFFFF',
+            fontBoldSize: 18,
+            fontBoldColor: '#FFFFFF',
+            twoLines: true,
+            offset: 20,
+            formatter: n => `${n.value+'%'} ${n.label}`,
+            // debug: true,
+          },
+          tooltip: {
+            enabled: false,
+          },
+          legend: {
+            display:false,
+          },
+          
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        
+        layout: {
+          padding: 50,
+        },
+        events: [],
+      },
+    });
+    
+  };
+
+  draw(): HTMLElement {
+    if(this.mix===undefined){
+    const main = createHTMLElement('main', 'main');
+    return main;}
+    else{
+    const main=document.querySelector('.main') as HTMLElement;
+    let components='';
+    let mixStrength='';
+    let strength=0;
+    for (let i:number=0;i<this.flavorsIds.length;i++){
+      strength+=this.flavorsPercentages[i]*this.flavorsStrength[i];
+      components+=`<div class="component">
+      <div class="component__container">
+        <img src="${this.api.getImage(String(this.flavorsOfMix[i].value?.image))}" width="96" height="96" alt="${this.flavorsNames[i]}">
+        <div class="component__info">
+          <div class="component__title">${this.flavorsNames[i]}</div>
+          <div class="component__must"><button class="button button-2">${this.flavorsBrands[0]}</button></div>
+        </div>
+        <div class="component__more"><img src="${info}" class="more" height="32" width="32"></div>
+      </div>
+      <div class="component__quantity">
+          
+      <div class="tick-slider">
+      <div class="tick-slider-value-container">
+          <div id="component${i+1}LabelMin" class="tick-slider-label">0</div>
+          <div id="component${i+1}LabelMax" class="tick-slider-label">100</div>
+          <div id="component${i+1}Value" class="tick-slider-value"></div>
+      </div>
+      <div class="tick-slider-background"></div>
+      <div id="component${i+1}Progress" class="tick-slider-progress"></div>
+      <div id="component${i+1}Ticks" class="tick-slider-tick-container"></div>
+      <input
+          id="component${i+1}Slider"
+          class="tick-slider-input"
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          value="${this.flavorsPercentages[i]}"
+          data-tick-id="component${i+1}Ticks"
+          data-value-id="component${i+1}Value"
+          data-progress-id="component${i+1}Progress"
+          data-handle-size="18"
+          data-min-label-id="component${i+1}LabelMin"
+          data-max-label-id="component${i+1}LabelMax">
+  </div>
+  </div> 
+  </div>`;
+    }
+    if(strength/100>2.5)
+      mixStrength='Крепкий';
+    else if(strength/100>1.5)
+      mixStrength='Средний';
+    else{
+      mixStrength='Легкий';
+    }
+    main.innerHTML = `
+    <div class="main__container container">
+
+      <div class="mix-card">
+        
+        <div class="mix-card__img">
+          <img src="${this.api.getImage(this.mix.image)}" alt="name" width="220" height="220">
+        </div>
+        <div class="mix-card__container">
+          <h1 class="mix-card__title">${this.mix.name}</h1>
+          <div class="mix-card__desc">${this.mix.description}</div>
+          <div class="mix-card__more-info">
+            <div class="mix-card__rating-row">
+              <div class="mix-card__stars">
+                <img src="${starempty}" alt="star">
+                <img src="${starempty}" alt="star">
+                <img src="${starempty}" alt="star">
+                <img src="${starempty}" alt="star">
+                <img src="${starempty}" alt="star">
+              </div>
+              <div class="mix-card__rating">5.0</div>
+            </div>
+            <div class="mix-card__strength-row">
+              <div><span>Крепость</span></div>
+              <div class="mix-card__strength">${mixStrength}</div>
+            </div>
+            <div class="mix-card__calc-row">
+              <div><span>Расчитать в граммах</span></div>
+              <div class="calc"><input type="checkbox" id="switch"/><label for="switch">Toggle</label></div>
+            </div>
+            <div class="mix-card__buttons-row">
+              <button class="button button-2 active">20 г.</button>
+              <button class="button button-2">25 г.</button>
+              <button class="button button-2">30 г.</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tabs-mix" class="tabs">
+        <input type="radio" name="tab-btn" id="tab-mix-btn-1" value="" checked>
+        <label for="tab-mix-btn-1">Компонеты</label>
+        <input type="radio" name="tab-btn" id="tab-mix-btn-2" value="">
+        <label for="tab-mix-btn-2">Диаграмма</label>
+        <div id="composition">${components}
+        </div>
+        <div id="diagram">
+          <div class="compotion-chart">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    `;
+    
+    main.addEventListener('click',this.popupOpenClose);
+    setTimeout(()=>{
+      createPopup(main);
+      initSlider();
+      this.doughnutChart();
+      document.querySelector('#switch')?.addEventListener('click',this.switcher);
+      
+      
+    
+    
+    },0);return main;}
+    
+  }
+  
+}
+
+export default MixPage;
+
+// <div class="popup-flavor">
+//       <div class="popup-flavor__inner">
+//         <img src="" class="popup-flavor__img">
+//         <img src="${cancel}" class="popup-flavor__img-cancel">
+//         <div class="popup-flavor__info">
+//           <div class="popup-flavor__title"></div>
+//           <div class="popup-flavor__desc"></div>
+//           <div class="popup-flavor__must"><button class="button button-2"></button></div>
+//         </div>
+//         <div class="popup-flavor__buttons">
+//         <button class="button button-3">Добавить в миксер</button>
+//         <button class="button button-3">Подобрать миксы со вкусом</button>
+//         </div>
+//       </div>
+//     </div>
