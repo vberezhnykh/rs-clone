@@ -47,7 +47,7 @@ class AccountPage implements InterfaceContainerElement {
           </div>
         </div>
       </div>
-    
+    <div class="button-exit">Выйти из профиля</div>
     </div>
     `;
     main.addEventListener('click', this.handler);
