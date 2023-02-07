@@ -46,9 +46,6 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "chart.js": "^4.2.0",
-    "chartjs": "^0.3.24",
-    "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-outerlabels": "^2.0.0"
   }
 }
