@@ -68,6 +68,9 @@ img {
     margin: 10px
   }
   }
+  .button-edit:hover{
+    color: #c7cdcd;
+  }
 
   .avatar-column {
     flex-basis: 150px;
@@ -79,3 +82,18 @@ img {
     font-weight: 800;
   }
 
+  .button-exit {
+    color: #e03d3d;
+    font-size: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .button-exit:hover {
+    color: #b13131;
+  }
+
+  .button-exit:active {
+    font-size: 1.4rem;
+  }

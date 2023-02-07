@@ -11,7 +11,7 @@ class ApiUsers {
       return ApiUsers.instance;
     }
     ApiUsers.instance = this;
-    this.base = 'http://localhost:3002';
+    this.base = 'https://rs-clone-back-production-247c.up.railway.app';
     this.registration = `${this.base}/auth/registration`;
     this.login = `${this.base}/auth/login`;
     this.check = `${this.base}/auth/check`;
