@@ -58,7 +58,7 @@ class AccountPage implements InterfaceContainerElement {
         } else {
           this.apiUsers.getAuth(email, password).then((data) => {
             if (data.token) {
-              window.localStorage.setItem('blender', JSON.stringify(data.token));
+              window.localStorage.setItem('blender', JSON.stringify(data));
               window.location.hash = `/account/`;
             }
             if (data.message) {

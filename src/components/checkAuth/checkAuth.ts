@@ -11,7 +11,7 @@ class CheckAuth {
     // window.localStorage.clear();
     const localStorage: string | null = window.localStorage.getItem('blender');
     if (localStorage) {
-      const token: string = JSON.parse(localStorage);
+      const token: string = JSON.parse(localStorage).token;
       return await this.apiUsers.checkAuth(token);
     }
     return false;

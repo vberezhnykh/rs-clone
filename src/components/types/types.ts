@@ -57,3 +57,14 @@ export interface PromiseFlavor {
   value?: Flavor;
 }
 export type PromiseFlavors = PromiseFlavor[];
+
+export interface Profile {
+  _id: string;
+  userId: string;
+  name: string;
+  instagramAccount: string;
+  avatar: string;
+  favorite: number[];
+  myMix: number[];
+  rating: number[];
+}

@@ -1,4 +1,4 @@
-import { Brands, Flavor, Flavors, Mix, Mixes } from '../types/types';
+import { Profile } from '../types/types';
 
 class ApiUsers {
   private static instance: ApiUsers;
@@ -6,15 +6,17 @@ class ApiUsers {
   private registration;
   private login;
   private check;
+  private profile;
   constructor() {
     if (ApiUsers.instance) {
       return ApiUsers.instance;
     }
     ApiUsers.instance = this;
-    this.base = 'https://rs-clone-back-production-247c.up.railway.app';
+    this.base = 'http://localhost:3002';
     this.registration = `${this.base}/auth/registration`;
     this.login = `${this.base}/auth/login`;
     this.check = `${this.base}/auth/check`;
+    this.profile = `${this.base}/auth/profile`;
   }
 
   public async newUser(email: string, password: string) {
@@ -50,6 +52,19 @@ class ApiUsers {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+    });
+    return await res.json();
+  }
+
+  public async getProfile(id: string): Promise<Profile> {
+    const res = await fetch(`${this.profile}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        id: id,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
       },
     });
     return await res.json();

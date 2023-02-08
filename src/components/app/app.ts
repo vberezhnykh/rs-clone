@@ -5,6 +5,7 @@ import SearchPage from '../../pages/searchPage/searchPage';
 import MixerPage from '../../pages/mixerPage/mixerPage';
 import AccountPage from '../../pages/accountPage/accountPage';
 import AccountPageAuth from '../../pages/accountPage/accountPageAuth';
+import AccountPageEdit from '../../pages/accountPage/accountPageEdit';
 import MixPage from '../../pages/mixPage/mixPage';
 import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
@@ -16,6 +17,7 @@ enum LocationPath {
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   AccountPage = `/account`,
+  EditAccount = `/account/edit`,
   MixPage = `/mix`,
 }
 
@@ -56,6 +58,8 @@ class App {
       } else {
         changePage = new AccountPage();
       }
+    } else if (location === LocationPath.EditAccount) {
+      changePage = new AccountPageEdit();
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
     } else {
@@ -64,7 +68,9 @@ class App {
 
     if (changePage) {
       this.prevPathPage = window.location.hash.slice(1);
-      this.wrapper.append(changePage.draw());
+      if (this.wrapper.innerHTML.length === 0) {
+        this.wrapper.append(changePage.draw());
+      }
     }
   }
 
