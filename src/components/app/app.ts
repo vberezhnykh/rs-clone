@@ -10,14 +10,14 @@ import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import CheckAuth from '../checkAuth/checkAuth';
-import { CompilationPage } from '../usersMixesList/compilation';
+import { UserMixes } from '../usersMixesList/user-mixes';
 
 enum LocationPath {
   MainPage = `/`,
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   AccountPage = `/account`,
-  CompilationPage = `/compilation`,
+  UserMixes = `/user-mixes`,
   MixPage = `/mix`,
 }
 
@@ -43,8 +43,8 @@ class App {
 
     if (location === LocationPath.MainPage) {
       changePage = new MainPage();
-    } else if (location === LocationPath.CompilationPage) {
-      changePage = new CompilationPage();
+    } else if (location === LocationPath.UserMixes) {
+      changePage = new UserMixes();
     } else if (location === LocationPath.SearchPage) {
       changePage = new SearchPage();
     } else if (location === LocationPath.MixerPage) {

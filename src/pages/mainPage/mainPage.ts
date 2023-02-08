@@ -24,7 +24,7 @@ class MainPage implements InterfaceContainerElement {
   private createTopBlock() {
     const topBlock = createHTMLElement('top-block');
     topBlock.appendChild(this.createMixWeekCard());
-    topBlock.appendChild(this.createUsersMixesCard());
+    topBlock.appendChild(this.createUserMixesCard());
     topBlock.appendChild(this.createFlavorPreferencesCard());
     return topBlock;
   }
@@ -49,17 +49,16 @@ class MainPage implements InterfaceContainerElement {
     */
   }
 
-  private createUsersMixesCard() {
-    const usersMixesCard = createHTMLElement('users-mixes-card');
-    // usersMixesCard.onclick = () => this.openUsersMixes();
-    const title = createHTMLElement('users-mixes-card__title', 'h4');
+  private createUserMixesCard() {
+    const userMixesCard = createHTMLElement('user-mixes-card');
+    const title = createHTMLElement('user-mixes-card__title', 'h4');
     title.textContent = 'Миксы пользователей';
-    usersMixesCard.appendChild(title);
-    const tryButton = createHTMLElement(['button-1', 'users-mixes-card__button'], 'button');
+    userMixesCard.appendChild(title);
+    const tryButton = createHTMLElement(['button-1', 'user-mixes-card__button'], 'button');
     tryButton.textContent = 'ПРОБОВАТЬ';
-    usersMixesCard.appendChild(tryButton);
-    usersMixesCard.onclick = () => (window.location.hash += 'compilation');
-    return usersMixesCard;
+    userMixesCard.appendChild(tryButton);
+    userMixesCard.onclick = () => (window.location.hash += 'user-mixes');
+    return userMixesCard;
   }
 
   private createFlavorPreferencesCard() {
