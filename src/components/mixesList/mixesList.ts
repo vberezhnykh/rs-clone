@@ -5,6 +5,16 @@ import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 
 const ERROR_MESSAGE = 'Произошла ошибка. Ничего не найдено. Попробуйте снова...';
 
+/* enum SortOptions {
+  'popular' = 'популярные',
+  'new' = 'новинки',
+  'rating' = 'высокие рейтинги',
+} */
+type MixesListOptions = {
+  isSearchList?: boolean;
+  sortBy?: string;
+};
+
 export class MixesList {
   private mixes?: Mixes;
   private api: Api;
@@ -12,14 +22,19 @@ export class MixesList {
     this.api = new Api();
     if (mixes) this.mixes = mixes;
   }
-  public create(isSearchList?: boolean): HTMLElement {
+  public create(options?: MixesListOptions): HTMLElement {
     const list = createHTMLElement('mixes-list', 'ul');
-    if (isSearchList) list.classList.add('search-list');
+    if (options?.isSearchList) list.classList.add('search-list');
     if (!this.mixes) {
       list.classList.add('mixes-list--error-mesage');
       list.textContent = ERROR_MESSAGE;
       return list;
     }
+    /*  if (options?.sortBy) {
+      this.mixes.sort((a, b) => {
+        
+      });
+    } */
     for (let i = 0; i < this.mixes.length; i++) {
       const listItem = this.createListItem(i);
       if (listItem) list.appendChild(listItem);

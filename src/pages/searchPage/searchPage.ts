@@ -171,7 +171,7 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private createResultListForMixesTab(resultByTab: Mixes) {
-    return new MixesList(resultByTab).create();
+    return new MixesList(resultByTab).create({ isSearchList: true });
   }
 
   private openMixCard() {

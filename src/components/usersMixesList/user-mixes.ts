@@ -11,6 +11,7 @@ const SELECT_OPTIONS = ['Популярные', 'Новинки', 'Высоки�
 export class UserMixes implements InterfaceContainerElement {
   mixes?: Mixes;
   api: Api;
+  sortOption = 'популярные';
   constructor() {
     this.api = new Api();
   }
@@ -89,6 +90,11 @@ export class UserMixes implements InterfaceContainerElement {
     });
     clickedOption.classList.add('selector__option--active');
     text.textContent = `${clickedOption.textContent}`;
+    if (clickedOption.textContent) this.sortOption = clickedOption.textContent.toLowerCase();
+    document.querySelector('.mixes-list')?.remove();
+    document
+      .querySelector('.user-mixes-container')
+      ?.append(new MixesList(this.mixes).create({ sortBy: this.sortOption }));
     clickedOption.parentElement?.classList.remove('selector--visible');
   }
 
