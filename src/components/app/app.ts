@@ -4,8 +4,8 @@ import MainPage from '../../pages/mainPage/mainPage';
 import SearchPage from '../../pages/searchPage/searchPage';
 import MixerPage from '../../pages/mixerPage/mixerPage';
 import AccountPage from '../../pages/accountPage/accountPage';
-import AccountPageAuth from '../../pages/accountPage/accountPageAuth';
-import AccountPageEdit from '../../pages/accountPage/accountPageEdit';
+import AccountPageAuth from '../../pages/account_page_auth/accountPageAuth';
+import AccountPageEdit from '../../pages/account_page_edit/accountPageEdit';
 import MixPage from '../../pages/mixPage/mixPage';
 import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
@@ -59,7 +59,11 @@ class App {
         changePage = new AccountPage();
       }
     } else if (location === LocationPath.EditAccount) {
-      changePage = new AccountPageEdit();
+      if ((await this.checkAuth.checkUserAuth()) === true) {
+        changePage = new AccountPageEdit();
+      } else {
+        changePage = new AccountPage();
+      }
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
     } else {
