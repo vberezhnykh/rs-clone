@@ -47,18 +47,18 @@ const baseConfig = {
       filename: '[name].[contenthash].css',
     }),
 
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     {
-    //       from: './src/assets/img/',
-    //       to: './assets/img',
-    //     },
-    //     {
-    //       from: './src/assets/icons/',
-    //       to: './assets/icons',
-    //     },
-    //   ],
-    // }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: './src/assets/images/',
+          to: './assets/img',
+        },
+        // {
+        //   from: './src/assets/icons/',
+        //   to: './assets/icons',
+        // },
+      ],
+    }),
 
     new CleanWebpackPlugin(),
   ],

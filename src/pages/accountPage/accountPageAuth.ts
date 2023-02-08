@@ -1,6 +1,9 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import ApiUsers from '../../components/api/apiUsers';
+const favorite = require('../../assets/images/favorite.png');
+const profile = require('../../assets/images/profile.svg');
+const myMix = require('../../assets/images/my_mixes.svg');
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
@@ -53,18 +56,34 @@ class AccountPage implements InterfaceContainerElement {
 
     main.innerHTML = `
     <div class="main__container container">
-    <form id="form">
-      <div class="account">
-        <div class="account__inner">
-          <h3>Uhoooo!</h3>
-            <input type="email" name="email" placeholder="Электронная почта" class="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$" title="Enter valid email address" required>
-            <input type="password" name="password" placeholder="Пароль" class="password" minlength="5" required>
-            <button class="button submit-btn" type="submit"><span class="submit-btn">Войти</span></button>
-            </form>
-            <div class="button button-1"><span class="span-button">Зарегистрироваться</span></div>
+      <div class="flex-container">
+        <div class="row">
+          <div class="column avatar-column">
+            <div class="img-profile cell-img">
+              <img class="profile" src="${profile}">
+            </div>
+          </div>  
+          <div class="wrap">
+          <div class="column name-column">Name user</div>
+          <div class="column button-column">
+            <div class="button-edit"><span>Настройки профиля</span></div>
+          </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="column cell-img">
+            <img src="${favorite}">
+            <p class="name">Любимые</p>
+            <p class="amount">0 миксов</p>
+          </div>
+          <div class="column cell-img">
+            <img src="${myMix}">
+            <p class="name">Мои миксы</p>
+            <p class="amount">0 миксов</p>
+          </div>
         </div>
       </div>
-    
+    <div class="button-exit">Выйти из профиля</div>
     </div>
     `;
     main.addEventListener('click', this.handler);

@@ -1,15 +1,19 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import ApiUsers from '../../components/api/apiUsers';
+import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
+  private modalWindowRegistration;
   constructor() {
     this.apiUsers = new ApiUsers();
+    this.modalWindowRegistration = new ModalWindowRegistration();
   }
 
   private handler = (e: Event): void => {
     const target = e.target as HTMLElement;
+    const message = document.querySelector('.message_container') as HTMLElement;
     const buttons = document.querySelectorAll('.button span') as NodeList;
     const title = document.querySelector('h3') as HTMLElement;
     const emailInput = document.querySelector('.email') as HTMLInputElement;
@@ -36,12 +40,35 @@ class AccountPage implements InterfaceContainerElement {
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
         if (target.textContent === 'Регистрация') {
-          this.apiUsers.newUser(email, password);
+          this.apiUsers.newUser(email, password).then((data) => {
+            if (data.message === 'A user with the same name already exists') {
+              message.append(this.modalWindowRegistration.draw('Пользователь с таким именем уже существует!', 'red'));
+            } else if (data.message === 'Registration error') {
+              message.append(
+                this.modalWindowRegistration.draw('Ошибка регистрации, обратитесь к администратору', 'red')
+              );
+            } else if (data.message === 'User successfully registered') {
+              message.append(
+                this.modalWindowRegistration.draw(
+                  'Регистрация завершена, войдите в свой аккаунт с помощью email и пароля указаных при регистрации.'
+                )
+              );
+            }
+          });
         } else {
           this.apiUsers.getAuth(email, password).then((data) => {
             if (data.token) {
               window.localStorage.setItem('blender', JSON.stringify(data.token));
-              location.reload();
+              window.location.hash = `/account/`;
+            }
+            if (data.message) {
+              if (data.message.includes('User')) {
+                message.append(this.modalWindowRegistration.draw('Пользователь с таким именем не найден.', 'red'));
+              }
+              if (data.message.includes('Password')) {
+                message.append(this.modalWindowRegistration.draw('Пароль введен не верно.', 'red'));
+              }
+              console.log(data.message);
             }
           });
         }
@@ -64,19 +91,11 @@ class AccountPage implements InterfaceContainerElement {
             </form>
             <div class="button button-1"><span class="span-button">Зарегистрироваться</span></div>
         </div>
+        <div class="message_container"><div>
       </div>
-    
     </div>
     `;
     main.addEventListener('click', this.handler);
-    // const localStorage = window.localStorage.getItem('blender');
-    // if (localStorage) {
-    //   const token = JSON.parse(localStorage);
-    //   console.log(token)
-    //   this.apiUsers.checkAuth(token).then((data) => {
-    //     console.log(data)
-    //   })
-    // }
     return main;
   }
 }
