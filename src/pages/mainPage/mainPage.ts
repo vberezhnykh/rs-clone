@@ -71,6 +71,7 @@ class MainPage implements InterfaceContainerElement {
     changePrefIcon.className = 'flavor-preferences-card__image';
     changePrefIcon.src = changePrefIconSrc;
     flavorPreferencesCard.appendChild(changePrefIcon);
+    flavorPreferencesCard.onclick = () => (window.location.hash += 'change-pref/flavors');
     return flavorPreferencesCard;
   }
 
