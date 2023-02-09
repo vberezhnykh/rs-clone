@@ -34,7 +34,6 @@ export class BrandSuggest implements InterfaceContainerElement {
   private createBrandAddForm() {
     const brandAddForm = createHTMLElement('brand-form', 'form');
     brandAddForm.appendChild(createHTMLElement('brand-form__label', 'label', LABEL_TEXT));
-    // const input = this.createInput();
     const suggestBrandBtn = this.createSuggestBrandButton();
     brandAddForm.appendChild(this.createInput(suggestBrandBtn));
     brandAddForm.appendChild(suggestBrandBtn);
