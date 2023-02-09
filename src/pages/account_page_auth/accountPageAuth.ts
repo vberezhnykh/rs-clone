@@ -4,14 +4,18 @@ import ApiUsers from '../../components/api/apiUsers';
 const favorite = require('../../assets/images/favorite.png');
 const profile = require('../../assets/images/profile.svg');
 const myMix = require('../../assets/images/my_mixes.svg');
-import GetProfile from '../../components/getProfile/getProfile';
+const instagramLogo = require('../../assets/images/instagram_logo.svg');
+import GetProfile from '../../components/profile_user/profile_user';
+import { server } from '../../components/server/server';
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
   private getProfile;
+  private server;
   constructor() {
     this.apiUsers = new ApiUsers();
     this.getProfile = new GetProfile();
+    this.server = server;
   }
 
   private handler = (e: Event): void => {
@@ -29,17 +33,22 @@ class AccountPage implements InterfaceContainerElement {
     const main = createHTMLElement('main', 'main');
     this.getProfile.getProfile().then((data) => {
       if (data !== false) {
+        const photo = data.avatar ? `${this.server}/${data.avatar}` : profile;
         main.innerHTML = `
         <div class="main__container container">
           <div class="flex-container">
             <div class="row">
               <div class="column avatar-column">
                 <div class="img-profile cell-img">
-                  <img class="profile" src="${profile}">
+                  <img class="profile" src="${photo}">
                 </div>
               </div>  
               <div class="wrap">
               <div class="column name-column">${data.name}</div>
+              <div class="instagram-column">
+              <div class="img-instagram"><a href="https://www.instagram.com/${data.instagramAccount.slice(1)}" target="_blank"><img src="${instagramLogo}"></a></div>
+              <div class="text-instagram"><span><a href="https://www.instagram.com/${data.instagramAccount.slice(1)}" target="_blank">${data.instagramAccount}</a></span></div>
+              </div>
               <div class="column button-column">
                 <div class="button-edit"><span>Настройки профиля</span></div>
               </div>

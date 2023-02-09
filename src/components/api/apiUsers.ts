@@ -7,6 +7,7 @@ class ApiUsers {
   private login;
   private check;
   private profile;
+  private upload;
   constructor() {
     if (ApiUsers.instance) {
       return ApiUsers.instance;
@@ -17,6 +18,7 @@ class ApiUsers {
     this.login = `${this.base}/auth/login`;
     this.check = `${this.base}/auth/check`;
     this.profile = `${this.base}/auth/profile`;
+    this.upload = `${this.base}/uploadfile`;
   }
 
   public async newUser(email: string, password: string) {
@@ -69,6 +71,34 @@ class ApiUsers {
     });
     return await res.json();
   }
+
+  public async setProfile(data: Profile) {
+    const res = await fetch(`${this.profile}s`, {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log(await res.json());
+  }
+
+  public async uploadImage(image: File) {
+    const formData: FormData = new FormData();
+    formData.append('image', image);
+    console.log(1111, formData.get('image'))
+    const res = await fetch(`${this.upload}`, {
+      method: 'POST',
+      // headers: {
+      //   'Content-Type': 'multipart/form-data',
+      // },
+      body: formData,
+    });
+    return await res.json();
+  }
 }
+
 
 export default ApiUsers;

@@ -23,6 +23,11 @@ class GetProfile {
     }
     return false;
   }
+
+  public async setProfile(profile: Profile) {
+    window.localStorage.setItem('blenderProfile', JSON.stringify(profile));
+    this.apiUsers.setProfile(profile);
+  }
 }
 
 export default GetProfile;

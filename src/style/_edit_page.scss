@@ -40,7 +40,7 @@
       margin-top: 10px;
     }
   }
-  & div.button-exit {
+  & div.button-save {
     display: inline-block;
     background-image: linear-gradient(65deg, #edb8ff, #6148ff);
     width: 260px;
@@ -49,17 +49,20 @@
       font-size: 1.4rem;
     }
   }
-  & div.button-exit:hover {
+  & div.button-save:hover {
     background-image: linear-gradient(65deg, #f2e1f7, #9c8ef5);
     span {
       font-size: 1.5rem;
     }
   }
-  & div.button-exit:active {
+  & div.button-save:active {
     background-image: linear-gradient(65deg, #e082ff, #4225fb, #4ad9f5);
     span {
       font-size: 1.3rem;
     }
   }
+.img-profile{
+  z-index: 100;
+}
 
 }
