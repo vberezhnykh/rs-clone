@@ -25,32 +25,39 @@ export class Catalog implements InterfaceContainerElement {
 
   private createHeader() {
     const header = createHTMLElement('catalog-header', 'div');
-    const backBtn = createHTMLElement('catalog__back-button', 'button');
-    backBtn.textContent = '←';
-    backBtn.onclick = () => history.back();
-    header.appendChild(backBtn);
-    const title = createHTMLElement('catalog__title', 'h2');
-    title.textContent = 'Каталог';
-    header.appendChild(title);
-    const mixerImg = createHTMLElement('mixer-image', 'button');
-    mixerImg.textContent = 'MIXER_PLACEHOLDER';
-    header.appendChild(mixerImg);
+    header.appendChild(this.createHeaderBackBtn());
+    header.appendChild(createHTMLElement('catalog__title', 'h2', 'Каталог'));
+    header.appendChild(createHTMLElement('mixer-image', 'button', 'MIXER_PLACEHOLDER'));
     return header;
+  }
+
+  private createHeaderBackBtn() {
+    const backBtn = createHTMLElement('catalog__back-button', 'button', '←');
+    backBtn.onclick = () => history.back();
+    return backBtn;
   }
 
   private createSearchPanel() {
     const searchPanel = createHTMLElement(['catalog__search', 'search'], 'div');
     const innerSearchPanelContainer = createHTMLElement('search__inner', 'div');
-    const image = new Image();
-    image.src = searchImgSrc;
-    image.alt = 'search';
-    innerSearchPanelContainer.appendChild(image);
+    innerSearchPanelContainer.appendChild(this.createSearchInputImage());
+    innerSearchPanelContainer.appendChild(this.createSearchInput());
+    searchPanel.appendChild(innerSearchPanelContainer);
+    return searchPanel;
+  }
+
+  private createSearchInput() {
     const searchInput = <HTMLInputElement>createHTMLElement('search__input', 'input');
     searchInput.placeholder = 'Поиск';
     searchInput.onkeyup = () => this.handleKeyupOnInput(searchInput);
-    innerSearchPanelContainer.appendChild(searchInput);
-    searchPanel.appendChild(innerSearchPanelContainer);
-    return searchPanel;
+    return searchInput;
+  }
+
+  private createSearchInputImage() {
+    const image = new Image();
+    image.src = searchImgSrc;
+    image.alt = 'search';
+    return image;
   }
 
   private async handleKeyupOnInput(searchInput: HTMLInputElement) {
@@ -60,23 +67,15 @@ export class Catalog implements InterfaceContainerElement {
     );
     const catalogList = document.querySelector('.catalog-list');
     if (!catalogList) return;
-    const brandList = await this.createBrandList(sortedBrands);
-    catalogList.replaceWith(brandList);
+    catalogList.replaceWith(await this.createBrandList(sortedBrands));
   }
 
-  private createBrandSuggestBtn() {
-    const brandSuggestBtn = createHTMLElement('catalog__brand-suggest-btn', 'button');
-    brandSuggestBtn.textContent = 'Нет нужного бренда? Жми сюда!';
-    return brandSuggestBtn;
-  }
+  private createBrandSuggestBtn = () =>
+    createHTMLElement('catalog__brand-suggest-btn', 'button', 'Нет нужного бренда? Жми сюда!');
 
   private async createBrandList(brands?: Brands) {
     const catalogList = createHTMLElement('catalog-list', 'ul');
-    if (brands?.length === 0) {
-      catalogList.append(ERROR_MESSAGE);
-      catalogList.classList.add('catalog-list--error');
-      return catalogList;
-    }
+    if (brands?.length === 0) return this.showErrorMessage(catalogList);
     if (this.brands.length === 0) this.brands = await this.api.getAllBrands();
     const brandsToIterate = brands ?? this.brands;
     for (let i = 0; i < brandsToIterate.length; i++) {
@@ -85,21 +84,37 @@ export class Catalog implements InterfaceContainerElement {
     return catalogList;
   }
 
+  private showErrorMessage(catalogList: HTMLElement) {
+    catalogList.append(ERROR_MESSAGE);
+    catalogList.classList.add('catalog-list--error');
+    return catalogList;
+  }
+
   private async createBrandListItem(i: number, brands: Brands) {
-    const brand = createHTMLElement(['catalog-list__item', 'brands-list__item'], 'li');
+    const brandListItem = createHTMLElement(['catalog-list__item', 'brands-list__item'], 'li');
+    brandListItem.appendChild(this.createBrandImage(brands, i));
+    brandListItem.appendChild(await this.createBrandNameAndFlavorsNum(brands, i));
+    return brandListItem;
+  }
+
+  private async createBrandNameAndFlavorsNum(brands: Brands, i: number) {
+    const container = createHTMLElement('catalog-list__item-container');
+    const brandName = createHTMLElement('brand-name', 'span', brands[i].name);
+    container.appendChild(brandName);
+    if (this.flavors.length === 0) this.flavors = await this.api.getAllFlavors();
+    const flavorsNum = createHTMLElement('flavors-count', 'span', this.getFlavorsNum(brands, i));
+    container.appendChild(flavorsNum);
+    return container;
+  }
+
+  private createBrandImage(brands: Brands, i: number) {
     const brandImg = new Image();
     brandImg.src = this.api.getImage(brands[i].image);
     brandImg.alt = 'brand-name';
-    brand.appendChild(brandImg);
-    const container = createHTMLElement('catalog-list__item-container');
-    const brandName = createHTMLElement('brand-name', 'span');
-    brandName.textContent = brands[i].name;
-    container.appendChild(brandName);
-    const flavorsNum = createHTMLElement('flavors-count', 'span');
-    if (this.flavors.length === 0) this.flavors = await this.api.getAllFlavors();
-    flavorsNum.textContent = `${this.flavors.filter((flavor) => flavor.brand === brands[i].name).length} вкусов`;
-    container.appendChild(flavorsNum);
-    brand.appendChild(container);
-    return brand;
+    return brandImg;
+  }
+
+  private getFlavorsNum(brands: Brands, i: number) {
+    return `${this.flavors.filter((flavor) => flavor.brand === brands[i].name).length} вкусов`;
   }
 }
