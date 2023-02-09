@@ -1,10 +1,11 @@
 import { Brands, Flavors, InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
-// import backBtn from '../../assets/images/'
 import searchImgSrc from '../../assets/images/search.svg';
 import Api from '../api/api';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
+const MIXER_PAGE_URL = `/mixer`;
+const BRAND_SUGGEST_URL = '/brand-suggest';
 
 export class Catalog implements InterfaceContainerElement {
   api: Api;
@@ -33,7 +34,7 @@ export class Catalog implements InterfaceContainerElement {
 
   private createHeaderBackBtn() {
     const backBtn = createHTMLElement('catalog__back-button', 'button', '←');
-    backBtn.onclick = () => history.back();
+    backBtn.onclick = () => (window.location.hash = MIXER_PAGE_URL);
     return backBtn;
   }
 
@@ -46,18 +47,18 @@ export class Catalog implements InterfaceContainerElement {
     return searchPanel;
   }
 
-  private createSearchInput() {
-    const searchInput = <HTMLInputElement>createHTMLElement('search__input', 'input');
-    searchInput.placeholder = 'Поиск';
-    searchInput.onkeyup = () => this.handleKeyupOnInput(searchInput);
-    return searchInput;
-  }
-
   private createSearchInputImage() {
     const image = new Image();
     image.src = searchImgSrc;
     image.alt = 'search';
     return image;
+  }
+
+  private createSearchInput() {
+    const searchInput = <HTMLInputElement>createHTMLElement('search__input', 'input');
+    searchInput.placeholder = 'Поиск';
+    searchInput.onkeyup = () => this.handleKeyupOnInput(searchInput);
+    return searchInput;
   }
 
   private async handleKeyupOnInput(searchInput: HTMLInputElement) {
@@ -70,8 +71,11 @@ export class Catalog implements InterfaceContainerElement {
     catalogList.replaceWith(await this.createBrandList(sortedBrands));
   }
 
-  private createBrandSuggestBtn = () =>
-    createHTMLElement('catalog__brand-suggest-btn', 'button', 'Нет нужного бренда? Жми сюда!');
+  private createBrandSuggestBtn() {
+    const brandSuggestBtn = createHTMLElement('catalog__brand-suggest-btn', 'button', 'Нет нужного бренда? Жми сюда!');
+    brandSuggestBtn.onclick = () => (window.location.hash = BRAND_SUGGEST_URL);
+    return brandSuggestBtn;
+  }
 
   private async createBrandList(brands?: Brands) {
     const catalogList = createHTMLElement('catalog-list', 'ul');
@@ -97,6 +101,13 @@ export class Catalog implements InterfaceContainerElement {
     return brandListItem;
   }
 
+  private createBrandImage(brands: Brands, i: number) {
+    const brandImg = new Image();
+    brandImg.src = this.api.getImage(brands[i].image);
+    brandImg.alt = 'brand-name';
+    return brandImg;
+  }
+
   private async createBrandNameAndFlavorsNum(brands: Brands, i: number) {
     const container = createHTMLElement('catalog-list__item-container');
     const brandName = createHTMLElement('brand-name', 'span', brands[i].name);
@@ -105,13 +116,6 @@ export class Catalog implements InterfaceContainerElement {
     const flavorsNum = createHTMLElement('flavors-count', 'span', this.getFlavorsNum(brands, i));
     container.appendChild(flavorsNum);
     return container;
-  }
-
-  private createBrandImage(brands: Brands, i: number) {
-    const brandImg = new Image();
-    brandImg.src = this.api.getImage(brands[i].image);
-    brandImg.alt = 'brand-name';
-    return brandImg;
   }
 
   private getFlavorsNum(brands: Brands, i: number) {

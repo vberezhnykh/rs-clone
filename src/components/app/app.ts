@@ -11,12 +11,14 @@ import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import CheckAuth from '../checkAuth/checkAuth';
 import { Catalog } from '../catalog/catalog';
+import { BrandSuggest } from '../catalog/brandSuggest';
 
 enum LocationPath {
   MainPage = `/`,
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   CatalogPage = `/mixer/brands`,
+  BrandSuggestPage = `/brand-suggest`,
   AccountPage = `/account`,
   MixPage = `/mix`,
 }
@@ -54,6 +56,8 @@ class App {
       changePage = new MixerPage();
     } else if (location === LocationPath.CatalogPage) {
       changePage = new Catalog();
+    } else if (location === LocationPath.BrandSuggestPage) {
+      changePage = new BrandSuggest();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();
