@@ -13,7 +13,7 @@ class MixerPage implements InterfaceContainerElement {
       <div class="mixer__inner">
         <img src="${blender}" height="180">
         <p>Выберите свои предпочтения, а мы подберем подходящий для Вас микс вкусов!</p>
-        <button class="button button-1"><a href="#">Перейти а каталог</a></button>
+        <button class="button button-1"><a href="#/mixer/brands">Перейти в каталог</a></button>
         <button class="button button-1"><a href="#">Выбрать по предпочтениям</a></button>
         <button class="button button-1"><a href="#">Случайный микс</a></button>
         </div>
@@ -21,7 +21,6 @@ class MixerPage implements InterfaceContainerElement {
 
     </div>
     `;
-
     return main;
   }
 }
