@@ -1,0 +1,50 @@
+.brand-page {
+  position: fixed;
+  top: 0;
+  background-color: rgb(15, 7, 56);
+  width: 100vw;
+  height: 100vh;
+  padding: 1rem;
+
+  &-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  > .brand-page__search {
+    margin: 0 0 1rem;
+  }
+}
+
+.flavor {
+  &-list {
+    list-style: none;
+    
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      > img {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+  }
+
+  &__name {
+    flex-grow: 1;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+  }
+}

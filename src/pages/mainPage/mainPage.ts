@@ -16,7 +16,7 @@ class MainPage implements InterfaceContainerElement {
       Main Page
     </div>
     `;
-    this.api.getAllBrands().then((data) => console.log(data));
+    // this.api.getAllBrands().then((data) => console.log(data));
     return main;
   }
 }

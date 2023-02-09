@@ -12,6 +12,8 @@ import { createHTMLElement } from '../../utils/createHTMLElement';
 import CheckAuth from '../checkAuth/checkAuth';
 import { Catalog } from '../catalog/catalog';
 import { BrandSuggest } from '../catalog/brandSuggest';
+import { BrandPage } from '../catalog/brandPage';
+import { checkIfBrandPage } from '../../utils/checkIfBrandPage';
 
 enum LocationPath {
   MainPage = `/`,
@@ -58,6 +60,8 @@ class App {
       changePage = new Catalog();
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
+    } else if (location.includes(LocationPath.CatalogPage)) {
+      changePage = checkIfBrandPage() ? new BrandPage() : new ErrorPage();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();
@@ -66,6 +70,7 @@ class App {
       }
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
+      console.log(3);
     } else {
       changePage = new ErrorPage();
     }

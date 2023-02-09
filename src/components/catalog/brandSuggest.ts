@@ -10,7 +10,7 @@ const POPUP_BUTTON_TEXT = 'Хорошо';
 const CATALOG_PAGE_URL = `/mixer/brands`;
 
 export class BrandSuggest implements InterfaceContainerElement {
-  inputValue?: string;
+  private inputValue?: string;
   draw() {
     const brandSuggest = createHTMLElement('brand-suggest', 'div');
     brandSuggest.appendChild(this.createHeader());

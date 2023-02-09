@@ -15,6 +15,7 @@ export class Catalog implements InterfaceContainerElement {
     this.api = new Api();
   }
   draw() {
+    console.log(window.location.hash);
     this.api.getAllBrands().then((brands) => (this.brands = brands));
     const catalog = createHTMLElement('catalog', 'div');
     catalog.appendChild(this.createHeader());
@@ -98,6 +99,7 @@ export class Catalog implements InterfaceContainerElement {
     const brandListItem = createHTMLElement(['catalog-list__item', 'brands-list__item'], 'li');
     brandListItem.appendChild(this.createBrandImage(brands, i));
     brandListItem.appendChild(await this.createBrandNameAndFlavorsNum(brands, i));
+    brandListItem.onclick = () => (window.location.hash += `/${brands[i].name.toLowerCase()}`);
     return brandListItem;
   }
 
