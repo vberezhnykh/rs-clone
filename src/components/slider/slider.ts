@@ -20,10 +20,48 @@ function onSliderInput(event: Event) {
   updateProgress(event.target as HTMLInputElement);
 }
 
-function updateValue(slider: Element) {
-  const value = document.getElementById((<HTMLInputElement>slider).dataset.valueId as string);
+function onSliderChange(elem: HTMLInputElement) {
+  updateLabels(elem); 
+  updateProgress(elem);
+  updateValuePosition(elem);
+  updateValue(elem)
+}
 
-  (<HTMLElement>value).innerHTML = '<div>' + (<HTMLInputElement>slider).value + '%</div>';
+function setMaxSliderLabel(maxLabel:number){
+  document.querySelectorAll('.tick-slider-label').forEach((elem,index)=>{
+    if(index % 2 !== 0) elem.innerHTML=String(maxLabel);
+  })
+}
+function getMaxSliderValue(){
+  let max=100;
+  if ((<HTMLInputElement>document.querySelector('#switch')).checked){
+    Array.from((<HTMLElement>document.querySelector('.mix-card__buttons-row')).children).forEach(elem=>{
+      if(elem.classList.contains('active')) {
+        max=Number(elem.innerHTML.replace(/\D/g, ''));
+        setMaxSliderLabel(max);
+    }
+    });
+    return max;
+  }
+  else {
+    setMaxSliderLabel(max);
+    return max;}
+}
+
+
+function updateValue(slider: Element) {
+  const max=getMaxSliderValue();
+  // console.log(max);
+  if(max){
+  const value = document.getElementById((<HTMLInputElement>slider).dataset.valueId as string);
+  if(max==100)
+  (<HTMLElement>value).innerHTML = '<div class="current-value">' + (<HTMLInputElement>slider).value + '%</div>';
+  else{
+    let roundValue=Number((<HTMLInputElement>slider).value)*max/100;
+    if(roundValue==9.9) roundValue=Math.ceil(roundValue);
+    else roundValue=Number(roundValue.toFixed(1));
+  (<HTMLElement>value).innerHTML = '<div class="current-value">' + roundValue + ' г.</div>';}
+  }
 }
 
 function updateValuePosition(slider: Element) {
@@ -102,6 +140,7 @@ function onResizeSlider() {
 }
 export { onResizeSlider };
 export { initSlider };
+export { onSliderChange };
 
 // window.onload = init;
 // window.addEventListener("resize", onResize);
