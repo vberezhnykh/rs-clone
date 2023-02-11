@@ -10,19 +10,19 @@
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
+  }
+}
 
-    > button {
-      width: 2rem;
-      height: 2rem;
-      background-color: transparent;
-      background-repeat: no-repeat;
-      background-size: contain;
+.brand__back-button {
+  width: 2rem;
+  height: 2rem;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
 
-      &:hover {
-        transform: scale(1.1);
-        cursor: pointer;
-      }
-    }
+  &:hover {
+    transform: scale(1.1);
+    cursor: pointer;
   }
 }
 
