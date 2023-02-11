@@ -19,16 +19,16 @@ class ProfileUser {
   }
 
   public async getProfile(): Promise<Profile | false> {
-    const localStorageProfile: string | null = window.localStorage.getItem('blenderProfile');
-    if (localStorageProfile) {
-      const localProfile: Profile = JSON.parse(localStorageProfile);
-      return localProfile;
-    }
+    // const localStorageProfile: string | null = window.localStorage.getItem('blenderProfile');
+    // if (localStorageProfile) {
+    //   const localProfile: Profile = JSON.parse(localStorageProfile);
+    //   return localProfile;
+    // }
 
     const userId = this.getUserId();
     if (typeof userId === 'string') {
       const data = await this.apiUsers.getProfile(userId);
-      window.localStorage.setItem('blenderProfile', JSON.stringify(data));
+      // window.localStorage.setItem('blenderProfile', JSON.stringify(data));
       return data;
     }
     return false;

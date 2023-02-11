@@ -8,17 +8,20 @@ const instagramLogo = require('../../assets/images/instagram_logo.svg');
 import ProfileUser from '../../components/profile_user/profile_user';
 import { server } from '../../components/server/server';
 import ApiMix from '../../components/api_mix/api_mix';
+import preloader from '../../components/preloader/preloader';
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
   private profileUser;
   private server;
   private apiMix;
+  private preloader;
   constructor() {
     this.apiUsers = new ApiUsers();
     this.profileUser = new ProfileUser();
     this.server = server;
     this.apiMix = new ApiMix();
+    this.preloader = new preloader();
   }
 
   private handler = (e: Event): void => {
@@ -74,12 +77,17 @@ class AccountPage implements InterfaceContainerElement {
         `;
       }
     });
-    // main.addEventListener('click', this.handler);
+    main.addEventListener('click', this.handler);
+
+
     // const userId = this.profileUser.getUserId();
     // if (typeof userId === 'string') {
-    //   this.apiMix.setRate(userId, 3, 5).then((data) => {
-    //   });
+    //   this.apiMix.setRate(userId, 3, 5);
     // }
+    // this.apiMix.getRate(6).then((data) => {
+    //   console.log(data)
+    // })
+    
     return main;
   }
 }
