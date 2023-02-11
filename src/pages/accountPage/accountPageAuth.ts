@@ -13,6 +13,42 @@ class AccountPage implements InterfaceContainerElement {
 
   private handler = (e: Event): void => {
     const target = e.target as HTMLElement;
+    const buttons = document.querySelectorAll('.button span') as NodeList;
+    const title = document.querySelector('h3') as HTMLElement;
+    const emailInput = document.querySelector('.email') as HTMLInputElement;
+    const passwordInput = document.querySelector('.password') as HTMLInputElement;
+    if (target.textContent === 'Зарегистрироваться' && target.classList.contains('span-button')) {
+      buttons[0].textContent = 'Регистрация';
+      buttons[1].textContent = 'Войти';
+      title.textContent = 'Регистрация';
+      emailInput.value = '';
+      passwordInput.value = '';
+    } else if (target.textContent === 'Войти' && target.classList.contains('span-button')) {
+      buttons[0].textContent = 'Вход';
+      buttons[1].textContent = 'Зарегистрироваться';
+      title.textContent = 'Вход';
+      emailInput.value = '';
+      passwordInput.value = '';
+    }
+
+    if (target.classList.contains('submit-btn')) {
+      const formElement = document.getElementById('form') as HTMLFormElement;
+      if (formElement.checkValidity()) {
+        e.preventDefault();
+        const formData = new FormData(formElement);
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        if (target.textContent === 'Регистрация') {
+          this.apiUsers.newUser(email, password);
+        } else {
+          this.apiUsers.getAuth(email, password).then((data) => {
+            if (data.token) {
+              window.localStorage.setItem('blender', JSON.stringify(data.token));
+            }
+          });
+        }
+      }
+    }
   };
 
   draw(): HTMLElement {

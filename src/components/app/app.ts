@@ -14,6 +14,8 @@ import { Catalog } from '../catalog/catalog';
 import { BrandSuggest } from '../catalog/brandSuggest';
 import { BrandPage } from '../catalog/brandPage';
 import { checkIfBrandPage } from '../../utils/checkIfBrandPage';
+import { UserMixes } from '../userMixes/user-mixes';
+import { PreferencesPage } from '../preferences/preferences';
 
 enum LocationPath {
   MainPage = `/`,
@@ -22,7 +24,10 @@ enum LocationPath {
   CatalogPage = `/mixer/brands`,
   BrandSuggestPage = `/brand-suggest`,
   AccountPage = `/account`,
+  UserMixes = `/user-mixes`,
   MixPage = `/mix`,
+  ChangePrefFlavors = `/change-pref/flavors`,
+  ChangePrefBrands = `/change-pref/brands`,
 }
 
 class App {
@@ -52,6 +57,10 @@ class App {
 
     if (location === LocationPath.MainPage) {
       changePage = new MainPage();
+    } else if (location === LocationPath.UserMixes) {
+      changePage = new UserMixes();
+    } else if (location === LocationPath.ChangePrefFlavors || location === LocationPath.ChangePrefBrands) {
+      changePage = new PreferencesPage();
     } else if (location === LocationPath.SearchPage) {
       changePage = new SearchPage();
     } else if (location === LocationPath.MixerPage) {
