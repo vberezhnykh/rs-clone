@@ -1,6 +1,6 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import ApiUsers from '../../components/api/apiUsers';
+import ApiUsers from '../../components/api_users/apiUsers';
 const favorite = require('../../assets/images/favorite.png');
 const profile = require('../../assets/images/profile.svg');
 const myMix = require('../../assets/images/my_mixes.svg');
@@ -47,7 +47,9 @@ class AccountPageEdit implements InterfaceContainerElement {
           this.Profile.setProfile(data);
         }
       });
-      window.location.hash = `/account`;
+      setTimeout(() => {
+        window.location.hash = `/account`;
+      }, 700);
     } else if (target.classList.contains('text-change-button')) {
       fileInput.click();
     }
@@ -89,7 +91,7 @@ class AccountPageEdit implements InterfaceContainerElement {
         </div>
       </div>
       `;
-    }
+      }
     });
     main.addEventListener('click', this.handler);
     main.addEventListener('change', this.handler);

@@ -1,4 +1,5 @@
 import { Profile } from '../types/types';
+import { server } from '../server/server';
 
 class ApiUsers {
   private static instance: ApiUsers;
@@ -13,7 +14,7 @@ class ApiUsers {
       return ApiUsers.instance;
     }
     ApiUsers.instance = this;
-    this.base = 'http://localhost:3002';
+    this.base = server;
     this.registration = `${this.base}/auth/registration`;
     this.login = `${this.base}/auth/login`;
     this.check = `${this.base}/auth/check`;
@@ -82,23 +83,18 @@ class ApiUsers {
         'Content-Type': 'application/json',
       },
     });
-    console.log(await res.json());
+    return JSON.stringify(res);
   }
 
   public async uploadImage(image: File) {
     const formData: FormData = new FormData();
     formData.append('image', image);
-    console.log(1111, formData.get('image'))
     const res = await fetch(`${this.upload}`, {
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'multipart/form-data',
-      // },
       body: formData,
     });
     return await res.json();
   }
 }
-
 
 export default ApiUsers;

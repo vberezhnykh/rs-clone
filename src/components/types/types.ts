@@ -66,5 +66,5 @@ export interface Profile {
   avatar: string;
   favorite: number[];
   myMix: number[];
-  rating: number[];
+  rating: { id: number; rate: number }[];
 }

@@ -1,21 +1,24 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import ApiUsers from '../../components/api/apiUsers';
+import ApiUsers from '../../components/api_users/apiUsers';
 const favorite = require('../../assets/images/favorite.png');
 const profile = require('../../assets/images/profile.svg');
 const myMix = require('../../assets/images/my_mixes.svg');
 const instagramLogo = require('../../assets/images/instagram_logo.svg');
-import GetProfile from '../../components/profile_user/profile_user';
+import ProfileUser from '../../components/profile_user/profile_user';
 import { server } from '../../components/server/server';
+import ApiMix from '../../components/api_mix/api_mix';
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
-  private getProfile;
+  private profileUser;
   private server;
+  private apiMix;
   constructor() {
     this.apiUsers = new ApiUsers();
-    this.getProfile = new GetProfile();
+    this.profileUser = new ProfileUser();
     this.server = server;
+    this.apiMix = new ApiMix();
   }
 
   private handler = (e: Event): void => {
@@ -26,12 +29,11 @@ class AccountPage implements InterfaceContainerElement {
     } else if (target.closest('.button-edit')) {
       window.location.hash = `/account/edit`;
     }
-    console.log(target)
   };
 
   draw(): HTMLElement {
     const main = createHTMLElement('main', 'main');
-    this.getProfile.getProfile().then((data) => {
+    this.profileUser.getProfile().then((data) => {
       if (data !== false) {
         const photo = data.avatar ? `${this.server}/${data.avatar}` : profile;
         main.innerHTML = `
@@ -72,7 +74,12 @@ class AccountPage implements InterfaceContainerElement {
         `;
       }
     });
-    main.addEventListener('click', this.handler);
+    // main.addEventListener('click', this.handler);
+    // const userId = this.profileUser.getUserId();
+    // if (typeof userId === 'string') {
+    //   this.apiMix.setRate(userId, 3, 5).then((data) => {
+    //   });
+    // }
     return main;
   }
 }
