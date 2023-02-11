@@ -1,6 +1,7 @@
 .mix-card{
   display: flex;
   justify-content: center;
+  // align-items: center;
   gap: 30px;
   margin: 0 15vw;
   .mix-card__img{
@@ -388,6 +389,8 @@
       position: absolute;
       top: 20px;
       left: 20px;
+      width: 2rem;
+      height: 2rem;
     }
     .popup-flavor__info{
       display: flex;
@@ -414,4 +417,8 @@
       background-color: #7759f3;
     }
   }
+}
+
+.current-value{
+  width: max-content;
 }

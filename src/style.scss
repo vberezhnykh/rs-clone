@@ -1,10 +1,15 @@
 @import "./style/_header.scss";
 @import "./style/_footer.scss";
+@import './style/mainPageTopBlock';
+@import './style/mixesList';
+@import './style/userMixes';
+@import './style/preferences';
 @import "./style/mixPage.scss";
 @import './style/searchPage';
 @import './style/message';
 @import './style/accountPageAuth';
 @import './style/edit_page';
+@import './style/preloader';
 
 
 :root {
@@ -41,6 +46,10 @@ body{
   font-family: 'Rosario', sans-serif;
 }
 
+.body--unscrollable {
+  overflow: hidden;
+}
+
 .container{
   max-width: 1920px;
   margin: 0 auto;
@@ -49,6 +58,7 @@ body{
 .main {
   min-height: 89vh;
   font-size: 1rem;
+
   .button {
     width: 100%;
     padding: 2px;

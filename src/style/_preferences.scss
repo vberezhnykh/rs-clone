@@ -1,0 +1,74 @@
+.preferences {
+  background-color: black;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  &__header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(148deg, rgba(237,184,255,1) 0%, rgba(0,212,255,1) 100%);
+  }
+  &__back-image {
+    width: 2rem;
+    height: 2rem;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+  }
+  &__title {
+    position: relative;
+    margin: 0 auto;
+  }
+
+  &__flavor-title {
+    margin-bottom: 1rem;
+  }
+
+  &-list {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    list-style: none;
+    &__list-item {}
+  }
+
+  &__button {
+    min-width: 6rem;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    color: white;
+    border: 1px solid white;
+    background-color: rgb(44, 43, 43);
+
+    &--active {
+      background: linear-gradient(148deg, rgba(237,184,255,1) 0%, rgba(0,212,255,1) 100%);
+    }
+
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+
+  &__continue-btn {
+    padding: 0.6rem;
+    border-radius: 0.6rem;
+    margin: 2rem auto 0;
+    display: block;
+    background-color: rgb(104, 233, 29);
+
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+}
+
+.flavors-container,
+.strength-container,
+.brands-container {
+  padding: 1rem;
+}
