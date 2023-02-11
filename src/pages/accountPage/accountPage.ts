@@ -1,6 +1,6 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import ApiUsers from '../../components/api/apiUsers';
+import ApiUsers from '../../components/api_users/apiUsers';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 
 class AccountPage implements InterfaceContainerElement {
@@ -58,7 +58,7 @@ class AccountPage implements InterfaceContainerElement {
         } else {
           this.apiUsers.getAuth(email, password).then((data) => {
             if (data.token) {
-              window.localStorage.setItem('blender', JSON.stringify(data.token));
+              window.localStorage.setItem('blender', JSON.stringify(data));
               window.location.hash = `/account/`;
             }
             if (data.message) {

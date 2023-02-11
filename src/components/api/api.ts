@@ -1,4 +1,5 @@
 import { Brands, Flavor, Flavors, Mix, Mixes } from '../types/types';
+import { server } from '../server/server';
 
 class Api {
   private static instance: Api;
@@ -11,7 +12,7 @@ class Api {
       return Api.instance;
     }
     Api.instance = this;
-    this.base = 'https://rs-clone-back-production-247c.up.railway.app';
+    this.base = server;
     this.brands = `${this.base}/api/brands`;
     this.flavors = `${this.base}/api/flavors`;
     this.mixes = `${this.base}/api/mixes`;

@@ -1,6 +1,6 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import ApiUsers from '../../components/api/apiUsers';
+import ApiUsers from '../../components/api_users/apiUsers';
 const favorite = require('../../assets/images/favorite.png');
 const profile = require('../../assets/images/profile.svg');
 const myMix = require('../../assets/images/my_mixes.svg');
