@@ -391,6 +391,10 @@
       left: 20px;
       width: 2rem;
       height: 2rem;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
     .popup-flavor__info{
       display: flex;

@@ -34,4 +34,5 @@ export function openFlavorPopup(flaverObj: Flavor): void {
   (<HTMLElement>document.querySelector('.popup-flavor__desc')).innerHTML = `${flaverObj.description}`;
   (<HTMLElement>document.querySelector('.popup-flavor__must')).children[0].innerHTML = `${flaverObj.brand}`;
   (<HTMLElement>document.querySelector('.popup-flavor')).style.display = 'block';
+  console.log(1);
 }

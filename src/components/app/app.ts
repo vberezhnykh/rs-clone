@@ -13,7 +13,7 @@ import CheckAuth from '../checkAuth/checkAuth';
 import { Catalog } from '../catalog/catalog';
 import { BrandSuggest } from '../catalog/brandSuggest';
 import { BrandPage } from '../catalog/brandPage';
-import { checkIfBrandPage } from '../../utils/checkIfBrandPage';
+import { isBrandPage } from '../../utils/isBrandPage';
 import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 
@@ -43,6 +43,7 @@ class App {
     this.header = new Header();
     this.footer = new Footer();
     this.checkAuth = new CheckAuth();
+    localStorage.removeItem('flavors');
   }
 
   private async drawNewPage(location: string) {
@@ -70,7 +71,7 @@ class App {
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
     } else if (location.includes(LocationPath.CatalogPage)) {
-      changePage = checkIfBrandPage() ? new BrandPage() : new ErrorPage();
+      changePage = isBrandPage() ? new BrandPage() : new ErrorPage();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();
