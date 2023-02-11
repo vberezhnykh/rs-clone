@@ -2,18 +2,26 @@ import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import backArrowImgSrc from '../../assets/images/back-arrow.png';
 import Api from '../api/api';
+import preloader from '../preloader/preloader';
 
 const FLAVORS = ['цитрусовый', 'ягодный', 'травяной', 'фруктовый', 'тропический', 'десертный', 'напиточный'];
 const STRENGTH = ['легкий', 'средний', 'крепкий'];
+const PREFERENCES_TITLE = 'Твои предпочтения';
+const FLAVORS_CONTAINER_TITLE = '1. Вкусы';
+const STRENGTH_CONTAINER_TITLE = '2. Крепость';
+const CONTINUE_BUTTON_TEXT = 'Продолжить';
+const BRANDS_CONTAINER_TITLE = '3. Бренды';
 
 export class PreferencesPage implements InterfaceContainerElement {
   BRANDS: string[] = [];
   api: Api;
+  preloader: preloader;
   flavors: string[] = [];
   strength = '';
   selectedBrands: string[] = [];
   constructor() {
     this.api = new Api();
+    this.preloader = new preloader();
     this.api.getAllBrands().then((brands) => (this.BRANDS = brands.map((brand) => brand.name)));
   }
   draw() {
@@ -41,22 +49,17 @@ export class PreferencesPage implements InterfaceContainerElement {
 
   private createPreferencesHeader() {
     const PrefHeader = createHTMLElement('preferences__header');
-    const backArrowImage = new Image();
-    backArrowImage.className = 'preferences__back-image';
+    const backArrowImage = <HTMLImageElement>createHTMLElement('preferences__back-image', 'img');
     backArrowImage.src = backArrowImgSrc;
     backArrowImage.onclick = () => window.history.back();
     PrefHeader.appendChild(backArrowImage);
-    const title = createHTMLElement('preferences__title', 'h4');
-    title.textContent = 'Твои предпочтения';
-    PrefHeader.appendChild(title);
+    PrefHeader.appendChild(createHTMLElement('preferences__title', 'h4', PREFERENCES_TITLE));
     return PrefHeader;
   }
 
   private createFlavorsContainer() {
     const flavorsContainer = createHTMLElement('flavors-container');
-    const title = createHTMLElement('preferences__flavor-title', 'h4');
-    title.textContent = '1. Вкусы';
-    flavorsContainer.appendChild(title);
+    flavorsContainer.appendChild(createHTMLElement('preferences__flavor-title', 'h4', FLAVORS_CONTAINER_TITLE));
     flavorsContainer.appendChild(this.createPreferencesList(FLAVORS, 'flavors-button'));
     return flavorsContainer;
   }
@@ -65,9 +68,8 @@ export class PreferencesPage implements InterfaceContainerElement {
     const preferencesList = createHTMLElement('preferences-list', 'ul');
     for (let i = 0; i < category.length; i++) {
       const listItem = createHTMLElement('preferences-list__item', 'li');
-      const button = createHTMLElement(['preferences__button', className], 'button');
+      const button = createHTMLElement(['preferences__button', className], 'button', category[i]);
       button.onclick = () => this.handleClickOnPrefButton(button, category);
-      button.textContent = category[i];
       listItem.appendChild(button);
       preferencesList.appendChild(listItem);
     }
@@ -117,16 +119,15 @@ export class PreferencesPage implements InterfaceContainerElement {
 
   private createStrengthContainer() {
     const strengthContainer = createHTMLElement('strength-container');
-    const title = createHTMLElement('preferences__strength-title', 'h4');
-    title.textContent = '2. Крепость';
-    strengthContainer.appendChild(title);
+    strengthContainer.appendChild(createHTMLElement('preferences__strength-title', 'h4', STRENGTH_CONTAINER_TITLE));
     strengthContainer.appendChild(this.createPreferencesList(STRENGTH, 'strength-button'));
     return strengthContainer;
   }
 
   private createContinueButton() {
-    const continueButton = <HTMLButtonElement>createHTMLElement('preferences__continue-btn', 'button');
-    continueButton.textContent = 'Продолжить';
+    const continueButton = <HTMLButtonElement>(
+      createHTMLElement('preferences__continue-btn', 'button', CONTINUE_BUTTON_TEXT)
+    );
     continueButton.disabled = true;
     continueButton.onclick = () => {
       if (location.hash.slice(1) === `/change-pref/flavors`) {
@@ -148,15 +149,14 @@ export class PreferencesPage implements InterfaceContainerElement {
 
   private async createBrandsContainer() {
     if (this.BRANDS.length === 0) {
+      this.preloader.draw();
       const brands = await this.api.getAllBrands();
       this.BRANDS = brands.map((brand) => brand.name);
+      this.preloader.removePreloader();
     }
     const brandsContainer = createHTMLElement('brands-container');
-    const title = createHTMLElement('preferences__brands-title', 'h4');
-    title.textContent = '3. Бренды';
-    brandsContainer.appendChild(title);
+    brandsContainer.appendChild(createHTMLElement('preferences__brands-title', 'h4', BRANDS_CONTAINER_TITLE));
     brandsContainer.appendChild(this.createPreferencesList(this.BRANDS, 'brands-button'));
-
     return brandsContainer;
   }
 }

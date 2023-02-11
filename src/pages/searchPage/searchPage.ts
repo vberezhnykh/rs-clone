@@ -30,7 +30,7 @@ class SearchPage implements InterfaceContainerElement {
   private api: Api;
   private foundResults?: FoundResults | null = null;
   private suggestions: string[] = [];
-  private preloader:preloader;
+  private preloader: preloader;
 
   constructor() {
     this.api = new Api();
@@ -242,13 +242,11 @@ class SearchPage implements InterfaceContainerElement {
 
   private async checkDataBase() {
     if (this.brands && this.flavors && this.mixes) return;
-    /* TO-DO: spinner-ON */ console.log('Start of the search...');
-    this.preloader=new preloader();
+    this.preloader = new preloader();
     this.preloader.draw();
     this.brands = await this.api.getAllBrands();
     this.flavors = await this.api.getAllFlavors();
     this.mixes = await this.api.getAllMixes();
-    /* spinner-OFF */ console.log('End of the search...');
     this.preloader.removePreloader();
   }
 

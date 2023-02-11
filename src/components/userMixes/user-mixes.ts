@@ -5,15 +5,18 @@ import { MixesList } from '../mixesList/mixesList';
 import selectorImgSrc from '../../assets/images/selector-icon.png';
 import expandArrowImgSrc from '../../assets/images/expand-arrow.png';
 import Api from '../api/api';
+import preloader from '../preloader/preloader';
 
 const SELECT_OPTIONS = ['Популярные', 'Новинки', 'Высокие рейтинги'];
 
 export class UserMixes implements InterfaceContainerElement {
   mixes?: Mixes;
   api: Api;
+  preloader: preloader;
   sortOption = 'популярные';
   constructor() {
     this.api = new Api();
+    this.preloader = new preloader();
   }
   draw() {
     const main = createHTMLElement('main', 'main');
@@ -31,7 +34,11 @@ export class UserMixes implements InterfaceContainerElement {
     const UserMixesContainer = createHTMLElement('user-mixes-container');
     UserMixesContainer.appendChild(this.createUserMixesPopupHeader());
     UserMixesContainer.appendChild(this.createUserMixesSelector());
-    if (!this.mixes) this.mixes = await this.api.getAllMixes();
+    if (!this.mixes) {
+      this.preloader.draw();
+      this.mixes = await this.api.getAllMixes();
+      this.preloader.removePreloader();
+    }
     const userMixesList = new MixesList(this.mixes).create();
     UserMixesContainer.appendChild(userMixesList);
     return UserMixesContainer;
@@ -43,7 +50,7 @@ export class UserMixes implements InterfaceContainerElement {
     const backArrowImage = new Image();
     backArrowImage.className = 'user-mixes__back-arrow';
     backArrowImage.src = backArrowImgSrc;
-    backArrowImage.onclick = () => window.history.back();
+    backArrowImage.onclick = () => (location.hash = '');
     navBar.append(backArrowImage);
     header.append(navBar);
     const heading = createHTMLElement('user-mixes__heading', 'h4');
