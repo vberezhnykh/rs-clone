@@ -2,16 +2,16 @@ import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import starempty from '../../assets/images/star-empty.svg';
 import info from '../../assets/images/info.svg';
-import cancel from '../../assets/images/cancel.svg';
 import { initSlider, onResizeSlider, onSliderChange } from '../../components/slider/slider';
 import Chart from 'chart.js/auto';
 import '../../../node_modules/chartjs-plugin-outerlabels';
 import { Mix, PromiseFlavors, Flavor } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
+import preloader from '../../components/preloader/preloader';
 
 class MixPage implements InterfaceContainerElement {
-  private api;
+  private api:Api;
   private mix: Mix;
   private flavorsIds: number[];
   private flavorsPercentages: number[];
@@ -19,12 +19,15 @@ class MixPage implements InterfaceContainerElement {
   private flavorsNames: string[] = [];
   private flavorsBrands: string[] = [];
   private flavorsStrength: number[] = [];
+  private preloader:preloader;
   constructor() {
     const mixId = window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1];
     this.api = new Api();
     this.getData(Number(mixId));
   }
   private async getData(mixId: number) {
+    this.preloader=new preloader();
+    this.preloader.draw();
     this.mix = await this.api.getMix(mixId);
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
@@ -41,6 +44,7 @@ class MixPage implements InterfaceContainerElement {
     });
 
     this.draw();
+    this.preloader.removePreloader();
   }
 
   private changeRange=(e:Event)=>{
@@ -256,7 +260,6 @@ class MixPage implements InterfaceContainerElement {
           </div>
         </div>
       </div>
-
     </div>
     `;
 
