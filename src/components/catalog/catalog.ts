@@ -2,6 +2,9 @@ import { Brands, Flavors, InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import searchImgSrc from '../../assets/images/search.svg';
 import Api from '../api/api';
+import preloader from '../preloader/preloader';
+import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
+import mixerButtonImgSrc from '../../assets/images/blender.svg';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
 const MIXER_PAGE_URL = `/mixer`;
@@ -9,13 +12,14 @@ const BRAND_SUGGEST_URL = '/brand-suggest';
 
 export class Catalog implements InterfaceContainerElement {
   api: Api;
+  preloader: preloader;
   brands: Brands = [];
   flavors: Flavors = [];
   constructor() {
     this.api = new Api();
+    this.preloader = new preloader();
   }
   draw() {
-    console.log(window.location.hash);
     this.api.getAllBrands().then((brands) => (this.brands = brands));
     const catalog = createHTMLElement('catalog', 'div');
     catalog.appendChild(this.createHeader());
@@ -29,14 +33,21 @@ export class Catalog implements InterfaceContainerElement {
     const header = createHTMLElement('catalog-header', 'div');
     header.appendChild(this.createHeaderBackBtn());
     header.appendChild(createHTMLElement('catalog__title', 'h2', 'Каталог'));
-    header.appendChild(createHTMLElement('mixer-image', 'button', 'MIXER_PLACEHOLDER'));
+    header.appendChild(this.createHeaderMixerButton());
     return header;
   }
 
   private createHeaderBackBtn() {
-    const backBtn = createHTMLElement('catalog__back-button', 'button', '←');
+    const backBtn = createHTMLElement('catalog__back-button', 'button');
+    backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
     backBtn.onclick = () => (window.location.hash = MIXER_PAGE_URL);
     return backBtn;
+  }
+
+  private createHeaderMixerButton() {
+    const mixerBtn = createHTMLElement('catalog__mixer-image', 'button');
+    mixerBtn.style.backgroundImage = `url(${mixerButtonImgSrc})`;
+    return mixerBtn;
   }
 
   private createSearchPanel() {
@@ -81,11 +92,15 @@ export class Catalog implements InterfaceContainerElement {
   private async createBrandList(brands?: Brands) {
     const catalogList = createHTMLElement('catalog-list', 'ul');
     if (brands?.length === 0) return this.showErrorMessage(catalogList);
-    if (this.brands.length === 0) this.brands = await this.api.getAllBrands();
+    if (this.brands.length === 0) {
+      this.preloader.draw();
+      this.brands = await this.api.getAllBrands();
+    }
     const brandsToIterate = brands ?? this.brands;
     for (let i = 0; i < brandsToIterate.length; i++) {
       catalogList.appendChild(await this.createBrandListItem(i, brandsToIterate));
     }
+    this.preloader.removePreloader();
     return catalogList;
   }
 

@@ -4,16 +4,49 @@
   background-color: rgb(15, 7, 56);
   width: 100vw;
   height: 100vh;
-  padding: 1rem;
+  padding: 3.5rem 1rem 1rem;
 
   &-header {
     display: flex;
+    align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
+    background: rgb(17,155,232);
+    background: linear-gradient(180deg, rgba(17,155,232,1) 0%, rgba(16,210,103,1) 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.2rem;
+  }
+
+  &__back-button {
+    width: 2rem;
+    height: 2rem;
+    background-size: contain;
+    background-color: transparent;
+
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.1);
+    }
   }
 
   &__title {
     flex-grow: 1;
+  }
+
+  &__mixer-image {
+    width: 2rem;
+    height: 2rem;
+    background-color: transparent;
+    // background-color: rgb(18, 218, 174);
+    // border-radius: 0.3rem;
+
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.1);
+    }
   }
 
   > .catalog__search {
@@ -36,6 +69,11 @@
 
   &-list {
     list-style: none;
+
+    img {
+      width: 5rem;
+      height: 5rem;
+    }
 
     &--error {
       text-align: center;

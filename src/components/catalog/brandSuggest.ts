@@ -1,5 +1,6 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../types/types';
+import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 
 const PAGE_TITLE = 'Добавить бренд';
 const LABEL_TEXT = 'Название бренда';
@@ -26,7 +27,8 @@ export class BrandSuggest implements InterfaceContainerElement {
   }
 
   private createHeaderBackBtn() {
-    const backBtn = createHTMLElement('brand__back-button', 'button', '←');
+    const backBtn = createHTMLElement('brand__back-button', 'button');
+    backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
     backBtn.onclick = () => history.back();
     return backBtn;
   }

@@ -107,7 +107,7 @@ body{
     color: var(--color-font);
   }
   input:not(input[type="range"]){
-    background-color: hsla(0, 0%, 100%, 0.06);
+    // background-color: hsla(0, 0%, 100%, 0.06);
     -webkit-transition: color 350ms ease, background-color 350ms ease;
     transition: color 350ms ease, background-color 350ms ease;
     color: #ffffff;
