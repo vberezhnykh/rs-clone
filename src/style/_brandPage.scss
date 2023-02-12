@@ -25,6 +25,9 @@
 .flavor {
   &-list {
     list-style: none;
+    background-color: var(--list-color-bg);
+    border-radius: 1rem;
+    padding: 1rem;
     
     &__item {
       display: flex;

@@ -75,7 +75,10 @@
   }
 
   &-list {
+    background-color: var(--list-color-bg);
     list-style: none;
+    border-radius: 1rem;
+    padding: 1rem;
 
     img {
       width: 5rem;

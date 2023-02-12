@@ -34,6 +34,7 @@
   --slider-track-border-radius: 4px;
   --color-accent: #92aff9;
   --color-accent--lighter: rgba(146, 175, 249, 0.7);
+  --list-color-bg: hsla(0, 0%, 100%, 0.06);
 }
 
 * {
@@ -44,10 +45,13 @@
 	box-sizing: border-box;
 }
 
-body{
+body {
   background-color: var(--color-bg);
   color: var(--color-font);
   font-family: 'Rosario', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .body--unscrollable {
@@ -59,8 +63,12 @@ body{
   margin: 0 auto;
 }
 
+.wrapper {
+  flex-grow: 1;
+}
+
 .main {
-  min-height: 89vh;
+  // min-height: 89vh;
   font-size: 1rem;
   input:not(input[type="range"]){
     // background-color: hsla(0, 0%, 100%, 0.06);

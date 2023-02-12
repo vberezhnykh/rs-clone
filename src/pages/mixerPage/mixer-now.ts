@@ -8,6 +8,7 @@ import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import { changeFlavorNumInHeader } from '../../utils/changeFlavorNum';
 import Api from '../../components/api/api';
 import { MixerNowResult } from '../../components/mixer-result';
+import preloader from '../../components/preloader/preloader';
 
 const MIXER_PAGE_URL = `/mixer`;
 const PAGE_TITLE = 'Миксер';
@@ -17,8 +18,10 @@ const CONTINUE_BTN_TEXT = 'Найти миксы';
 
 export class MixerNowPage implements InterfaceContainerElement {
   api: Api;
+  preloader: preloader;
   constructor() {
     this.api = new Api();
+    this.preloader = new preloader();
   }
   draw() {
     const mixerNowPage = createHTMLElement('mixer-now');
@@ -124,9 +127,10 @@ export class MixerNowPage implements InterfaceContainerElement {
   }
 
   private async handleClickOnContinueBtn() {
+    this.preloader.draw();
     const matchingMixes = await this.getMatchingMixes();
+    this.preloader.removePreloader();
     document.body.appendChild(new MixerNowResult(matchingMixes).create());
-    console.log(matchingMixes);
   }
 
   private async getMatchingMixes() {
