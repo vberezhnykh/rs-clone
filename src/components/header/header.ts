@@ -1,6 +1,5 @@
-import { changeFlavorNumInHeader } from '../../utils/changeFlavorNum';
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { InterfaceContainerElement } from '../types/types';
 const logo = require('../../assets/images/logo.svg');
 
@@ -29,7 +28,7 @@ class Header implements InterfaceContainerElement {
       menuItems[2].classList.remove('active');
       menuItems[3].classList.remove('active');
     }
-    changeFlavorNumInHeader();
+    handleChangeOfFlavorsInMixer();
   };
 
   private handler = (e: Event): void => {

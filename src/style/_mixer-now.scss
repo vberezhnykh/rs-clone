@@ -7,6 +7,7 @@
   min-width: 100vw;
   min-height: 100vh;
   padding: 1rem 1rem;
+  z-index: 1;
 
   &-header {
     display: flex;
@@ -118,6 +119,7 @@
   min-width: 100vw;
   min-height: 100vh;
   padding: 1rem;
+  z-index: 2;
 }
 
 .result__title {

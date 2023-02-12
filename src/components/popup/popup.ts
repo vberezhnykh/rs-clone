@@ -3,7 +3,7 @@ import cancel from '../../assets/images/cancel.svg';
 import { Flavor, Flavors } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
-import { changeFlavorNumInBrandPageHeader, changeFlavorNumInHeader } from '../../utils/changeFlavorNum';
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 
 const ADD_BUTTON_TEXT = 'Добавить в миксер';
 const REMOVE_BUTTON_TEXT = 'Удалить из миксера';
@@ -69,8 +69,7 @@ function handleClickOnAddButton(event: MouseEvent, flavor: Flavor, addBtnOnBrand
     removeFlavorFromMixerPage(addBtnOnBrandPageOrMixerPage);
   }
   localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
-  changeFlavorNumInHeader();
-  changeFlavorNumInBrandPageHeader();
+  handleChangeOfFlavorsInMixer();
 }
 
 function removeFlavorFromMixer(

@@ -28,3 +28,25 @@ export function changeFlavorNumInBrandPageHeader() {
   mixerBtn.onclick = () => (location.hash = '/mixer/mixer-now');
   mixerImage.replaceWith(mixerBtn);
 }
+
+export function changeFlavorNumInFooter() {
+  console.log(111);
+  const mixerFooter = document.querySelector('.footer__mixer-image');
+  if (!mixerFooter) return;
+
+  const flavorsNumInDom = document.querySelector('.footer__mixer-number');
+  if (getFlavorsInMixer().length !== 0) {
+    if (!flavorsNumInDom) mixerFooter.appendChild(createHTMLElement('footer__mixer-number', 'div'));
+    const flavorsNum = document.querySelector('.footer__mixer-number');
+    if (!flavorsNum) return;
+    flavorsNum.textContent = getFlavorsInMixer().length.toString();
+  } else {
+    flavorsNumInDom?.remove();
+  }
+}
+
+export function handleChangeOfFlavorsInMixer() {
+  changeFlavorNumInHeader();
+  changeFlavorNumInBrandPageHeader();
+  changeFlavorNumInFooter();
+}

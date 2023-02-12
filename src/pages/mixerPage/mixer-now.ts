@@ -5,7 +5,7 @@ import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import infoImgSrc from '../../assets/images/info.svg';
 import removeImgSrc from '../../assets/images/add-new.png';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
-import { changeFlavorNumInHeader } from '../../utils/changeFlavorNum';
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import Api from '../../components/api/api';
 import { MixerNowResult } from '../../components/mixer-result';
 import preloader from '../../components/preloader/preloader';
@@ -98,7 +98,7 @@ export class MixerNowPage implements InterfaceContainerElement {
     flavorsInMixer.splice(indexOfFlavorInMixer, 1);
     localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
     button.parentElement?.remove();
-    changeFlavorNumInHeader();
+    handleChangeOfFlavorsInMixer();
     if (flavorsInMixer.length === 0) {
       this.rerenderMixerNowContainer();
       const continueBtn = document.querySelector('.mixer-now__continue-btn');

@@ -19,6 +19,7 @@ import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 import ProfileUser from '../profile_user/profile_user';
 import { MixerNowPage } from '../../pages/mixerPage/mixer-now';
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 
 enum LocationPath {
   MainPage = `/`,
@@ -110,6 +111,7 @@ class App {
   private handleHashChange(): void {
     window.addEventListener('hashchange', this.loadHashPage);
     window.addEventListener('load', this.loadHashPage);
+    handleChangeOfFlavorsInMixer();
   }
 
   private loadHashPage = (): void => {
