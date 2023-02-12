@@ -1,6 +1,7 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { Mixes } from '../types/types';
 import Api from '../api/api';
+import ApiMix from '../api_mix/api_mix';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 
 const ERROR_MESSAGE = 'Произошла ошибка. Ничего не найдено. Попробуйте снова...';
@@ -18,8 +19,10 @@ type MixesListOptions = {
 export class MixesList {
   private mixes?: Mixes;
   private api: Api;
+  private apiMix: ApiMix;
   constructor(mixes?: Mixes) {
     this.api = new Api();
+    this.apiMix = new ApiMix();
     if (mixes) this.mixes = mixes;
   }
   public create(options?: MixesListOptions): HTMLElement {
@@ -62,7 +65,9 @@ export class MixesList {
     ratingContainer.appendChild(ratingStarIcon);
     const ratingNum = createHTMLElement('mixes-list__rating-num', 'span');
     /* добавить в БД рейтинг миксам */
-    ratingNum.innerText = '-.-';
+    this.apiMix.getRate(this.mixes[i].id).then((data) => {
+      ratingNum.textContent = `${data.rate}`;
+    });
     ratingContainer.appendChild(ratingNum);
     listItemFooter.appendChild(ratingContainer);
     container.appendChild(listItemFooter);

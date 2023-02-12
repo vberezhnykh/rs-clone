@@ -32,6 +32,8 @@ class AccountPage implements InterfaceContainerElement {
       window.location.hash = `/account/`;
     } else if (target.closest('.button-edit')) {
       window.location.hash = `/account/edit`;
+    } else if (target.closest('.favorite')) {
+      window.location.hash = `/account/favorite`;
     }
   };
 
@@ -61,7 +63,7 @@ class AccountPage implements InterfaceContainerElement {
                 </div>
             </div>
             <div class="row">
-              <div class="column cell-img">
+              <div class="column cell-img favorite">
                 <img src="${favorite}">
                 <p class="name">Любимые</p>
                 <p class="amount">0 миксов</p>
