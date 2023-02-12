@@ -5,6 +5,7 @@ class ApiMix {
   private static instance: ApiMix;
   private base;
   private rate;
+  private favorite;
   private profileUser;
 
   constructor() {
@@ -14,6 +15,7 @@ class ApiMix {
     ApiMix.instance = this;
     this.base = server;
     this.rate = `${this.base}/auth/rate/`;
+    this.favorite = `${this.base}/auth/favorite/`;
     this.profileUser = new ProfileUser();
   }
 
@@ -59,6 +61,13 @@ class ApiMix {
       });
     }
     return rate;
+  }
+
+  public async getFavorite(userId: string) {
+    const res = await fetch(`${this.favorite}:${userId}`, {
+      method: 'GET',
+    });
+    return await res.json();
   }
 }
 

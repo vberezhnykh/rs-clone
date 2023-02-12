@@ -3,6 +3,10 @@ import { Mixes } from '../types/types';
 import Api from '../api/api';
 import ApiMix from '../api_mix/api_mix';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
+import favoriteIconSrc from '../../assets/images/favorite.svg';
+import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
+import ProfileUser from '../profile_user/profile_user';
+
 
 const ERROR_MESSAGE = 'Произошла ошибка. Ничего не найдено. Попробуйте снова...';
 
@@ -20,9 +24,11 @@ export class MixesList {
   private mixes?: Mixes;
   private api: Api;
   private apiMix: ApiMix;
+  private profileUser;
   constructor(mixes?: Mixes) {
     this.api = new Api();
     this.apiMix = new ApiMix();
+    this.profileUser = new ProfileUser();
     if (mixes) this.mixes = mixes;
   }
   public create(options?: MixesListOptions): HTMLElement {
@@ -60,11 +66,23 @@ export class MixesList {
     button.textContent = 'Попробовать';
     listItemFooter.appendChild(button);
     const ratingContainer = createHTMLElement('mixes-list__rating-container');
+    const favoriteIcon = <HTMLImageElement>createHTMLElement('mixes-list__favorite-icon', 'img');
+    favoriteIcon.src = favoriteIconSrc;
+    const userId = this.profileUser.getUserId();
+    if (typeof userId === 'string' && userId.length > 12) {
+      this.apiMix.getFavorite(userId).then((data) => {
+        if (this.mixes !== undefined) {
+          if (data.indexOf(this.mixes[i].id) !== -1) {
+            favoriteIcon.src = favoriteActiveIconSrc;
+          }
+        }
+      });
+    }
     const ratingStarIcon = <HTMLImageElement>createHTMLElement('mixes-list__rating-icon', 'img');
     ratingStarIcon.src = ratingStarIconSrc;
+    ratingContainer.appendChild(favoriteIcon);
     ratingContainer.appendChild(ratingStarIcon);
     const ratingNum = createHTMLElement('mixes-list__rating-num', 'span');
-    /* добавить в БД рейтинг миксам */
     this.apiMix.getRate(this.mixes[i].id).then((data) => {
       ratingNum.textContent = `${data.rate}`;
     });

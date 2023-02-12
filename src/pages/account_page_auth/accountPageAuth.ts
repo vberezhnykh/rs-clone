@@ -22,6 +22,7 @@ class AccountPage implements InterfaceContainerElement {
     this.server = server;
     this.apiMix = new ApiMix();
     this.preloader = new preloader();
+
   }
 
   private handler = (e: Event): void => {
@@ -81,6 +82,18 @@ class AccountPage implements InterfaceContainerElement {
       }
     });
     main.addEventListener('click', this.handler);
+
+    const userId = this.profileUser.getUserId();
+    if (typeof userId === 'string') {
+      // this.apiMix.setRate(userId, 9, 4).then((data) => {
+      //   console.log(data);
+      // });
+      this.apiMix.getFavorite(userId).then((data) => {
+        console.log('favorite', data)
+      })
+    }
+    console.log(this.apiMix.getVote(9))
+ 
     return main;
   }
 }
