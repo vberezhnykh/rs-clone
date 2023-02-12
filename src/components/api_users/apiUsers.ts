@@ -1,4 +1,5 @@
-import { Brands, Flavor, Flavors, Mix, Mixes } from '../types/types';
+import { Profile } from '../types/types';
+import { server } from '../server/server';
 
 class ApiUsers {
   private static instance: ApiUsers;
@@ -6,15 +7,19 @@ class ApiUsers {
   private registration;
   private login;
   private check;
+  private profile;
+  private upload;
   constructor() {
     if (ApiUsers.instance) {
       return ApiUsers.instance;
     }
     ApiUsers.instance = this;
-    this.base = 'https://rs-clone-back-production-247c.up.railway.app';
+    this.base = server;
     this.registration = `${this.base}/auth/registration`;
     this.login = `${this.base}/auth/login`;
     this.check = `${this.base}/auth/check`;
+    this.profile = `${this.base}/auth/profile`;
+    this.upload = `${this.base}/uploadfile`;
   }
 
   public async newUser(email: string, password: string) {
@@ -51,6 +56,42 @@ class ApiUsers {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    });
+    return await res.json();
+  }
+
+  public async getProfile(id: string): Promise<Profile> {
+    const res = await fetch(`${this.profile}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        id: id,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
+  }
+
+  public async setProfile(data: Profile) {
+    const res = await fetch(`${this.profile}s`, {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return JSON.stringify(res);
+  }
+
+  public async uploadImage(image: File) {
+    const formData: FormData = new FormData();
+    formData.append('image', image);
+    const res = await fetch(`${this.upload}`, {
+      method: 'POST',
+      body: formData,
     });
     return await res.json();
   }

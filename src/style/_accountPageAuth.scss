@@ -25,6 +25,9 @@
   background-color: #0b1933;
   text-align: start;
   padding-left: 20px;
+  img {
+    height: 100px;
+  }
 }
 
 .img-profile {
@@ -33,11 +36,42 @@
   border-radius: 50%;
   text-align: center;
   padding-left: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & img {
+    margin-top: -20px;
+    height: 120%;
+  }
+  & img[src$=".svg"] {
+    margin-top: 0px;
+    height: 80px;
+  }
 }
 
-/* img {
-  height: 80px;
-} */
+.instagram-column {
+  display: flex;
+  font-size: 1.5rem;
+  margin-left: 30px;
+  & .img-instagram {
+    margin-top: 3px;
+    cursor: pointer;
+  }
+  img {
+    height: 30px;
+  }
+  span {
+    display: inline-block;
+    margin: 5px 0 0 10px;
+    color: #da63e2;
+    cursor: pointer;
+    }
+  a {
+    text-decoration: none;
+    color: #da63e2;
+  }
+}
 
 .profile {
   margin-top: 30px;
