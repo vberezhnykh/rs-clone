@@ -17,6 +17,7 @@ import { BrandPage } from '../catalog/brandPage';
 import { isBrandPage } from '../../utils/isBrandPage';
 import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
+import ProfileUser from '../profile_user/profile_user';
 
 enum LocationPath {
   MainPage = `/`,
@@ -38,6 +39,7 @@ class App {
   private header: InterfaceContainerElement;
   private footer: InterfaceContainerElement;
   private checkAuth;
+  private profileUser;
 
   prevPathPage = '';
 
@@ -46,6 +48,7 @@ class App {
     this.footer = new Footer();
     this.checkAuth = new CheckAuth();
     localStorage.removeItem('flavors');
+    this.profileUser = new ProfileUser();
   }
 
   private async drawNewPage(location: string) {
@@ -115,6 +118,8 @@ class App {
   };
 
   start(): void {
+    const localStorageStartProfile: string | null = window.localStorage.getItem('blenderStartProfile');
+    if (!localStorageStartProfile) this.profileUser.getStartProfile();
     this.handleHashChange();
     this.root.append(this.header.draw(), this.wrapper, this.footer.draw());
   }
