@@ -27,7 +27,8 @@ class AccountPage implements InterfaceContainerElement {
   private handler = (e: Event): void => {
     const target = e.target as HTMLElement;
     if (target.classList.contains('button-exit')) {
-      window.localStorage.clear();
+      window.localStorage.removeItem('blender');
+      window.localStorage.removeItem('blenderProfile');
       window.location.hash = `/account/`;
     } else if (target.closest('.button-edit')) {
       window.location.hash = `/account/edit`;
@@ -78,16 +79,6 @@ class AccountPage implements InterfaceContainerElement {
       }
     });
     main.addEventListener('click', this.handler);
-
-
-    // const userId = this.profileUser.getUserId();
-    // if (typeof userId === 'string') {
-    //   this.apiMix.setRate(userId, 3, 5);
-    // }
-    // this.apiMix.getRate(6).then((data) => {
-    //   console.log(data)
-    // })
-    
     return main;
   }
 }
