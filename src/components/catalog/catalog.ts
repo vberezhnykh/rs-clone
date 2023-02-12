@@ -5,6 +5,7 @@ import Api from '../api/api';
 import preloader from '../preloader/preloader';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
+import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
 const MIXER_PAGE_URL = `/mixer`;
@@ -47,6 +48,10 @@ export class Catalog implements InterfaceContainerElement {
   private createHeaderMixerButton() {
     const mixerBtn = createHTMLElement('catalog__mixer-image', 'button');
     mixerBtn.style.backgroundImage = `url(${mixerButtonImgSrc})`;
+    const flavorsInMixerNum = getFlavorsInMixer().length;
+    if (flavorsInMixerNum !== 0) {
+      mixerBtn.append(createHTMLElement('catalog__mixer-number', 'div', flavorsInMixerNum.toString()));
+    }
     return mixerBtn;
   }
 

@@ -1,4 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
+import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { InterfaceContainerElement } from '../types/types';
 const logo = require('../../assets/images/logo.svg');
 
@@ -27,6 +28,15 @@ class Header implements InterfaceContainerElement {
       menuItems[2].classList.remove('active');
       menuItems[3].classList.remove('active');
     }
+    if (getFlavorsInMixer().length !== 0) {
+      const mixerHeader = document.querySelector('.header__mixer');
+      if (!mixerHeader) return;
+      const flavorsNumInDom = document.querySelector('.header__mixer-number');
+      if (!flavorsNumInDom) mixerHeader.appendChild(createHTMLElement('header__mixer-number', 'div'));
+      const flavorsNum = document.querySelector('.header__mixer-number');
+      if (!flavorsNum) return;
+      flavorsNum.textContent = getFlavorsInMixer().length.toString();
+    }
   };
 
   private handler = (e: Event): void => {
@@ -54,7 +64,7 @@ class Header implements InterfaceContainerElement {
           <ul>
             <li><a>Главная</a></li>
             <li><a>Поиск</a></li>
-            <li><a>Миксер</a></li>
+            <li class="header__mixer"><a>Миксер</a></li>
             <li><a>Профиль</a></li>
           </ul>
         </nav>
