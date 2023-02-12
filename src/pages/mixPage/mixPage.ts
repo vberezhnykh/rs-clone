@@ -9,6 +9,7 @@ import { Mix, PromiseFlavors, Flavor } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import preloader from '../../components/preloader/preloader';
+import { getRandomMixNumber } from '../../utils/getRandomMixNumber';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -23,12 +24,13 @@ class MixPage implements InterfaceContainerElement {
   constructor() {
     const mixId = window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1];
     this.api = new Api();
-    this.getData(Number(mixId));
+    this.getData(mixId);
   }
-  private async getData(mixId: number) {
+  private async getData(mixId: string) {
     this.preloader = new preloader();
     this.preloader.draw();
-    this.mix = await this.api.getMix(mixId);
+    if (mixId === 'random') mixId = await getRandomMixNumber();
+    this.mix = await this.api.getMix(Number(mixId));
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
     this.flavorsOfMix = await Promise.allSettled(this.flavorsIds.map((id) => this.api.getFlavor(id))).then(
