@@ -18,12 +18,14 @@ import { isBrandPage } from '../../utils/isBrandPage';
 import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 import ProfileUser from '../profile_user/profile_user';
+import { MixerNowPage } from '../../pages/mixerPage/mixer-now';
 
 enum LocationPath {
   MainPage = `/`,
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   CatalogPage = `/mixer/brands`,
+  MixerNowPage = `/mixer/mixer-now`,
   BrandSuggestPage = `/brand-suggest`,
   AccountPage = `/account`,
   EditAccount = `/account/edit`,
@@ -73,6 +75,8 @@ class App {
       changePage = new MixerPage();
     } else if (location === LocationPath.CatalogPage) {
       changePage = new Catalog();
+    } else if (location === LocationPath.MixerNowPage) {
+      changePage = new MixerNowPage();
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
     } else if (location.includes(LocationPath.CatalogPage)) {

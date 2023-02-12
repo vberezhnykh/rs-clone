@@ -38,12 +38,11 @@ class ProfileUser {
   }
 
   public async getStartProfile(): Promise<Profile | false> {
-
     function createRandomString(sumString: number) {
       const symbolArr = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
       let randomString = '';
       for (let i = 0; i < sumString; i++) {
-        const index = Math.floor(Math.random()*symbolArr.length);
+        const index = Math.floor(Math.random() * symbolArr.length);
         randomString += symbolArr[index];
       }
       return randomString;

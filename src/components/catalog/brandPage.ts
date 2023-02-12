@@ -9,6 +9,7 @@ import preloader from '../preloader/preloader';
 import { createPopup, openFlavorPopup } from '../popup/popup';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
+import { changeFlavorNumInBrandPageHeader } from '../../utils/changeFlavorNum';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
 
@@ -55,10 +56,10 @@ export class BrandPage implements InterfaceContainerElement {
     const mixerBtn = createHTMLElement('catalog__mixer-image', 'button');
     mixerBtn.style.backgroundImage = `url(${mixerButtonImgSrc})`;
     const flavorsInMixerNum = getFlavorsInMixer().length;
-    console.log(flavorsInMixerNum);
     if (flavorsInMixerNum !== 0) {
       mixerBtn.append(createHTMLElement('catalog__mixer-number', 'div', flavorsInMixerNum.toString()));
     }
+    mixerBtn.onclick = () => (location.hash = '/mixer/mixer-now');
     return mixerBtn;
   }
 
@@ -125,7 +126,10 @@ export class BrandPage implements InterfaceContainerElement {
     image.src = src;
     if (className === 'flavor__image--info') {
       if (!flavor) return image;
-      image.onclick = () => openFlavorPopup(flavor);
+      image.onclick = () => {
+        const addButton = image.nextElementSibling ?? undefined;
+        openFlavorPopup(flavor, addButton);
+      };
     } else if (className === 'flavor__image--add-new') {
       if (!flavor) return image;
       if (this.isFlavorInMixer(flavor)) image.classList.add('flavor__image--added');
@@ -147,9 +151,7 @@ export class BrandPage implements InterfaceContainerElement {
     if (image.classList.contains('flavor__image--added') && indexOfFlavorInMixer === -1) flavorsInMixer.push(flavor);
     else flavorsInMixer.splice(indexOfFlavorInMixer, 1);
     localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
-    const mixerImage = document.querySelector('.catalog__mixer-image');
-    if (!mixerImage) return;
-    mixerImage.replaceWith(this.createHeaderMixerButton());
+    changeFlavorNumInBrandPageHeader();
   }
 
   private async getAllFlavorsByBrand() {

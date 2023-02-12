@@ -52,6 +52,7 @@ export class Catalog implements InterfaceContainerElement {
     if (flavorsInMixerNum !== 0) {
       mixerBtn.append(createHTMLElement('catalog__mixer-number', 'div', flavorsInMixerNum.toString()));
     }
+    mixerBtn.onclick = () => (location.hash = '/mixer/mixer-now');
     return mixerBtn;
   }
 

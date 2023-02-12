@@ -74,6 +74,7 @@ export class MixesList {
   private openMixCard(i: number, mixes?: Mixes) {
     document.body.classList.remove('body--unscrollable');
     document.querySelector('.user-mixes-container')?.remove();
+    document.querySelector('.result-container')?.remove();
     if (mixes) window.location.hash = `/mix/${mixes[i].id}`;
   }
 }

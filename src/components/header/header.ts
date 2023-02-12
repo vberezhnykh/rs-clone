@@ -1,3 +1,4 @@
+import { changeFlavorNumInHeader } from '../../utils/changeFlavorNum';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { InterfaceContainerElement } from '../types/types';
@@ -28,15 +29,7 @@ class Header implements InterfaceContainerElement {
       menuItems[2].classList.remove('active');
       menuItems[3].classList.remove('active');
     }
-    if (getFlavorsInMixer().length !== 0) {
-      const mixerHeader = document.querySelector('.header__mixer');
-      if (!mixerHeader) return;
-      const flavorsNumInDom = document.querySelector('.header__mixer-number');
-      if (!flavorsNumInDom) mixerHeader.appendChild(createHTMLElement('header__mixer-number', 'div'));
-      const flavorsNum = document.querySelector('.header__mixer-number');
-      if (!flavorsNum) return;
-      flavorsNum.textContent = getFlavorsInMixer().length.toString();
-    }
+    changeFlavorNumInHeader();
   };
 
   private handler = (e: Event): void => {
