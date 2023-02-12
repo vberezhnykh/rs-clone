@@ -22,6 +22,7 @@ class AccountPage implements InterfaceContainerElement {
     this.server = server;
     this.apiMix = new ApiMix();
     this.preloader = new preloader();
+
   }
 
   private handler = (e: Event): void => {
@@ -32,6 +33,8 @@ class AccountPage implements InterfaceContainerElement {
       window.location.hash = `/account/`;
     } else if (target.closest('.button-edit')) {
       window.location.hash = `/account/edit`;
+    } else if (target.closest('.favorite')) {
+      window.location.hash = `/account/favorite`;
     }
   };
 
@@ -61,7 +64,7 @@ class AccountPage implements InterfaceContainerElement {
                 </div>
             </div>
             <div class="row">
-              <div class="column cell-img">
+              <div class="column cell-img favorite">
                 <img src="${favorite}">
                 <p class="name">Любимые</p>
                 <p class="amount">0 миксов</p>
@@ -79,6 +82,18 @@ class AccountPage implements InterfaceContainerElement {
       }
     });
     main.addEventListener('click', this.handler);
+
+    const userId = this.profileUser.getUserId();
+    if (typeof userId === 'string') {
+      // this.apiMix.setRate(userId, 9, 4).then((data) => {
+      //   console.log(data);
+      // });
+      this.apiMix.getFavorite(userId).then((data) => {
+        console.log('favorite', data)
+      })
+    }
+    console.log(this.apiMix.getVote(9))
+ 
     return main;
   }
 }

@@ -18,6 +18,17 @@
   h1,.mix-card__desc{
     padding: 0 20px;
   }
+  .mix-card__title-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .mix-card__favorite {
+    margin-top: 5px;
+    margin-right: 5px;
+  }
+  .favorite-ico {
+    width: 30px;
+  }
   .mix-card__more-info{
     display: flex;
     flex-direction: column;
