@@ -7,7 +7,7 @@ import removeImgSrc from '../../assets/images/add-new.png';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import Api from '../../components/api/api';
-import { MixerNowResult } from '../../components/mixer-result';
+import { MixerNowResult } from '../../components/mixerResult/mixer-result';
 import preloader from '../../components/preloader/preloader';
 
 const MIXER_PAGE_URL = `/mixer`;

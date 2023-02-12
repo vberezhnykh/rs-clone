@@ -2,18 +2,50 @@ import { getFlavorsInMixer } from './getFlavorsInMixer';
 import { createHTMLElement } from './createHTMLElement';
 import mixerButtonImgSrc from '../assets/images/blender.svg';
 
+function changeFlavorNum(className: string) {
+  const mixer = document.querySelector(`.${className}__mixer`);
+  if (!mixer) return;
+  const flavorsNumInDom = document.querySelector(`.${className}__mixer-number`);
+  const flavorsInMixerNum = getFlavorsInMixer().length;
+  if (flavorsInMixerNum !== 0) {
+    if (!flavorsNumInDom) mixer.appendChild(createHTMLElement(`${className}__mixer-number`, 'div'));
+    const flavorsNum = document.querySelector(`.${className}__mixer-number`);
+    if (!flavorsNum) return;
+    flavorsNum.textContent = flavorsInMixerNum.toString();
+  } else {
+    flavorsNumInDom?.remove();
+  }
+}
+
 export function changeFlavorNumInHeader() {
-  const mixerHeader = document.querySelector('.header__mixer');
+  changeFlavorNum('header');
+  /* const mixerHeader = document.querySelector('.header__mixer');
   if (!mixerHeader) return;
   const flavorsNumInDom = document.querySelector('.header__mixer-number');
-  if (getFlavorsInMixer().length !== 0) {
+  const flavorsInMixerNum = getFlavorsInMixer().length;
+  if (flavorsInMixerNum !== 0) {
     if (!flavorsNumInDom) mixerHeader.appendChild(createHTMLElement('header__mixer-number', 'div'));
     const flavorsNum = document.querySelector('.header__mixer-number');
+    if (!flavorsNum) return;
+    flavorsNum.textContent = flavorsInMixerNum.toString();
+  } else {
+    flavorsNumInDom?.remove();
+  } */
+}
+
+export function changeFlavorNumInFooter() {
+  changeFlavorNum('footer');
+  /* const mixerFooter = document.querySelector('.footer__mixer-image');
+  if (!mixerFooter) return;
+  const flavorsNumInDom = document.querySelector('.footer__mixer-number');
+  if (getFlavorsInMixer().length !== 0) {
+    if (!flavorsNumInDom) mixerFooter.appendChild(createHTMLElement('footer__mixer-number', 'div'));
+    const flavorsNum = document.querySelector('.footer__mixer-number');
     if (!flavorsNum) return;
     flavorsNum.textContent = getFlavorsInMixer().length.toString();
   } else {
     flavorsNumInDom?.remove();
-  }
+  } */
 }
 
 export function changeFlavorNumInBrandPageHeader() {
@@ -27,22 +59,6 @@ export function changeFlavorNumInBrandPageHeader() {
   }
   mixerBtn.onclick = () => (location.hash = '/mixer/mixer-now');
   mixerImage.replaceWith(mixerBtn);
-}
-
-export function changeFlavorNumInFooter() {
-  console.log(111);
-  const mixerFooter = document.querySelector('.footer__mixer-image');
-  if (!mixerFooter) return;
-
-  const flavorsNumInDom = document.querySelector('.footer__mixer-number');
-  if (getFlavorsInMixer().length !== 0) {
-    if (!flavorsNumInDom) mixerFooter.appendChild(createHTMLElement('footer__mixer-number', 'div'));
-    const flavorsNum = document.querySelector('.footer__mixer-number');
-    if (!flavorsNum) return;
-    flavorsNum.textContent = getFlavorsInMixer().length.toString();
-  } else {
-    flavorsNumInDom?.remove();
-  }
 }
 
 export function handleChangeOfFlavorsInMixer() {

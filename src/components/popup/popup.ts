@@ -32,7 +32,7 @@ export function createPopup(elem: HTMLElement): void {
   }
 }
 
-export function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPage?: Element): void {
+export function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPageOrMixerPage?: Element): void {
   const api = new Api();
   (<HTMLElement>document.querySelector('.popup-flavor__img')).setAttribute('src', api.getImage(flavorObj.image));
   (<HTMLElement>document.querySelector('.popup-flavor__title')).innerHTML = `${flavorObj.name}`;
@@ -40,12 +40,12 @@ export function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPage?: Elemen
   (<HTMLElement>document.querySelector('.popup-flavor__must')).children[0].innerHTML = `${flavorObj.brand}`;
   (<HTMLElement>document.querySelector('.popup-flavor')).style.display = 'block';
   const addButton = document.querySelector('.popup-flavor__add-button');
-  if (!addButton) return;
-  markButtonIfFlavorAddedInMixer(flavorObj, addButton);
-  (addButton as HTMLElement).onclick = (event) => handleClickOnAddButton(event, flavorObj, addButtonOnBrandPage);
+  if (!(addButton instanceof HTMLElement)) return;
+  markButtonIfFlavorAddedToMixer(flavorObj, addButton);
+  addButton.onclick = () => handleClickOnAddButton(addButton, flavorObj, addButtonOnBrandPageOrMixerPage);
 }
 
-function markButtonIfFlavorAddedInMixer(flavorObj: Flavor, addButton: Element) {
+function markButtonIfFlavorAddedToMixer(flavorObj: Flavor, addButton: Element) {
   const index = getFlavorsInMixer().findIndex((flavor) => flavor.id === flavorObj.id);
   if (index === -1) {
     addButton.classList.remove('popup-flavor__added-button');
@@ -56,8 +56,8 @@ function markButtonIfFlavorAddedInMixer(flavorObj: Flavor, addButton: Element) {
   }
 }
 
-function handleClickOnAddButton(event: MouseEvent, flavor: Flavor, addBtnOnBrandPageOrMixerPage?: Element) {
-  const addButton = event.currentTarget as HTMLButtonElement;
+function handleClickOnAddButton(addButton: HTMLElement, flavor: Flavor, addBtnOnBrandPageOrMixerPage?: Element) {
+  if (!(addButton instanceof HTMLButtonElement)) return;
   addButton.classList.toggle('popup-flavor__added-button');
   const flavorsInMixer = getFlavorsInMixer();
   const indexOfFlavorInMixer = flavorsInMixer.findIndex((flavorInMixer) => flavorInMixer.id === flavor.id);

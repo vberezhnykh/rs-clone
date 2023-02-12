@@ -11,14 +11,14 @@ import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import CheckAuth from '../checkAuth/checkAuth';
-import { Catalog } from '../catalog/catalog';
-import { BrandSuggest } from '../catalog/brandSuggest';
-import { BrandPage } from '../catalog/brandPage';
+import { Catalog } from '../../pages/catalogPage/catalog';
+import { BrandSuggest } from '../../pages/brandPage_suggest/brandSuggest';
+import { BrandPage } from '../../pages/brandPage/brandPage';
 import { isBrandPage } from '../../utils/isBrandPage';
 import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 import ProfileUser from '../profile_user/profile_user';
-import { MixerNowPage } from '../../pages/mixerPage/mixer-now';
+import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 
 enum LocationPath {

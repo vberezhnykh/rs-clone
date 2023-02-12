@@ -1,6 +1,6 @@
-import { createHTMLElement } from '../utils/createHTMLElement';
-import { Mixes } from './types/types';
-import { MixesList } from './mixesList/mixesList';
+import { createHTMLElement } from '../../utils/createHTMLElement';
+import { Mixes } from '../types/types';
+import { MixesList } from '../mixesList/mixesList';
 
 const PAGE_TITLE = 'Результаты';
 const RESET_BTN_TEXT = 'Сбросить';

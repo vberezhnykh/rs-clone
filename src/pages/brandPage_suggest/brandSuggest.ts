@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement } from '../types/types';
+import { InterfaceContainerElement } from '../../components/types/types';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 
 const PAGE_TITLE = 'Добавить бренд';

@@ -1,12 +1,12 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import Api from '../api/api';
-import { Flavors, Flavor, InterfaceContainerElement } from '../types/types';
+import Api from '../../components/api/api';
+import { Flavors, Flavor, InterfaceContainerElement } from '../../components/types/types';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import searchImgSrc from '../../assets/images/search.svg';
 import infoImgSrc from '../../assets/images/info.svg';
 import addNewImgSrc from '../../assets/images/add-new.png';
-import preloader from '../preloader/preloader';
-import { createPopup, openFlavorPopup } from '../popup/popup';
+import preloader from '../../components/preloader/preloader';
+import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { changeFlavorNumInBrandPageHeader } from '../../utils/changeFlavorNum';
@@ -25,6 +25,7 @@ export class BrandPage implements InterfaceContainerElement {
     this.preloader = new preloader();
   }
   draw() {
+    document.querySelector('.result-container')?.remove();
     const brandPage = createHTMLElement('brand-page');
     brandPage.appendChild(this.createHeader());
     brandPage.appendChild(this.createSearchPanel());

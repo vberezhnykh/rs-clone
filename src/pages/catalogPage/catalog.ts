@@ -1,8 +1,8 @@
-import { Brands, Flavors, InterfaceContainerElement } from '../types/types';
+import { Brands, Flavors, InterfaceContainerElement } from '../../components/types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import searchImgSrc from '../../assets/images/search.svg';
-import Api from '../api/api';
-import preloader from '../preloader/preloader';
+import Api from '../../components/api/api';
+import preloader from '../../components/preloader/preloader';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
@@ -21,6 +21,7 @@ export class Catalog implements InterfaceContainerElement {
     this.preloader = new preloader();
   }
   draw() {
+    document.querySelector('.result-container')?.remove();
     this.api.getAllBrands().then((brands) => (this.brands = brands));
     const catalog = createHTMLElement('catalog', 'div');
     catalog.appendChild(this.createHeader());
