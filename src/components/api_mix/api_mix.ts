@@ -69,6 +69,22 @@ class ApiMix {
     });
     return await res.json();
   }
+
+  public async setFavorite(userId: string, id: number) {
+    if (typeof userId === 'string') {
+      const res = await fetch(`${this.favorite}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: userId,
+          id: id,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return await res.json();
+    }
+  }
 }
 
 export default ApiMix;

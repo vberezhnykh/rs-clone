@@ -12,6 +12,7 @@ class ModalWindowRegistration {
     if (textReset?.textContent?.includes('Регистрация завершена')) {
       window.location.hash = `/account/`;
     }
+    window.location.hash = `/account`;
   };
 
   public draw(message: string, color?: string): HTMLElement {

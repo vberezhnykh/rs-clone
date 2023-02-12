@@ -9,9 +9,16 @@ import { Mix, PromiseFlavors, Flavor } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import preloader from '../../components/preloader/preloader';
+import favoriteIconSrc from '../../assets/images/favorite.svg';
+import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
+import ProfileUser from '../../components/profile_user/profile_user';
+import ApiMix from '../../components/api_mix/api_mix';
+import CheckAuth from '../../components/checkAuth/checkAuth';
+import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
+
 
 class MixPage implements InterfaceContainerElement {
-  private api:Api;
+  private api: Api;
   private mix: Mix;
   private flavorsIds: number[];
   private flavorsPercentages: number[];
@@ -19,14 +26,23 @@ class MixPage implements InterfaceContainerElement {
   private flavorsNames: string[] = [];
   private flavorsBrands: string[] = [];
   private flavorsStrength: number[] = [];
-  private preloader:preloader;
+  private preloader: preloader;
+  private profileUser;
+  private apiMix;
+  private checkAuth;
+  private activeUser: boolean;
+  private modalWindow;
   constructor() {
     const mixId = window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1];
     this.api = new Api();
     this.getData(Number(mixId));
+    this.profileUser = new ProfileUser();
+    this.apiMix = new ApiMix();
+    this.checkAuth = new CheckAuth();
+    this.modalWindow = new ModalWindowRegistration();
   }
   private async getData(mixId: number) {
-    this.preloader=new preloader();
+    this.preloader = new preloader();
     this.preloader.draw();
     this.mix = await this.api.getMix(mixId);
     this.flavorsIds = Object.values(this.mix.compositionById);
@@ -34,7 +50,7 @@ class MixPage implements InterfaceContainerElement {
     this.flavorsOfMix = await Promise.allSettled(this.flavorsIds.map((id) => this.api.getFlavor(id))).then(
       (results) => results
     );
-
+    this.activeUser = await this.checkAuth.checkUserAuth();
     this.flavorsIds.forEach((_, index) => {
       this.flavorsNames.push(String(this.flavorsOfMix[index].value?.name));
       this.flavorsBrands.push(String(this.flavorsOfMix[index].value?.brand));
@@ -93,6 +109,31 @@ class MixPage implements InterfaceContainerElement {
     if ((<HTMLElement>e.target).classList.contains('more')) {
       const index = Array.from(document.querySelectorAll('.more')).indexOf(e.target as HTMLElement);
       openFlavorPopup(this.flavorsOfMix[index].value as Flavor);
+    }
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('favorite-ico')) {
+      if (this.activeUser) {
+        const favoriteIco = document.querySelector('.favorite-ico') as HTMLImageElement;
+        if (favoriteIco.classList.contains('favorite-active')) {
+          favoriteIco.src = favoriteIconSrc;
+          favoriteIco.classList.remove('favorite-active');
+        } else {
+          favoriteIco.src = favoriteActiveIconSrc;
+          favoriteIco.classList.add('favorite-active');
+        }
+        const userId = this.profileUser.getUserId();
+        if (typeof userId === 'string' && userId.length > 12) {
+          this.apiMix.setFavorite(userId, this.mix.id);
+        }
+      } else {
+        const containerMessage = document.querySelector('.message_container') as HTMLElement;
+        containerMessage.append(
+          this.modalWindow.draw(
+            `Чтобы сохранить микс, надо авторизоваться. <br><br>
+            Это займет мало времени, зато откроет новый мир возможностей.`
+          )
+        );
+      }
     }
   };
   private doughnutChart = (): void => {
@@ -209,6 +250,7 @@ class MixPage implements InterfaceContainerElement {
       }
       
       main.innerHTML = `
+    <div class="message_container">
     <div class="main__container container">
 
       <div class="mix-card">
@@ -217,7 +259,10 @@ class MixPage implements InterfaceContainerElement {
           <img src="${this.api.getImage(this.mix.image)}" alt="name" width="220" height="220">
         </div>
         <div class="mix-card__container">
+        <div class="mix-card__title-container">
           <h1 class="mix-card__title">${this.mix.name}</h1>
+          <div class="mix-card__favorite"><img class="favorite-ico" src="${favoriteIconSrc}"></div>
+          </div>
           <div class="mix-card__desc">${this.mix.description}</div>
           <div class="mix-card__more-info">
             <div class="mix-card__rating-row">
@@ -267,7 +312,7 @@ class MixPage implements InterfaceContainerElement {
   
     
       main.addEventListener('click', this.popupOpenClose);
-      window.addEventListener('resize',onResizeSlider);
+      window.addEventListener('resize', onResizeSlider);
       setTimeout(() => {
         this.mixStrength(strength);
         createPopup(main);
@@ -276,6 +321,18 @@ class MixPage implements InterfaceContainerElement {
         document.querySelector('#switch')?.addEventListener('click', this.switcher);
         document.querySelector('.mix-card__buttons-row')?.addEventListener('click', this.setGram);
         document.querySelector('#composition')?.addEventListener('input',this.changeRange);
+
+        const userId = this.profileUser.getUserId();
+        if (typeof userId === 'string' && userId.length > 12) {
+          this.apiMix.getFavorite(userId).then((data) => {
+            if (data.indexOf(this.mix.id) !== -1) {
+              const favoriteIco = document.querySelector('.favorite-ico') as HTMLImageElement;
+              favoriteIco.src = favoriteActiveIconSrc;
+              favoriteIco.classList.add('favorite-active');
+            }
+          });
+        }
+
       }, 0);
       return main;
     }
