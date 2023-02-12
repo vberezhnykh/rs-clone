@@ -133,9 +133,9 @@ export class BrandPage implements InterfaceContainerElement {
     const dataInStorage = localStorage.getItem('flavors');
     const flavorsInMixer: Flavors =
       dataInStorage && isFlavorsType(JSON.parse(dataInStorage)) ? JSON.parse(dataInStorage) : [];
-    const index = flavorsInMixer.findIndex((flavorInMixer) => flavorInMixer.id === flavor.id);
-    if (image.classList.contains('flavor__image--added') && index === -1) flavorsInMixer.push(flavor);
-    else flavorsInMixer.splice(index, 1);
+    const indexOfFlavorInMixer = flavorsInMixer.findIndex((flavorInMixer) => flavorInMixer.id === flavor.id);
+    if (image.classList.contains('flavor__image--added') && indexOfFlavorInMixer === -1) flavorsInMixer.push(flavor);
+    else flavorsInMixer.splice(indexOfFlavorInMixer, 1);
     localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
   }
 

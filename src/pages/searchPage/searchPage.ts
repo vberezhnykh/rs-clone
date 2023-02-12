@@ -176,10 +176,6 @@ class SearchPage implements InterfaceContainerElement {
     return new MixesList(resultByTab).create({ isSearchList: true });
   }
 
-  private openMixCard() {
-    /* TO-DO */
-  }
-
   private createResultListForBrandTab(resultByTab: Brands) {
     const list = createHTMLElement('search-list', 'ul');
     list.classList.add('brands-list');

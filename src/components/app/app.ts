@@ -88,7 +88,6 @@ class App {
       }
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
-      console.log(3);
     } else {
       changePage = new ErrorPage();
     }

@@ -1,5 +1,6 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
+import { getRandomMixNumber } from '../../utils/getRandomMixNumber';
 const blender = require('../../assets/images/blender.svg');
 
 class MixerPage implements InterfaceContainerElement {
@@ -15,7 +16,7 @@ class MixerPage implements InterfaceContainerElement {
         <p>Выберите свои предпочтения, а мы подберем подходящий для Вас микс вкусов!</p>
         <button class="button button-1"><a href="#/mixer/brands">Перейти в каталог</a></button>
         <button class="button button-1"><a href="#">Выбрать по предпочтениям</a></button>
-        <button class="button button-1"><a href="#">Случайный микс</a></button>
+        <button class="button button-1"><a href="#/mix/${getRandomMixNumber(1, 30)}">Случайный микс</a></button>
         </div>
     </div>
 

@@ -51,8 +51,12 @@ class AccountPage implements InterfaceContainerElement {
               <div class="wrap">
               <div class="column name-column">${data.name}</div>
               <div class="instagram-column">
-              <div class="img-instagram"><a href="https://www.instagram.com/${data.instagramAccount.slice(1)}" target="_blank"><img src="${instagramLogo}"></a></div>
-              <div class="text-instagram"><span><a href="https://www.instagram.com/${data.instagramAccount.slice(1)}" target="_blank">${data.instagramAccount}</a></span></div>
+              <div class="img-instagram"><a href="https://www.instagram.com/${data.instagramAccount.slice(
+                1
+              )}" target="_blank"><img src="${instagramLogo}"></a></div>
+              <div class="text-instagram"><span><a href="https://www.instagram.com/${data.instagramAccount.slice(
+                1
+              )}" target="_blank">${data.instagramAccount}</a></span></div>
               </div>
               <div class="column button-column">
                 <div class="button-edit"><span>Настройки профиля</span></div>
@@ -79,7 +83,6 @@ class AccountPage implements InterfaceContainerElement {
     });
     main.addEventListener('click', this.handler);
 
-
     // const userId = this.profileUser.getUserId();
     // if (typeof userId === 'string') {
     //   this.apiMix.setRate(userId, 3, 5);
@@ -87,7 +90,7 @@ class AccountPage implements InterfaceContainerElement {
     // this.apiMix.getRate(6).then((data) => {
     //   console.log(data)
     // })
-    
+
     return main;
   }
 }
