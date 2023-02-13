@@ -29,7 +29,7 @@ export class BrandSuggest implements InterfaceContainerElement {
   private createHeaderBackBtn() {
     const backBtn = createHTMLElement('brand__back-button', 'button');
     backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
-    backBtn.onclick = () => history.back();
+    backBtn.onclick = () => (location.hash = CATALOG_PAGE_URL);
     return backBtn;
   }
 
@@ -57,6 +57,7 @@ export class BrandSuggest implements InterfaceContainerElement {
     button.disabled = true;
     button.onclick = () => {
       /* Собрать данные из формы и отправить на бэк */
+      button.disabled = true;
       document.querySelector('.brand-suggest')?.before(this.createPopUp());
     };
     return button;
@@ -68,7 +69,10 @@ export class BrandSuggest implements InterfaceContainerElement {
     popUp.appendChild(createHTMLElement('suggest-popup__title', 'h4', POPUP_TITLE));
     popUp.appendChild(createHTMLElement('suggest-popup__text', 'p', POPUP_TEXT));
     const button = createHTMLElement('suggest-popup__button', 'button', POPUP_BUTTON_TEXT);
-    button.onclick = () => (window.location.hash = CATALOG_PAGE_URL);
+    button.onclick = () => {
+      window.location.hash = CATALOG_PAGE_URL;
+      document.querySelector('.suggest-overlay')?.remove();
+    };
     popUp.appendChild(button);
     overlay.appendChild(popUp);
     return overlay;
