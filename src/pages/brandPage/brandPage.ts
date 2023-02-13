@@ -19,7 +19,7 @@ export class BrandPage implements InterfaceContainerElement {
   api: Api;
   preloader: preloader;
   constructor() {
-    this.brand = window.location.hash.split('/')[3];
+    this.brand = window.location.hash.split('/')[3].replace('%20', ' ');
     this.api = new Api();
     this.preloader = new preloader();
   }
