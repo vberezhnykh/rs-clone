@@ -29,6 +29,8 @@ enum LocationPath {
   CatalogPage = `/mixer/brands`,
   MixerNowPage = `/mixer/mixer-now`,
   BrandSuggestPage = `/brand-suggest`,
+  PreferencesFlavorsPage = `/mixer/preferences/flavors`,
+  PreferencesBrandsPage = `/mixer/preferences/brands`,
   AccountPage = `/account`,
   EditAccount = `/account/edit`,
   FavoritePage = `/account/favorite`,
@@ -70,7 +72,12 @@ class App {
       changePage = new MainPage();
     } else if (location === LocationPath.UserMixes) {
       changePage = new UserMixes();
-    } else if (location === LocationPath.ChangePrefFlavors || location === LocationPath.ChangePrefBrands) {
+    } else if (
+      location === LocationPath.ChangePrefFlavors ||
+      location === LocationPath.ChangePrefBrands ||
+      location === LocationPath.PreferencesFlavorsPage ||
+      location === LocationPath.PreferencesBrandsPage
+    ) {
       changePage = new PreferencesPage();
     } else if (location === LocationPath.SearchPage) {
       changePage = new SearchPage();

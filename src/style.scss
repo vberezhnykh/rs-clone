@@ -14,7 +14,7 @@
 @import './style/accountPageAuth';
 @import './style/edit_page';
 @import './style/preloader';
-
+@import './style/results';
 
 :root {
 	--color-bg: #03041A;
@@ -52,10 +52,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.body--unscrollable {
-  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .container{
