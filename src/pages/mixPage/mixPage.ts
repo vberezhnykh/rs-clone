@@ -1,14 +1,20 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import starempty from '../../assets/images/star-empty.svg';
 import info from '../../assets/images/info.svg';
 import { initSlider, onResizeSlider, onSliderChange } from '../../components/slider/slider';
 import Chart from 'chart.js/auto';
 import '../../../node_modules/chartjs-plugin-outerlabels';
-import { Mix, PromiseFlavors, Flavor } from '../../components/types/types';
+import { Mix, PromiseFlavors, Flavor, mixRate } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import preloader from '../../components/preloader/preloader';
+import favoriteIconSrc from '../../assets/images/favorite.svg';
+import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
+import ProfileUser from '../../components/profile_user/profile_user';
+import ApiMix from '../../components/api_mix/api_mix';
+import CheckAuth from '../../components/checkAuth/checkAuth';
+import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
+import rating from '../../components/rating/rating';
 import { getRandomMixNumber } from '../../utils/getRandomMixNumber';
 
 class MixPage implements InterfaceContainerElement {
@@ -21,22 +27,36 @@ class MixPage implements InterfaceContainerElement {
   private flavorsBrands: string[] = [];
   private flavorsStrength: number[] = [];
   private preloader: preloader;
+  private profileUser: ProfileUser;
+  private apiMix: ApiMix;
+  private checkAuth: CheckAuth;
+  private activeUser: boolean;
+  private modalWindow: ModalWindowRegistration;
+  private rating: rating;
+  private mixId: number;
+  private vote: number;
+  private getRateResult: mixRate;
   constructor() {
-    const mixId = window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1];
+    this.mixId = Number(window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1]);
     this.api = new Api();
-    this.getData(mixId);
+    this.profileUser = new ProfileUser();
+    this.apiMix = new ApiMix();
+    this.checkAuth = new CheckAuth();
+    this.modalWindow = new ModalWindowRegistration();
+    this.getData();
   }
-  private async getData(mixId: string) {
+  private async getData() {
     this.preloader = new preloader();
     this.preloader.draw();
-    if (mixId === 'random') mixId = await getRandomMixNumber();
-    this.mix = await this.api.getMix(Number(mixId));
+    this.vote = this.apiMix.getVote(this.mixId);
+    this.getRateResult = await this.apiMix.getRate(this.mixId);
+    this.mix = await this.api.getMix(this.mixId);
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
     this.flavorsOfMix = await Promise.allSettled(this.flavorsIds.map((id) => this.api.getFlavor(id))).then(
       (results) => results
     );
-
+    this.activeUser = await this.checkAuth.checkUserAuth();
     this.flavorsIds.forEach((_, index) => {
       this.flavorsNames.push(String(this.flavorsOfMix[index].value?.name));
       this.flavorsBrands.push(String(this.flavorsOfMix[index].value?.brand));
@@ -101,6 +121,31 @@ class MixPage implements InterfaceContainerElement {
     if ((<HTMLElement>e.target).classList.contains('more')) {
       const index = Array.from(document.querySelectorAll('.more')).indexOf(e.target as HTMLElement);
       openFlavorPopup(this.flavorsOfMix[index].value as Flavor);
+    }
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('favorite-ico')) {
+      if (this.activeUser) {
+        const favoriteIco = document.querySelector('.favorite-ico') as HTMLImageElement;
+        if (favoriteIco.classList.contains('favorite-active')) {
+          favoriteIco.src = favoriteIconSrc;
+          favoriteIco.classList.remove('favorite-active');
+        } else {
+          favoriteIco.src = favoriteActiveIconSrc;
+          favoriteIco.classList.add('favorite-active');
+        }
+        const userId = this.profileUser.getUserId();
+        if (typeof userId === 'string' && userId.length > 12) {
+          this.apiMix.setFavorite(userId, this.mix.id);
+        }
+      } else {
+        const containerMessage = document.querySelector('.message_container') as HTMLElement;
+        containerMessage.append(
+          this.modalWindow.draw(
+            `Чтобы сохранить микс, надо авторизоваться. <br><br>
+            Это займет мало времени, зато откроет новый мир возможностей.`
+          )
+        );
+      }
     }
   };
   private doughnutChart = (): void => {
@@ -217,6 +262,7 @@ class MixPage implements InterfaceContainerElement {
       }
 
       main.innerHTML = `
+    <div class="message_container">
     <div class="main__container container">
 
       <div class="mix-card">
@@ -225,19 +271,14 @@ class MixPage implements InterfaceContainerElement {
           <img src="${this.api.getImage(this.mix.image)}" alt="name" width="220" height="220">
         </div>
         <div class="mix-card__container">
+        <div class="mix-card__title-container">
           <h1 class="mix-card__title">${this.mix.name}</h1>
+          <div class="mix-card__favorite"><img class="favorite-ico" src="${favoriteIconSrc}"></div>
+          </div>
           <div class="mix-card__desc">${this.mix.description}</div>
           <div class="mix-card__more-info">
-            <div class="mix-card__rating-row">
-              <div class="mix-card__stars">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-              </div>
-              <div class="mix-card__rating">5.0</div>
-            </div>
+            
+            
             <div class="mix-card__strength-row">
               <div><span>Крепость</span></div>
               <div class="mix-card__strength"></div>
@@ -268,6 +309,7 @@ class MixPage implements InterfaceContainerElement {
           </div>
         </div>
       </div>
+      
     </div>
     `;
 
@@ -276,11 +318,24 @@ class MixPage implements InterfaceContainerElement {
       setTimeout(() => {
         this.mixStrength(strength);
         createPopup(main);
+        this.rating = new rating(this.mixId, this.vote, this.getRateResult);
+        this.rating.draw();
         initSlider();
         this.doughnutChart();
         document.querySelector('#switch')?.addEventListener('click', this.switcher);
         document.querySelector('.mix-card__buttons-row')?.addEventListener('click', this.setGram);
         document.querySelector('#composition')?.addEventListener('input', this.changeRange);
+
+        const userId = this.profileUser.getUserId();
+        if (typeof userId === 'string' && userId.length > 12) {
+          this.apiMix.getFavorite(userId).then((data) => {
+            if (data.indexOf(this.mix.id) !== -1) {
+              const favoriteIco = document.querySelector('.favorite-ico') as HTMLImageElement;
+              favoriteIco.src = favoriteActiveIconSrc;
+              favoriteIco.classList.add('favorite-active');
+            }
+          });
+        }
       }, 0);
       return main;
     }
@@ -288,19 +343,3 @@ class MixPage implements InterfaceContainerElement {
 }
 
 export default MixPage;
-
-// <div class="popup-flavor">
-//       <div class="popup-flavor__inner">
-//         <img src="" class="popup-flavor__img">
-//         <img src="${cancel}" class="popup-flavor__img-cancel">
-//         <div class="popup-flavor__info">
-//           <div class="popup-flavor__title"></div>
-//           <div class="popup-flavor__desc"></div>
-//           <div class="popup-flavor__must"><button class="button button-2"></button></div>
-//         </div>
-//         <div class="popup-flavor__buttons">
-//         <button class="button button-3">Добавить в миксер</button>
-//         <button class="button button-3">Подобрать миксы со вкусом</button>
-//         </div>
-//       </div>
-//     </div>

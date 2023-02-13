@@ -18,6 +18,17 @@
   h1,.mix-card__desc{
     padding: 0 20px;
   }
+  .mix-card__title-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .mix-card__favorite {
+    margin-top: 5px;
+    margin-right: 5px;
+  }
+  .favorite-ico {
+    width: 30px;
+  }
   .mix-card__more-info{
     display: flex;
     flex-direction: column;
@@ -76,6 +87,10 @@
   .mix-card__buttons-row{
     display: none;
     gap: 10px;
+  }
+  .mix-card__star{
+    width: 20px;
+    height: 20px;
   }
 }
 .tabs#tabs-mix {
@@ -422,6 +437,32 @@
     }
   }
 }
+.mix-rating{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__inner,&__stars{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &__stars{
+    gap: 10px;
+    background-color: gold;
+    border-radius: 28px;
+    height: 56px;
+    width: 56px;
+    transition: .2s;
+  }
+  .rated{
+    background-color: #121327;
+  }
+  .active{
+    width: 214px;
+  }
+}
+
+
 
 .current-value{
   width: max-content;

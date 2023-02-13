@@ -18,6 +18,7 @@ import { isBrandPage } from '../../utils/isBrandPage';
 import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 import ProfileUser from '../profile_user/profile_user';
+import FavoritePage from '../../pages/favorite_page/favorite_page';
 import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 
@@ -30,6 +31,7 @@ enum LocationPath {
   BrandSuggestPage = `/brand-suggest`,
   AccountPage = `/account`,
   EditAccount = `/account/edit`,
+  FavoritePage = `/account/favorite`,
   UserMixes = `/user-mixes`,
   MixPage = `/mix`,
   ChangePrefFlavors = `/change-pref/flavors`,
@@ -91,6 +93,12 @@ class App {
     } else if (location === LocationPath.EditAccount) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageEdit();
+      } else {
+        changePage = new AccountPage();
+      }
+    } else if (location === LocationPath.FavoritePage) {
+      if ((await this.checkAuth.checkUserAuth()) === true) {
+        changePage = new FavoritePage();
       } else {
         changePage = new AccountPage();
       }

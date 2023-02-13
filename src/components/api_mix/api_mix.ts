@@ -1,10 +1,12 @@
 import ProfileUser from '../profile_user/profile_user';
 import { server } from '../server/server';
+import { mixRate } from '../types/types';
 
 class ApiMix {
   private static instance: ApiMix;
   private base;
   private rate;
+  private favorite;
   private profileUser;
 
   constructor() {
@@ -14,10 +16,11 @@ class ApiMix {
     ApiMix.instance = this;
     this.base = server;
     this.rate = `${this.base}/auth/rate/`;
+    this.favorite = `${this.base}/auth/favorite/`;
     this.profileUser = new ProfileUser();
   }
 
-  public async getRate(id: number) {
+  public async getRate(id: number):Promise<mixRate> {
     const res = await fetch(`${this.rate}:${id}`, {
       method: 'GET',
     });
@@ -59,6 +62,29 @@ class ApiMix {
       });
     }
     return rate;
+  }
+
+  public async getFavorite(userId: string) {
+    const res = await fetch(`${this.favorite}:${userId}`, {
+      method: 'GET',
+    });
+    return await res.json();
+  }
+
+  public async setFavorite(userId: string, id: number) {
+    if (typeof userId === 'string') {
+      const res = await fetch(`${this.favorite}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: userId,
+          id: id,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return await res.json();
+    }
   }
 }
 

@@ -2,11 +2,18 @@ import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import ApiUsers from '../../components/api_users/apiUsers';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
+import ApiMix from '../../components/api_mix/api_mix';
+import ProfileUser from '../../components/profile_user/profile_user';
+
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
   private modalWindowRegistration;
+  private apiMix;
+  private profileUser;
   constructor() {
     this.apiUsers = new ApiUsers();
+    this.apiMix = new ApiMix();
+    this.profileUser = new ProfileUser();
     this.modalWindowRegistration = new ModalWindowRegistration();
   }
 
@@ -95,7 +102,13 @@ class AccountPage implements InterfaceContainerElement {
     </div>
     `;
     main.addEventListener('click', this.handler);
-
+    const userId = this.profileUser.getUserId();
+    if (typeof userId === 'string') {
+      this.apiMix.setRate(userId, 9, 4).then((data) => {
+        console.log(data);
+      });
+    }
+    console.log(this.apiMix.getVote(9))
     return main;
   }
 }
