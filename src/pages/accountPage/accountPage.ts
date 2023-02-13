@@ -102,13 +102,6 @@ class AccountPage implements InterfaceContainerElement {
     </div>
     `;
     main.addEventListener('click', this.handler);
-    const userId = this.profileUser.getUserId();
-    if (typeof userId === 'string') {
-      this.apiMix.setRate(userId, 9, 4).then((data) => {
-        console.log(data);
-      });
-    }
-    console.log(this.apiMix.getVote(9))
     return main;
   }
 }

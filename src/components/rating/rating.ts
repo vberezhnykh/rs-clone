@@ -12,7 +12,7 @@ class rating {
   private vote: number;
   private Apimix: ApiMix;
   private profileUser: ProfileUser;
-  private profileId: String | false;
+  private profileId: string | false;
   private getRateResult: mixRate;
   private rate: string;
   private starstop: string;
