@@ -68,3 +68,7 @@ export interface Profile {
   myMix: number[];
   rating: { id: number; rate: number }[];
 }
+export interface mixRate{
+  rate: number;
+  vote: number;
+}

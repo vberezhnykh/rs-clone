@@ -88,6 +88,10 @@
     display: none;
     gap: 10px;
   }
+  .mix-card__star{
+    width: 20px;
+    height: 20px;
+  }
 }
 .tabs#tabs-mix {
   // font-size: 0;
@@ -429,6 +433,32 @@
     }
   }
 }
+.mix-rating{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__inner,&__stars{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &__stars{
+    gap: 10px;
+    background-color: gold;
+    border-radius: 28px;
+    height: 56px;
+    width: 56px;
+    transition: .2s;
+  }
+  .rated{
+    background-color: #121327;
+  }
+  .active{
+    width: 214px;
+  }
+}
+
+
 
 .current-value{
   width: max-content;

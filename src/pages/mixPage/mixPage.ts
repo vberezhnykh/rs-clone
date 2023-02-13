@@ -1,11 +1,10 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import starempty from '../../assets/images/star-empty.svg';
 import info from '../../assets/images/info.svg';
 import { initSlider, onResizeSlider, onSliderChange } from '../../components/slider/slider';
 import Chart from 'chart.js/auto';
 import '../../../node_modules/chartjs-plugin-outerlabels';
-import { Mix, PromiseFlavors, Flavor } from '../../components/types/types';
+import { Mix, PromiseFlavors, Flavor, mixRate } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import preloader from '../../components/preloader/preloader';
@@ -15,7 +14,7 @@ import ProfileUser from '../../components/profile_user/profile_user';
 import ApiMix from '../../components/api_mix/api_mix';
 import CheckAuth from '../../components/checkAuth/checkAuth';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
-
+import rating from '../../components/rating/rating';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -27,24 +26,30 @@ class MixPage implements InterfaceContainerElement {
   private flavorsBrands: string[] = [];
   private flavorsStrength: number[] = [];
   private preloader: preloader;
-  private profileUser;
-  private apiMix;
-  private checkAuth;
+  private profileUser:ProfileUser;
+  private apiMix:ApiMix;
+  private checkAuth:CheckAuth;
   private activeUser: boolean;
-  private modalWindow;
+  private modalWindow:ModalWindowRegistration;
+  private rating:rating;
+  private mixId:number;
+  private vote:number;
+  private getRateResult:mixRate;
   constructor() {
-    const mixId = window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1];
+    this.mixId = Number(window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1]);
     this.api = new Api();
-    this.getData(Number(mixId));
     this.profileUser = new ProfileUser();
     this.apiMix = new ApiMix();
     this.checkAuth = new CheckAuth();
     this.modalWindow = new ModalWindowRegistration();
+    this.getData();
   }
-  private async getData(mixId: number) {
+  private async getData() {
     this.preloader = new preloader();
     this.preloader.draw();
-    this.mix = await this.api.getMix(mixId);
+    this.vote=this.apiMix.getVote(this.mixId);
+    this.getRateResult=await this.apiMix.getRate(this.mixId);
+    this.mix = await this.api.getMix(this.mixId);
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
     this.flavorsOfMix = await Promise.allSettled(this.flavorsIds.map((id) => this.api.getFlavor(id))).then(
@@ -265,16 +270,8 @@ class MixPage implements InterfaceContainerElement {
           </div>
           <div class="mix-card__desc">${this.mix.description}</div>
           <div class="mix-card__more-info">
-            <div class="mix-card__rating-row">
-              <div class="mix-card__stars">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-                <img src="${starempty}" alt="star">
-              </div>
-              <div class="mix-card__rating">5.0</div>
-            </div>
+            
+            
             <div class="mix-card__strength-row">
               <div><span>Крепость</span></div>
               <div class="mix-card__strength"></div>
@@ -305,6 +302,7 @@ class MixPage implements InterfaceContainerElement {
           </div>
         </div>
       </div>
+      
     </div>
     `;
 
@@ -316,6 +314,8 @@ class MixPage implements InterfaceContainerElement {
       setTimeout(() => {
         this.mixStrength(strength);
         createPopup(main);
+        this.rating=new rating(this.mixId,this.vote,this.getRateResult);
+        this.rating.draw();
         initSlider();
         this.doughnutChart();
         document.querySelector('#switch')?.addEventListener('click', this.switcher);
@@ -340,19 +340,3 @@ class MixPage implements InterfaceContainerElement {
 }
 
 export default MixPage;
-
-// <div class="popup-flavor">
-//       <div class="popup-flavor__inner">
-//         <img src="" class="popup-flavor__img">
-//         <img src="${cancel}" class="popup-flavor__img-cancel">
-//         <div class="popup-flavor__info">
-//           <div class="popup-flavor__title"></div>
-//           <div class="popup-flavor__desc"></div>
-//           <div class="popup-flavor__must"><button class="button button-2"></button></div>
-//         </div>
-//         <div class="popup-flavor__buttons">
-//         <button class="button button-3">Добавить в миксер</button>
-//         <button class="button button-3">Подобрать миксы со вкусом</button>
-//         </div>
-//       </div>
-//     </div>
