@@ -20,7 +20,7 @@ class ApiMix {
     this.profileUser = new ProfileUser();
   }
 
-  public async getRate(id: number):Promise<mixRate> {
+  public async getRate(id: number): Promise<mixRate> {
     const res = await fetch(`${this.rate}:${id}`, {
       method: 'GET',
     });
@@ -55,7 +55,8 @@ class ApiMix {
       votes.forEach((el: { id: number; rate: number }) => {
         if (el.id === id) rate = el.rate;
       });
-    } else if (localStorageAuth) {
+    }
+    if (localStorageAuth) {
       votes = JSON.parse(localStorageAuth).rating;
       votes.forEach((el: { id: number; rate: number }) => {
         if (el.id === id) rate = el.rate;
@@ -65,6 +66,11 @@ class ApiMix {
   }
 
   public async getFavorite(userId: string) {
+    const localStorageAuth: string | null = window.localStorage.getItem('blenderProfile');
+    if (localStorageAuth) {
+      const favorite = JSON.parse(localStorageAuth).favorite;
+      return favorite;
+    }
     const res = await fetch(`${this.favorite}:${userId}`, {
       method: 'GET',
     });
@@ -83,6 +89,7 @@ class ApiMix {
           'Content-Type': 'application/json',
         },
       });
+      this.profileUser?.updateProfile();
       return await res.json();
     }
   }

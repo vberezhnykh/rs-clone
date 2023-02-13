@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement } from '../../components/types/types';
+import { InterfaceContainerElement, Profile } from '../../components/types/types';
 import ApiUsers from '../../components/api_users/apiUsers';
 const favorite = require('../../assets/images/favorite.png');
 const profile = require('../../assets/images/profile.svg');
@@ -16,6 +16,7 @@ class AccountPage implements InterfaceContainerElement {
   private server;
   private apiMix;
   private preloader;
+  private currentUser: Profile | false;
   constructor() {
     this.apiUsers = new ApiUsers();
     this.profileUser = new ProfileUser();
@@ -38,11 +39,28 @@ class AccountPage implements InterfaceContainerElement {
     }
   };
 
+  // private async getData() {
+  //   this.currentUser = await this.profileUser.getProfile();
+
+  // }
+
   draw(): HTMLElement {
+    // this.getData();
+    // setTimeout(() => {
+    //   console.log(888, this.currentUser);
+    // }, 100)
+
     const main = createHTMLElement('main', 'main');
     this.profileUser.getProfile().then((data) => {
       if (data !== false) {
         const photo = data.avatar ? `${this.server}/${data.avatar}` : profile;
+        const getTextCountMix = (num: number, arr: string[]) => {
+          num = Math.abs(num);
+            if (Number.isInteger(num)) {
+            const options = [2, 0, 1, 1, 1, 2];
+            return arr[(num % 100 > 4 && num % 100 < 20) ? 2 : options[(num % 10 < 5) ? num % 10 : 5]];
+          }
+        }
         main.innerHTML = `
         <div class="main__container container">
           <div class="flex-container">
@@ -67,12 +85,12 @@ class AccountPage implements InterfaceContainerElement {
               <div class="column cell-img favorite">
                 <img src="${favorite}">
                 <p class="name">Любимые</p>
-                <p class="amount">0 миксов</p>
+                <p class="amount">${data.favorite.length} ${getTextCountMix(data.favorite.length, ['микс', 'микса', 'миксов'])}</p>
               </div>
               <div class="column cell-img">
                 <img src="${myMix}">
                 <p class="name">Мои миксы</p>
-                <p class="amount">0 миксов</p>
+                <p class="amount">${data.myMix.length} ${getTextCountMix(data.myMix.length, ['микс', 'микса', 'миксов'])}</p>
               </div>
             </div>
           </div>
@@ -82,18 +100,6 @@ class AccountPage implements InterfaceContainerElement {
       }
     });
     main.addEventListener('click', this.handler);
-
-    const userId = this.profileUser.getUserId();
-    if (typeof userId === 'string') {
-      // this.apiMix.setRate(userId, 9, 4).then((data) => {
-      //   console.log(data);
-      // });
-      this.apiMix.getFavorite(userId).then((data) => {
-        console.log('favorite', data)
-      })
-    }
-    console.log(this.apiMix.getVote(9))
- 
     return main;
   }
 }
