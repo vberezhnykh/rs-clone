@@ -228,7 +228,7 @@ class MixPage implements InterfaceContainerElement {
         }">
         <div class="component__info">
           <div class="component__title">${this.flavorsNames[i]}</div>
-          <div class="component__must"><button class="button button-2">${this.flavorsBrands[0]}</button></div>
+          <div class="component__must"><button class="button button-2">${this.flavorsBrands[i]}</button></div>
         </div>
         <div class="component__more"><img src="${info}" class="more" height="32" width="32"></div>
       </div>
