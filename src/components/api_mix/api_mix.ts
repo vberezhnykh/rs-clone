@@ -1,5 +1,6 @@
 import ProfileUser from '../profile_user/profile_user';
 import { server } from '../server/server';
+import { mixRate } from '../types/types';
 
 class ApiMix {
   private static instance: ApiMix;
@@ -19,7 +20,7 @@ class ApiMix {
     this.profileUser = new ProfileUser();
   }
 
-  public async getRate(id: number) {
+  public async getRate(id: number):Promise<mixRate> {
     const res = await fetch(`${this.rate}:${id}`, {
       method: 'GET',
     });
