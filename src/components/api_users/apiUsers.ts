@@ -9,6 +9,8 @@ class ApiUsers {
   private check;
   private profile;
   private upload;
+  private search;
+  private flavorPreference;
   constructor() {
     if (ApiUsers.instance) {
       return ApiUsers.instance;
@@ -20,6 +22,8 @@ class ApiUsers {
     this.check = `${this.base}/auth/check`;
     this.profile = `${this.base}/auth/profile`;
     this.upload = `${this.base}/uploadfile`;
+    this.search = `${this.base}/search`;
+    this.flavorPreference = `${this.base}/flavorpreference`;
   }
 
   public async newUser(email: string, password: string) {
@@ -92,6 +96,31 @@ class ApiUsers {
     const res = await fetch(`${this.upload}`, {
       method: 'POST',
       body: formData,
+    });
+    return await res.json();
+  }
+
+  public async searchAccessor(phrase?: string) {
+    const res = await fetch(`${this.search}/:${phrase}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
+  }
+
+  public async flavorPreferenceAccessor(userId: string, flavors: string[], strange: string) {
+    const res = await fetch(`${this.flavorPreference}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: userId,
+        flavors: flavors,
+        strange: strange,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     return await res.json();
   }

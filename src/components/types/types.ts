@@ -72,3 +72,12 @@ export interface mixRate{
   rate: number;
   vote: number;
 }
+
+export interface NewFlavor {
+  brand: string;
+  name: string;
+  description: string;
+  image: string;
+  strength: string;
+  flavor: string[];
+}
