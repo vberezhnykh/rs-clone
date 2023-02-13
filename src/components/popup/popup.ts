@@ -1,7 +1,14 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import cancel from '../../assets/images/cancel.svg';
-import { Flavor } from '../../components/types/types';
+import { Flavor, Flavors } from '../../components/types/types';
 import Api from '../../components/api/api';
+import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
+import preloader from '../preloader/preloader';
+import { MixerNowResult } from '../mixerResult/mixer-result';
+
+const ADD_BUTTON_TEXT = 'Добавить в миксер';
+const REMOVE_BUTTON_TEXT = 'Удалить из миксера';
 
 export function createPopup(elem: HTMLElement): void {
   if (!document.querySelector('.popup-flavor')) {
@@ -15,23 +22,98 @@ export function createPopup(elem: HTMLElement): void {
           <div class="popup-flavor__must"><button class="button button-2"></button></div>
         </div>
         <div class="popup-flavor__buttons">
-        <button class="button button-3">Добавить в миксер</button>
-        <button class="button button-3">Подобрать миксы со вкусом</button>
+        <button class="button button-3 popup-flavor__add-button">${ADD_BUTTON_TEXT}</button>
+        <button class="button button-3 popup-flavor__pick-up-button">Подобрать миксы со вкусом</button>
         </div>
       </div>`;
     elem.appendChild(flavor);
     flavor.onclick = (e) => {
-      if ((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel'))
+      if ((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel')) {
         (<HTMLElement>document.querySelector('.popup-flavor')).style.display = 'none';
+      }
     };
   }
 }
 
-export function openFlavorPopup(flaverObj: Flavor): void {
+export function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPageOrMixerPage?: Element): void {
   const api = new Api();
-  (<HTMLElement>document.querySelector('.popup-flavor__img')).setAttribute('src', api.getImage(flaverObj.image));
-  (<HTMLElement>document.querySelector('.popup-flavor__title')).innerHTML = `${flaverObj.name}`;
-  (<HTMLElement>document.querySelector('.popup-flavor__desc')).innerHTML = `${flaverObj.description}`;
-  (<HTMLElement>document.querySelector('.popup-flavor__must')).children[0].innerHTML = `${flaverObj.brand}`;
+  (<HTMLElement>document.querySelector('.popup-flavor__img')).setAttribute('src', api.getImage(flavorObj.image));
+  (<HTMLElement>document.querySelector('.popup-flavor__title')).innerHTML = `${flavorObj.name}`;
+  (<HTMLElement>document.querySelector('.popup-flavor__desc')).innerHTML = `${flavorObj.description}`;
+  (<HTMLElement>document.querySelector('.popup-flavor__must')).children[0].innerHTML = `${flavorObj.brand}`;
   (<HTMLElement>document.querySelector('.popup-flavor')).style.display = 'block';
+  const addButton = document.querySelector('.popup-flavor__add-button');
+  if (!(addButton instanceof HTMLElement)) return;
+  markButtonIfFlavorAddedToMixer(flavorObj, addButton);
+  addButton.onclick = () => handleClickOnAddButton(addButton, flavorObj, addButtonOnBrandPageOrMixerPage);
+  const pickUpButton = document.querySelector('.popup-flavor__pick-up-button');
+  if (!(pickUpButton instanceof HTMLButtonElement)) return;
+  pickUpButton.onclick = () => handleClickOnPickUpBtn(pickUpButton, flavorObj, api);
+}
+
+function markButtonIfFlavorAddedToMixer(flavorObj: Flavor, addButton: Element) {
+  const index = getFlavorsInMixer().findIndex((flavor) => flavor.id === flavorObj.id);
+  if (index === -1) {
+    addButton.classList.remove('popup-flavor__added-button');
+    addButton.textContent = ADD_BUTTON_TEXT;
+  } else {
+    addButton.classList.add('popup-flavor__added-button');
+    addButton.textContent = REMOVE_BUTTON_TEXT;
+  }
+}
+
+function handleClickOnAddButton(addButton: HTMLElement, flavor: Flavor, addBtnOnBrandPageOrMixerPage?: Element) {
+  if (!(addButton instanceof HTMLButtonElement)) return;
+  addButton.classList.toggle('popup-flavor__added-button');
+  const flavorsInMixer = getFlavorsInMixer();
+  const indexOfFlavorInMixer = flavorsInMixer.findIndex((flavorInMixer) => flavorInMixer.id === flavor.id);
+  if (addButton.classList.contains('popup-flavor__added-button') && indexOfFlavorInMixer === -1) {
+    addFlavorToMixer(addButton, flavorsInMixer, flavor, addBtnOnBrandPageOrMixerPage);
+  } else {
+    removeFlavorFromMixer(addButton, flavorsInMixer, indexOfFlavorInMixer, addBtnOnBrandPageOrMixerPage);
+    if (!addBtnOnBrandPageOrMixerPage?.classList.contains('mixer-now__info-btn')) return;
+    removeFlavorFromMixerPage(addBtnOnBrandPageOrMixerPage);
+  }
+  localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
+  handleChangeOfFlavorsInMixer();
+}
+
+function removeFlavorFromMixer(
+  addButton: HTMLButtonElement,
+  flavorsInMixer: Flavors,
+  indexOfFlavorInMixer: number,
+  addButtonOnBrandPage: Element | undefined
+) {
+  addButton.textContent = ADD_BUTTON_TEXT;
+  flavorsInMixer.splice(indexOfFlavorInMixer, 1);
+  if (addButtonOnBrandPage) addButtonOnBrandPage.classList.remove('flavor__image--added');
+}
+
+function addFlavorToMixer(
+  addButton: HTMLButtonElement,
+  flavorsInMixer: Flavors,
+  flavor: Flavor,
+  addButtonOnBrandPage: Element | undefined
+) {
+  addButton.textContent = REMOVE_BUTTON_TEXT;
+  flavorsInMixer.push(flavor);
+  if (addButtonOnBrandPage) addButtonOnBrandPage.classList.add('flavor__image--added');
+}
+
+function removeFlavorFromMixerPage(btn: Element) {
+  const removeButton = btn.nextElementSibling;
+  if (!removeButton) return;
+  (removeButton as HTMLElement).click();
+}
+
+async function handleClickOnPickUpBtn(btn: HTMLButtonElement, flavor: Flavor, api: Api) {
+  const preloaderInstance = new preloader();
+  preloaderInstance.draw();
+  const matchingMixes = (await api.getAllMixes()).filter((mix) => {
+    const mixComposition = mix.compositionById;
+    if (!(mixComposition instanceof Object)) return;
+    return Object.values(mixComposition).includes(flavor.id);
+  });
+  document.body.appendChild(new MixerNowResult(matchingMixes).create());
+  preloaderInstance.removePreloader();
 }

@@ -1,7 +1,7 @@
 .footer {
   &__container {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     font-size: 1.2rem;
     width: 100%;
@@ -9,18 +9,42 @@
     padding: 14px;
     gap: 10px;
     text-align: center;
-    // background-color: var(--color-bg);
-    a{
+
+    a {
       text-decoration: none;
       cursor: pointer;
       color: var(--color-font);
     }
   }
-  &__github,&__rs{
-    width: 100%;
+
+  &__github {
     display: flex;
     align-items: center;
     gap: 10px;
-    justify-content: center;
+  }
+
+  &__mixer {
+    width: 4rem;
+    height: 4rem;
+    background-color: transparent;
+    background-size: cover;
+    position: relative;
+
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+
+  &__mixer-number {
+    width: 1rem;
+    height: 1rem;
+    position: absolute;
+    left: -0.5rem;
+    bottom: -0.5rem;
+    color: black;
+    background-color: greenyellow;
+    border-radius: 50%;
+    text-align: center;
   }
 }

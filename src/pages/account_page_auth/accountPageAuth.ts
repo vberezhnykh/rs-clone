@@ -73,8 +73,12 @@ class AccountPage implements InterfaceContainerElement {
               <div class="wrap">
               <div class="column name-column">${data.name}</div>
               <div class="instagram-column">
-              <div class="img-instagram"><a href="https://www.instagram.com/${data.instagramAccount.slice(1)}" target="_blank"><img src="${instagramLogo}"></a></div>
-              <div class="text-instagram"><span><a href="https://www.instagram.com/${data.instagramAccount.slice(1)}" target="_blank">${data.instagramAccount}</a></span></div>
+              <div class="img-instagram"><a href="https://www.instagram.com/${data.instagramAccount.slice(
+                1
+              )}" target="_blank"><img src="${instagramLogo}"></a></div>
+              <div class="text-instagram"><span><a href="https://www.instagram.com/${data.instagramAccount.slice(
+                1
+              )}" target="_blank">${data.instagramAccount}</a></span></div>
               </div>
               <div class="column button-column">
                 <div class="button-edit"><span>Настройки профиля</span></div>

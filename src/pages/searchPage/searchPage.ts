@@ -176,10 +176,6 @@ class SearchPage implements InterfaceContainerElement {
     return new MixesList(resultByTab).create({ isSearchList: true });
   }
 
-  private openMixCard() {
-    /* TO-DO */
-  }
-
   private createResultListForBrandTab(resultByTab: Brands) {
     const list = createHTMLElement('search-list', 'ul');
     list.classList.add('brands-list');
@@ -199,14 +195,13 @@ class SearchPage implements InterfaceContainerElement {
       container.appendChild(flavorsNum);
       listItem.appendChild(container);
       list.appendChild(listItem);
-      listItem.onclick = () => this.openBrandCard();
+      listItem.onclick = () => this.openBrandCard(resultByTab[i].name);
     }
     return list;
   }
 
-  private openBrandCard() {
-    /* TO-DO */
-    /* открывается страница миксер => бренд */
+  private openBrandCard(brandName: string) {
+    location.hash = `/mixer/brands/${brandName.toLowerCase()}`;
   }
 
   private searchBy(inputValue: string, category: SearchCategory) {

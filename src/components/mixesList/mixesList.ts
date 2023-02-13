@@ -7,7 +7,6 @@ import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import ProfileUser from '../profile_user/profile_user';
 
-
 const ERROR_MESSAGE = 'Произошла ошибка. Ничего не найдено. Попробуйте снова...';
 
 /* enum SortOptions {
@@ -95,8 +94,8 @@ export class MixesList {
   }
 
   private openMixCard(i: number, mixes?: Mixes) {
-    document.body.classList.remove('body--unscrollable');
     document.querySelector('.user-mixes-container')?.remove();
+    document.querySelector('.result-container')?.remove();
     if (mixes) window.location.hash = `/mix/${mixes[i].id}`;
   }
 }

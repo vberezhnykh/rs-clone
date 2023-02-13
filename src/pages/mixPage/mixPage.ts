@@ -15,6 +15,7 @@ import ApiMix from '../../components/api_mix/api_mix';
 import CheckAuth from '../../components/checkAuth/checkAuth';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 import rating from '../../components/rating/rating';
+import { getRandomMixNumber } from '../../utils/getRandomMixNumber';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -26,15 +27,15 @@ class MixPage implements InterfaceContainerElement {
   private flavorsBrands: string[] = [];
   private flavorsStrength: number[] = [];
   private preloader: preloader;
-  private profileUser:ProfileUser;
-  private apiMix:ApiMix;
-  private checkAuth:CheckAuth;
+  private profileUser: ProfileUser;
+  private apiMix: ApiMix;
+  private checkAuth: CheckAuth;
   private activeUser: boolean;
-  private modalWindow:ModalWindowRegistration;
-  private rating:rating;
-  private mixId:number;
-  private vote:number;
-  private getRateResult:mixRate;
+  private modalWindow: ModalWindowRegistration;
+  private rating: rating;
+  private mixId: number;
+  private vote: number;
+  private getRateResult: mixRate;
   constructor() {
     this.mixId = Number(window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1]);
     this.api = new Api();
@@ -47,8 +48,9 @@ class MixPage implements InterfaceContainerElement {
   private async getData() {
     this.preloader = new preloader();
     this.preloader.draw();
-    this.vote=this.apiMix.getVote(this.mixId);
-    this.getRateResult=await this.apiMix.getRate(this.mixId);
+    if (isNaN(this.mixId)) this.mixId = await getRandomMixNumber();
+    this.vote = this.apiMix.getVote(this.mixId);
+    this.getRateResult = await this.apiMix.getRate(this.mixId);
     this.mix = await this.api.getMix(this.mixId);
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
@@ -68,48 +70,54 @@ class MixPage implements InterfaceContainerElement {
     this.preloader.removePreloader();
   }
 
-  private changeRange=(e:Event)=>{
-      if((<HTMLInputElement>e.target).classList.contains('tick-slider-input')){
-        let strength=0;
-        const all=document.querySelectorAll('.tick-slider-input').length;
-        const index = Array.from(document.querySelectorAll('.tick-slider-input')).indexOf(e.target as HTMLElement);
-        let startPosition:number=100;
-        //countMin get how many elements is 0
-        let countMin=0;
-        //countMax get how many elements is 100
-        let countMax=0;
-        document.querySelectorAll('.tick-slider-input').forEach((elem,i )=>{
-          if(index!=i) startPosition-=Number((<HTMLInputElement>elem).value);
-          if(Number((<HTMLInputElement>elem).value)==0) countMin+=1; 
-          if(Number((<HTMLInputElement>elem).value)==100) countMax+=1; 
-        });
-        const change=Number((<HTMLInputElement>e.target).value)-startPosition;
-        document.querySelectorAll('.tick-slider-input').forEach((elem,i )=>{
-          if(index!=i && Number((<HTMLInputElement>elem).value)!=0 && change>=0){
-            (<HTMLInputElement>elem).value=String(Number((<HTMLInputElement>elem).value)-Math.ceil(change/(all-1-countMin)));}
-          else if(index!=i && Number((<HTMLInputElement>elem).value)!=100 && change<=0){
-          (<HTMLInputElement>elem).value=String(Number((<HTMLInputElement>elem).value)-Math.ceil(change/(all-1-countMax)));
-          }
-          onSliderChange(<HTMLInputElement>elem);
-          strength += Number((<HTMLInputElement>elem).value) * this.flavorsStrength[i];
-        });
-        this.mixStrength(strength);
-      }
-  }
-  private switcher = (): void => {initSlider();
+  private changeRange = (e: Event) => {
+    if ((<HTMLInputElement>e.target).classList.contains('tick-slider-input')) {
+      let strength = 0;
+      const all = document.querySelectorAll('.tick-slider-input').length;
+      const index = Array.from(document.querySelectorAll('.tick-slider-input')).indexOf(e.target as HTMLElement);
+      let startPosition = 100;
+      //countMin get how many elements is 0
+      let countMin = 0;
+      //countMax get how many elements is 100
+      let countMax = 0;
+      document.querySelectorAll('.tick-slider-input').forEach((elem, i) => {
+        if (index != i) startPosition -= Number((<HTMLInputElement>elem).value);
+        if (Number((<HTMLInputElement>elem).value) == 0) countMin += 1;
+        if (Number((<HTMLInputElement>elem).value) == 100) countMax += 1;
+      });
+      const change = Number((<HTMLInputElement>e.target).value) - startPosition;
+      document.querySelectorAll('.tick-slider-input').forEach((elem, i) => {
+        if (index != i && Number((<HTMLInputElement>elem).value) != 0 && change >= 0) {
+          (<HTMLInputElement>elem).value = String(
+            Number((<HTMLInputElement>elem).value) - Math.ceil(change / (all - 1 - countMin))
+          );
+        } else if (index != i && Number((<HTMLInputElement>elem).value) != 100 && change <= 0) {
+          (<HTMLInputElement>elem).value = String(
+            Number((<HTMLInputElement>elem).value) - Math.ceil(change / (all - 1 - countMax))
+          );
+        }
+        onSliderChange(<HTMLInputElement>elem);
+        strength += Number((<HTMLInputElement>elem).value) * this.flavorsStrength[i];
+      });
+      this.mixStrength(strength);
+    }
+  };
+  private switcher = (): void => {
+    initSlider();
     if ((<HTMLInputElement>document.querySelector('#switch')).checked)
       (<HTMLElement>document.querySelector('.mix-card__buttons-row')).style.display = 'flex';
     else (<HTMLElement>document.querySelector('.mix-card__buttons-row')).style.display = 'none';
   };
-  private setGram=(e:Event):void=>{
-    if((<HTMLButtonElement>e.target).classList.contains('button-2')){
-      Array.from((<HTMLElement>document.querySelector('.mix-card__buttons-row'))?.children).forEach(elem=>{
-        if(elem==e.target){if(!elem.classList.contains('active'))elem.classList.add('active')}
-        else elem.classList.remove('active');
+  private setGram = (e: Event): void => {
+    if ((<HTMLButtonElement>e.target).classList.contains('button-2')) {
+      Array.from((<HTMLElement>document.querySelector('.mix-card__buttons-row'))?.children).forEach((elem) => {
+        if (elem == e.target) {
+          if (!elem.classList.contains('active')) elem.classList.add('active');
+        } else elem.classList.remove('active');
       });
       initSlider();
     }
-  }
+  };
   private popupOpenClose = (e: Event): void => {
     if ((<HTMLElement>e.target).classList.contains('more')) {
       const index = Array.from(document.querySelectorAll('.more')).indexOf(e.target as HTMLElement);
@@ -194,14 +202,14 @@ class MixPage implements InterfaceContainerElement {
     });
   };
 
-  private mixStrength=(strength:number):void=>{
-    const mixStrength=(<HTMLElement>document.querySelector('.mix-card__strength'));
+  private mixStrength = (strength: number): void => {
+    const mixStrength = <HTMLElement>document.querySelector('.mix-card__strength');
     if (strength / 100 > 2.5) mixStrength.innerHTML = 'Крепкий';
-      else if (strength / 100 > 1.5) mixStrength.innerHTML = 'Средний';
-      else {
-        mixStrength.innerHTML = 'Легкий';
-      }
-  }
+    else if (strength / 100 > 1.5) mixStrength.innerHTML = 'Средний';
+    else {
+      mixStrength.innerHTML = 'Легкий';
+    }
+  };
 
   draw(): HTMLElement {
     if (this.mix === undefined) {
@@ -220,7 +228,7 @@ class MixPage implements InterfaceContainerElement {
         }">
         <div class="component__info">
           <div class="component__title">${this.flavorsNames[i]}</div>
-          <div class="component__must"><button class="button button-2">${this.flavorsBrands[0]}</button></div>
+          <div class="component__must"><button class="button button-2">${this.flavorsBrands[i]}</button></div>
         </div>
         <div class="component__more"><img src="${info}" class="more" height="32" width="32"></div>
       </div>
@@ -253,7 +261,7 @@ class MixPage implements InterfaceContainerElement {
   </div> 
   </div>`;
       }
-      
+
       main.innerHTML = `
     <div class="message_container">
     <div class="main__container container">
@@ -306,21 +314,18 @@ class MixPage implements InterfaceContainerElement {
     </div>
     `;
 
-    
-  
-    
       main.addEventListener('click', this.popupOpenClose);
       window.addEventListener('resize', onResizeSlider);
       setTimeout(() => {
         this.mixStrength(strength);
         createPopup(main);
-        this.rating=new rating(this.mixId,this.vote,this.getRateResult);
+        this.rating = new rating(this.mixId, this.vote, this.getRateResult);
         this.rating.draw();
         initSlider();
         this.doughnutChart();
         document.querySelector('#switch')?.addEventListener('click', this.switcher);
         document.querySelector('.mix-card__buttons-row')?.addEventListener('click', this.setGram);
-        document.querySelector('#composition')?.addEventListener('input',this.changeRange);
+        document.querySelector('#composition')?.addEventListener('input', this.changeRange);
 
         const userId = this.profileUser.getUserId();
         if (typeof userId === 'string' && userId.length > 12) {
@@ -332,7 +337,6 @@ class MixPage implements InterfaceContainerElement {
             }
           });
         }
-
       }, 0);
       return main;
     }

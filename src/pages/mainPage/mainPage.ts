@@ -12,11 +12,6 @@ class MainPage implements InterfaceContainerElement {
     const main = createHTMLElement('main', 'main');
     const container = createHTMLElement(['main__container', 'container']);
     main.appendChild(container);
-
-    /* main.innerHTML = `
-    <div class="main__container">
-    </div>
-    `; */
     container.appendChild(this.createTopBlock());
     return main;
   }

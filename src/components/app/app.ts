@@ -11,15 +11,26 @@ import ErrorPage from '../../pages/errorPage/errorPage';
 import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import CheckAuth from '../checkAuth/checkAuth';
+import { Catalog } from '../../pages/catalogPage/catalog';
+import { BrandSuggest } from '../../pages/brandPage_suggest/brandSuggest';
+import { BrandPage } from '../../pages/brandPage/brandPage';
+import { isBrandPage } from '../../utils/isBrandPage';
 import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 import ProfileUser from '../profile_user/profile_user';
 import FavoritePage from '../../pages/favorite_page/favorite_page';
+import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 
 enum LocationPath {
   MainPage = `/`,
   SearchPage = `/search`,
   MixerPage = `/mixer`,
+  CatalogPage = `/mixer/brands`,
+  MixerNowPage = `/mixer/mixer-now`,
+  BrandSuggestPage = `/brand-suggest`,
+  PreferencesFlavorsPage = `/mixer/preferences/flavors`,
+  PreferencesBrandsPage = `/mixer/preferences/brands`,
   AccountPage = `/account`,
   EditAccount = `/account/edit`,
   FavoritePage = `/account/favorite`,
@@ -43,6 +54,7 @@ class App {
     this.header = new Header();
     this.footer = new Footer();
     this.checkAuth = new CheckAuth();
+    localStorage.removeItem('flavors');
     this.profileUser = new ProfileUser();
   }
 
@@ -60,12 +72,25 @@ class App {
       changePage = new MainPage();
     } else if (location === LocationPath.UserMixes) {
       changePage = new UserMixes();
-    } else if (location === LocationPath.ChangePrefFlavors || location === LocationPath.ChangePrefBrands) {
+    } else if (
+      location === LocationPath.ChangePrefFlavors ||
+      location === LocationPath.ChangePrefBrands ||
+      location === LocationPath.PreferencesFlavorsPage ||
+      location === LocationPath.PreferencesBrandsPage
+    ) {
       changePage = new PreferencesPage();
     } else if (location === LocationPath.SearchPage) {
       changePage = new SearchPage();
     } else if (location === LocationPath.MixerPage) {
       changePage = new MixerPage();
+    } else if (location === LocationPath.CatalogPage) {
+      changePage = new Catalog();
+    } else if (location === LocationPath.MixerNowPage) {
+      changePage = new MixerNowPage();
+    } else if (location === LocationPath.BrandSuggestPage) {
+      changePage = new BrandSuggest();
+    } else if (location.includes(LocationPath.CatalogPage)) {
+      changePage = isBrandPage() ? new BrandPage() : new ErrorPage();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();
@@ -101,6 +126,7 @@ class App {
   private handleHashChange(): void {
     window.addEventListener('hashchange', this.loadHashPage);
     window.addEventListener('load', this.loadHashPage);
+    handleChangeOfFlavorsInMixer();
   }
 
   private loadHashPage = (): void => {

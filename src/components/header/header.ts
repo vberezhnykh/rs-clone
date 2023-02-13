@@ -1,3 +1,4 @@
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../types/types';
 const logo = require('../../assets/images/logo.svg');
@@ -27,6 +28,7 @@ class Header implements InterfaceContainerElement {
       menuItems[2].classList.remove('active');
       menuItems[3].classList.remove('active');
     }
+    handleChangeOfFlavorsInMixer();
   };
 
   private handler = (e: Event): void => {
@@ -54,7 +56,7 @@ class Header implements InterfaceContainerElement {
           <ul>
             <li><a>Главная</a></li>
             <li><a>Поиск</a></li>
-            <li><a>Миксер</a></li>
+            <li class="header__mixer"><a>Миксер</a></li>
             <li><a>Профиль</a></li>
           </ul>
         </nav>
