@@ -4,6 +4,8 @@ import { Flavor, Flavors } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
+import preloader from '../preloader/preloader';
+import { MixerNowResult } from '../mixerResult/mixer-result';
 
 const ADD_BUTTON_TEXT = 'Добавить в миксер';
 const REMOVE_BUTTON_TEXT = 'Удалить из миксера';
@@ -21,13 +23,14 @@ export function createPopup(elem: HTMLElement): void {
         </div>
         <div class="popup-flavor__buttons">
         <button class="button button-3 popup-flavor__add-button">${ADD_BUTTON_TEXT}</button>
-        <button class="button button-3">Подобрать миксы со вкусом</button>
+        <button class="button button-3 popup-flavor__pick-up-button">Подобрать миксы со вкусом</button>
         </div>
       </div>`;
     elem.appendChild(flavor);
     flavor.onclick = (e) => {
-      if ((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel'))
+      if ((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel')) {
         (<HTMLElement>document.querySelector('.popup-flavor')).style.display = 'none';
+      }
     };
   }
 }
@@ -43,6 +46,9 @@ export function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPageOrMixerPa
   if (!(addButton instanceof HTMLElement)) return;
   markButtonIfFlavorAddedToMixer(flavorObj, addButton);
   addButton.onclick = () => handleClickOnAddButton(addButton, flavorObj, addButtonOnBrandPageOrMixerPage);
+  const pickUpButton = document.querySelector('.popup-flavor__pick-up-button');
+  if (!(pickUpButton instanceof HTMLButtonElement)) return;
+  pickUpButton.onclick = () => handleClickOnPickUpBtn(pickUpButton, flavorObj, api);
 }
 
 function markButtonIfFlavorAddedToMixer(flavorObj: Flavor, addButton: Element) {
@@ -98,4 +104,16 @@ function removeFlavorFromMixerPage(btn: Element) {
   const removeButton = btn.nextElementSibling;
   if (!removeButton) return;
   (removeButton as HTMLElement).click();
+}
+
+async function handleClickOnPickUpBtn(btn: HTMLButtonElement, flavor: Flavor, api: Api) {
+  const preloaderInstance = new preloader();
+  preloaderInstance.draw();
+  const matchingMixes = (await api.getAllMixes()).filter((mix) => {
+    const mixComposition = mix.compositionById;
+    if (!(mixComposition instanceof Object)) return;
+    return Object.values(mixComposition).includes(flavor.id);
+  });
+  document.body.appendChild(new MixerNowResult(matchingMixes).create());
+  preloaderInstance.removePreloader();
 }

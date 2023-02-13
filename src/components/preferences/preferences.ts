@@ -5,7 +5,7 @@ import Api from '../api/api';
 import preloader from '../preloader/preloader';
 import { MixerNowResult } from '../mixerResult/mixer-result';
 
-const FLAVORS = ['цитрусовый', 'ягодный', 'травяной', 'фруктовый', 'тропический', 'десертный', 'напиточный'];
+const FLAVORS_TAGS = ['цитрусовый', 'ягодный', 'травяной', 'фруктовый', 'тропический', 'десертный', 'напиточный'];
 const STRENGTH = ['легкий', 'средний', 'крепкий'];
 const PREFERENCES_TITLE = 'Твои предпочтения';
 const FLAVORS_CONTAINER_TITLE = '1. Вкусы';
@@ -60,16 +60,23 @@ export class PreferencesPage implements InterfaceContainerElement {
     const PrefHeader = createHTMLElement('preferences__header');
     const backArrowImage = <HTMLImageElement>createHTMLElement('preferences__back-image', 'img');
     backArrowImage.src = backArrowImgSrc;
-    backArrowImage.onclick = () => window.history.back();
+    backArrowImage.onclick = () => this.handleClickOnBackBtn();
     PrefHeader.appendChild(backArrowImage);
     PrefHeader.appendChild(createHTMLElement('preferences__title', 'h4', PREFERENCES_TITLE));
     return PrefHeader;
   }
 
+  private handleClickOnBackBtn() {
+    const locationHash = location.hash.slice(1);
+    if (locationHash === PREFERENCES_BRAND_HASH) location.hash = PREFERENCES_FLAVOR_HASH;
+    if (locationHash === PREFERENCES_FLAVOR_HASH || locationHash === CHANGE_PREF_FLAVOR_HASH) location.hash = '#';
+    if (locationHash === CHANGE_PREF_BRAND_HASH) location.hash = CHANGE_PREF_FLAVOR_HASH;
+  }
+
   private createFlavorsContainer() {
     const flavorsContainer = createHTMLElement('flavors-container');
     flavorsContainer.appendChild(createHTMLElement('preferences__flavor-title', 'h4', FLAVORS_CONTAINER_TITLE));
-    flavorsContainer.appendChild(this.createPreferencesList(FLAVORS, 'flavors-button'));
+    flavorsContainer.appendChild(this.createPreferencesList(FLAVORS_TAGS, 'flavors-button'));
     return flavorsContainer;
   }
 
@@ -91,7 +98,7 @@ export class PreferencesPage implements InterfaceContainerElement {
   private handleClickOnPrefButton(button: HTMLElement, category: string[]) {
     button.classList.toggle('preferences__button--active');
     if (category === STRENGTH) this.handleClickOnStrengthBtn(button);
-    else if (category === FLAVORS) this.handleClickOnFlavorBtn(button);
+    else if (category === FLAVORS_TAGS) this.handleClickOnFlavorBtn(button);
     else if (category === this.BRANDS) this.handleClickOnBrandBtn(button);
     const continueButton = document.querySelector('.preferences__continue-btn');
     if (!continueButton) return;
@@ -180,12 +187,10 @@ export class PreferencesPage implements InterfaceContainerElement {
   }
 
   private async showMixesOnPreferences() {
-    /* 
-      TO-DO: 
-      подобрать подходящие миксы и показать результат
-      */
+    this.preloader.draw();
     const matchingMixes = await this.getMathcingMixes();
     document.body.appendChild(new MixerNowResult(matchingMixes).create());
+    this.preloader.removePreloader();
   }
 
   private async createBrandsContainer() {
@@ -206,10 +211,10 @@ export class PreferencesPage implements InterfaceContainerElement {
   private async getMatchingFlavorsByFlavorAndStrength() {
     const preferredFlavors = this.getItemPreferencesFromStorage(PREFERRED_FLAVORS_KEY);
     const prefereedStrength = localStorage.getItem(PREFERRED_STRENGTH_KEY) ?? '';
-    const sortedFlavorsByFlavor = (await this.api.getAllFlavors()).filter((flavor) => {
+    const sortedFlavorsByTag = (await this.api.getAllFlavors()).filter((flavor) => {
       return flavor.flavor.some((elem) => preferredFlavors.includes(elem));
     });
-    const sortedFlavorsByStrength = sortedFlavorsByFlavor.filter((flavor) => flavor.strength === prefereedStrength);
+    const sortedFlavorsByStrength = sortedFlavorsByTag.filter((flavor) => flavor.strength === prefereedStrength);
     return sortedFlavorsByStrength;
   }
 
