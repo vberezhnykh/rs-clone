@@ -1,4 +1,4 @@
-import { Flavor, Flavors, InterfaceContainerElement, Mixes } from '../../components/types/types';
+import { Flavor, Flavors, InterfaceContainerElement } from '../../components/types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
@@ -135,17 +135,10 @@ export class MixerNowPage implements InterfaceContainerElement {
 
   private async getMatchingMixes() {
     const flavorsInMixerIds = getFlavorsInMixer().map((flavorInMixer) => flavorInMixer.id);
-    const allMixes = await this.api.getAllMixes();
-    const matchingMixes: Mixes = [];
-    allMixes.forEach((mix) => {
+    return (await this.api.getAllMixes()).filter((mix) => {
       const composition = mix.compositionById;
       if (!(composition instanceof Object)) return;
-      flavorsInMixerIds.forEach((flavorInMixerId) => {
-        if (!Object.values(composition).includes(flavorInMixerId)) return;
-        const index = matchingMixes.findIndex((matchingMix) => matchingMix.id === mix.id);
-        if (index === -1) matchingMixes.push(mix);
-      });
+      return Object.values(composition).some((elem) => flavorsInMixerIds.includes(elem));
     });
-    return matchingMixes;
   }
 }

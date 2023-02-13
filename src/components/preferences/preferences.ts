@@ -231,7 +231,7 @@ export class PreferencesPage implements InterfaceContainerElement {
     return (await this.api.getAllMixes()).filter((mix) => {
       const composition = mix.compositionById;
       if (!(composition instanceof Object)) return;
-      return Object.values(mix.compositionById).some((elem) => matchingFlavorsIds.includes(elem));
+      return Object.values(composition).some((elem) => matchingFlavorsIds.includes(elem));
     });
   }
 }
