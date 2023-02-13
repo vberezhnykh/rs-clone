@@ -48,6 +48,7 @@ class MixPage implements InterfaceContainerElement {
   private async getData() {
     this.preloader = new preloader();
     this.preloader.draw();
+    if (isNaN(this.mixId)) this.mixId = await getRandomMixNumber();
     this.vote = this.apiMix.getVote(this.mixId);
     this.getRateResult = await this.apiMix.getRate(this.mixId);
     this.mix = await this.api.getMix(this.mixId);
