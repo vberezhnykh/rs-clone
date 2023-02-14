@@ -1,4 +1,4 @@
-import { Brands, Flavor, Flavors, Mix, Mixes } from '../types/types';
+import { Brands, Flavor, Flavors, Mix, Mixes, NewFlavor } from '../types/types';
 import { server } from '../server/server';
 
 class Api {
@@ -71,6 +71,31 @@ class Api {
   public getImage(image: string): string {
     image = image.slice(image.lastIndexOf('/', image.lastIndexOf('/') - 1) + 1);
     return `${this.base}/images/${image}`;
+  }
+
+  public async setNewBrand(name: string, imageName: string) {
+    const res = await fetch(`${this.brands}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        name: name,
+        imageName: imageName,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
+  }
+
+  public async setNewFlavor(newFlavor: NewFlavor) {
+    const res = await fetch(`${this.flavors}`, {
+      method: 'POST',
+      body: JSON.stringify(newFlavor),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
   }
 }
 export default Api;
