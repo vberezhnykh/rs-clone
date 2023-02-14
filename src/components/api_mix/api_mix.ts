@@ -7,6 +7,7 @@ class ApiMix {
   private base;
   private rate;
   private favorite;
+  private brand;
   private profileUser;
 
   constructor() {
@@ -17,6 +18,7 @@ class ApiMix {
     this.base = server;
     this.rate = `${this.base}/auth/rate/`;
     this.favorite = `${this.base}/auth/favorite/`;
+    this.brand = `${this.base}/auth/brand/`;
     this.profileUser = new ProfileUser();
   }
 
