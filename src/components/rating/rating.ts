@@ -56,14 +56,16 @@ class rating {
     ratingtop.innerHTML = `<div class="mix-card__stars">${this.starstop}</div><div class="mix-card__rating">${this.rate}</div>`;
     document.querySelector('.mix-card__more-info')?.prepend(ratingtop);
     let rated = '';
+    let title= `Поставь свою оценку`;
     let starbottom = staremptyblack;
-    if (this.vote > 0) { rated = 'rated'; starbottom = stargold; }
+    if (this.vote > 0) { rated = 'rated'; starbottom = stargold; title=`Твоё мнение учтено!`}
     const ratingbottom = createHTMLElement('mix-rating');
     ratingbottom.innerHTML = `
     <div class="mix-rating__inner">
       <div class="mix-rating__stars ${rated}">
         <img src="${starbottom}" class="rating__star" alt="star" width="28" height="28">
       </div>
+      <div class="mix-rating__title">${title}</div>
     </div>`;
     ratingbottom.onclick = this.open;
     document.querySelector('.main__container')?.append(ratingbottom);
@@ -88,6 +90,10 @@ class rating {
       mixratingstars.classList.remove('active');
       mixratingstars.innerHTML = `<img src="${stargold}" class="rating__star" alt="star" width="28" height="28">`;
       mixratingstars.classList.add('rated');
+      const mixratingtitle=document.querySelector('.mix-rating__title');
+      if(mixratingtitle!==null)
+      mixratingtitle.innerHTML=`Твоё мнение учтено!`;
+      
 
       (async () => {
         if (typeof this.profileId === 'string') {
