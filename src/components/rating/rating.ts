@@ -6,6 +6,7 @@ import starhalf from '../../assets/images/star-half.svg';
 import ApiMix from '../api_mix/api_mix';
 import ProfileUser from '../profile_user/profile_user';
 import { mixRate } from '../../components/types/types';
+import { getTextCountMix } from '../getTextCountMix/getTextCountMix';
 
 class rating {
   private mixId: number;
@@ -44,7 +45,7 @@ class rating {
         }
       }
     }
-    this.rate = `${this.getRateResult.rate} ・ ${this.getRateResult.vote} оценка`;
+    this.rate = `${this.getRateResult.rate} ・ ${this.getRateResult.vote} ${getTextCountMix(this.getRateResult.vote, ['оценка', 'оценки', 'оценок'])}`;
   }
   draw(): void {
     this.starstop = `<img src="${starempty}" class="mix-card__star" alt="star">`.repeat(5);
