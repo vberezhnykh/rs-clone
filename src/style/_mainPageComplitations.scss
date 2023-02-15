@@ -1,0 +1,39 @@
+.complitation-list {
+  $brands-name: (brusko: brusko,
+    musthave: musthave,
+    darkside: darkside,
+    chabacco: chabacco,
+    burn: burn);
+
+  margin: 1rem 3rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+  }
+
+  &__items {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  @each $name,
+  $img in $brands-name {
+
+    &__item.item-#{$name} {
+      background-image: url(assets/images/complitation/#{$img}.jpg);
+      border-radius: 10px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      padding: 20px 30px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+}

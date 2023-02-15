@@ -13,6 +13,7 @@ class MainPage implements InterfaceContainerElement {
     const container = createHTMLElement(['main__container', 'container']);
     main.appendChild(container);
     container.appendChild(this.createTopBlock());
+    container.appendChild(this.createBrandsComplitation());
     return main;
   }
 
@@ -72,6 +73,29 @@ class MainPage implements InterfaceContainerElement {
 
   private openFlavorsPreferences() {
     /* TO-DO */
+  }
+  
+  private createBrandsComplitation(){
+    const brandsComplitation = createHTMLElement('complitation-list');
+    brandsComplitation.innerHTML=`<div class="complitation-list__header">
+    <div class="complitation-list__title">Подборки: брэнды</div>
+    <div class="class="complitation-list__more">См. ещё</div>
+    </div>
+    <div class="complitation-list__items">
+    <div class="complitation-list__item item-brusko">
+      <div class="complitation-name">Brusko</div>
+      <div class="complitation-desc">Миксы на все случаи жизни от Brusko - кальянного гуру Hookan Blender</div>
+    </div>
+    <div class="complitation-list__item item-musthave">
+      <div class="complitation-name">Musthave</div>
+      <div class="complitation-desc">Миксы на все случаи жизни от Макса - кальянного гуру Hookan Blender</div>
+    </div>
+    <div class="complitation-list__item item-burn">
+      <div class="complitation-name">Burn</div>
+      <div class="complitation-desc">Миксы на все случаи жизни от Макса - кальянного гуру Hookan Blender</div>
+    </div>
+    </div>`;
+    return brandsComplitation;
   }
 }
 
