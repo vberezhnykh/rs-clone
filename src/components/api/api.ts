@@ -7,6 +7,9 @@ class Api {
   private brands;
   private flavors;
   private mixes;
+  private randomMix;
+  private top10;
+  private allRate;
   constructor() {
     if (Api.instance) {
       return Api.instance;
@@ -16,6 +19,9 @@ class Api {
     this.brands = `${this.base}/api/brands`;
     this.flavors = `${this.base}/api/flavors`;
     this.mixes = `${this.base}/api/mixes`;
+    this.randomMix = `${this.base}/api/randommix`;
+    this.top10 = `${this.base}/api/top10`;
+    this.allRate = `${this.base}/api/allrate`;
   }
 
   public async getAllBrands(): Promise<Brands> {
@@ -97,5 +103,36 @@ class Api {
     });
     return await res.json();
   }
+
+  public async getRandomMix() {
+    const res = await fetch(`${this.randomMix}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
+  }
+
+  public async getTop10() {
+    const res = await fetch(`${this.top10}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
+  }
+
+  public async getAllRate() {
+    const res = await fetch(`${this.allRate}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
+  }
+
 }
 export default Api;
