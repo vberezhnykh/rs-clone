@@ -112,8 +112,8 @@ class Api {
     return await res.json();
   }
 
-  public async getTop10(type?: string) {
-    const res = await fetch(`${this.getTop10}/:${type}`, {
+  public async getTop10() {
+    const res = await fetch(`${this.getTop10}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
