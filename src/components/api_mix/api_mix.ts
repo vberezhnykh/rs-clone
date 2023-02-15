@@ -7,6 +7,7 @@ class ApiMix {
   private base;
   private rate;
   private favorite;
+  private favoriteFlavor;
   private brand;
   private profileUser;
 
@@ -18,6 +19,7 @@ class ApiMix {
     this.base = server;
     this.rate = `${this.base}/auth/rate/`;
     this.favorite = `${this.base}/auth/favorite/`;
+    this.favoriteFlavor = `${this.base}/auth/favoriteflavor/`;
     this.brand = `${this.base}/auth/brand/`;
     this.profileUser = new ProfileUser();
   }
@@ -82,6 +84,35 @@ class ApiMix {
   public async setFavorite(userId: string, id: number) {
     if (typeof userId === 'string') {
       const res = await fetch(`${this.favorite}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: userId,
+          id: id,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      this.profileUser?.updateProfile();
+      return await res.json();
+    }
+  }
+
+  public async getFavoriteFlavor(userId: string) {
+    const localStorageAuth: string | null = window.localStorage.getItem('blenderProfile');
+    if (localStorageAuth) {
+      const favoriteFlavor = JSON.parse(localStorageAuth).favoriteFlavor;
+      return favoriteFlavor;
+    }
+    const res = await fetch(`${this.favoriteFlavor}:${userId}`, {
+      method: 'GET',
+    });
+    return await res.json();
+  }
+
+  public async setFavoriteFlavor(userId: string, id: number) {
+    if (typeof userId === 'string') {
+      const res = await fetch(`${this.favoriteFlavor}`, {
         method: 'POST',
         body: JSON.stringify({
           userId: userId,
