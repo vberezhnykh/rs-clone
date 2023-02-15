@@ -20,12 +20,13 @@ class AccountPageEdit implements InterfaceContainerElement {
   private handler = (e: Event): void => {
     const target = e.target as HTMLElement;
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const file = (fileInput.files as FileList)[0];
     if (target.closest('.button-save')) {
-      const file = (fileInput.files as FileList)[0];
       let fileName = '';
       if (file) {
-        fileName = file.name.replace(/ /g, '_');
-        this.apiUsers.uploadImage(file);
+        this.apiUsers.uploadImage(file).then((data) => {
+          fileName = data.filename;
+        });
       }
       const nameInput = document.getElementById('name') as HTMLInputElement;
       let name = '';
@@ -38,22 +39,21 @@ class AccountPageEdit implements InterfaceContainerElement {
       if (nameInstagramInput.value) {
         nameInstagram = nameInstagramInput.value[0] === '@' ? nameInstagramInput.value : `@${nameInstagramInput.value}`;
       }
-
-      this.Profile.getProfile().then((data) => {
-        if (data !== false) {
-          data.avatar = fileName ? fileName : data.avatar;
-          data.name = name;
-          data.instagramAccount = nameInstagram;
-          this.Profile.setProfile(data);
-        }
-      });
       setTimeout(() => {
+        this.Profile.getProfile().then((data) => {
+          if (data !== false) {
+            data.avatar = fileName ? fileName : data.avatar;
+            data.name = name;
+            data.instagramAccount = nameInstagram;
+            this.Profile.setProfile(data);
+          }
+        });
         window.location.hash = `/account`;
       }, 700);
     } else if (target.classList.contains('text-change-button')) {
       fileInput.click();
     }
-    if (target.id === 'fileInput') {
+    if (file && target.id === 'fileInput') {
       const file = (fileInput.files as FileList)[0];
       if (file.size > 1024 * 1024 * 6) {
         alert('Файл превышает лимит (6 MB)');
