@@ -2,10 +2,11 @@
   position: fixed;
   top: 0;
   background-color: var(--color-bg);
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   padding: 1rem;
   z-index: 1;
+  overflow-y: scroll;
 
   &-header {
     display: flex;
@@ -31,26 +32,42 @@
   &__label {
     display: block;
     margin-bottom: 1rem;
+  }
 
-    &::after {
+  &__label-text {
+    display: block;
+    margin-bottom: 1rem;
+
+    &--required::after {
       content: '*';
       color: red;
     }
   }
 
-  &__input {
+
+  &__name-input {
     margin-bottom: 1rem;
     width: 100%;
     font-size: 1.5rem;
     padding-left: 1rem;
+    padding-bottom: 0.3rem;
     background-color: transparent;
     color: white;
     border-bottom: 1px solid greenyellow;
+    outline: none;
+
+    &::placeholder {
+      font-size: 1rem;
+    }
+  }
+
+  &__image-input {
+    display: none;
   }
 
   &__button {
     display: block;
-    margin: 0 auto;
+    margin: 3rem auto 0;
     width: 80%;
     padding: 0.8rem;
     border-radius: 0.8rem;
@@ -63,6 +80,27 @@
 
     &:disabled {
       cursor: not-allowed;
+    }
+  }
+
+  &__brand-logo {
+    background-color: var(--color-accent);
+    border-radius: 0.5rem;
+    display: block;
+    margin-bottom: 1rem;
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  &__add-image-btn {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--blue);
+    color: var(--color-accent);
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }
@@ -86,7 +124,7 @@
   border: 1px solid yellowgreen;
   border-radius: 1rem;
   padding: 1rem;
-  background-color: black;
+  background-color: var(--color-bg);
 
   &__title,
   &__text {

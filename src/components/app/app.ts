@@ -21,12 +21,14 @@ import ProfileUser from '../profile_user/profile_user';
 import FavoritePage from '../../pages/favorite_page/favorite_page';
 import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
+import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
 
 enum LocationPath {
   MainPage = `/`,
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   CatalogPage = `/mixer/brands`,
+  FlavorsSuggestPage = `/flavor-suggest`,
   MixerNowPage = `/mixer/mixer-now`,
   BrandSuggestPage = `/brand-suggest`,
   PreferencesFlavorsPage = `/mixer/preferences/flavors`,
@@ -85,6 +87,8 @@ class App {
       changePage = new MixerPage();
     } else if (location === LocationPath.CatalogPage) {
       changePage = new Catalog();
+    } else if (location === LocationPath.FlavorsSuggestPage) {
+      changePage = new FlavorSuggest();
     } else if (location === LocationPath.MixerNowPage) {
       changePage = new MixerNowPage();
     } else if (location === LocationPath.BrandSuggestPage) {
