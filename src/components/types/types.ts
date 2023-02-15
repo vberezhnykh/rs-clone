@@ -65,6 +65,7 @@ export interface Profile {
   instagramAccount: string;
   avatar: string;
   favorite: number[];
+  favoriteFlavors: number[];
   myMix: number[];
   rating: { id: number; rate: number }[];
 }

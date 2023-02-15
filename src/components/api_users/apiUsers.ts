@@ -110,7 +110,7 @@ class ApiUsers {
     return await res.json();
   }
 
-  public async flavorPreferenceAccessor(userId: string, flavors: string[], strange: string) {
+  public async flavorPreferenceAccessor(userId: string, flavors?: string[], strange?: string) {
     const res = await fetch(`${this.flavorPreference}`, {
       method: 'POST',
       body: JSON.stringify({
@@ -122,6 +122,7 @@ class ApiUsers {
         'Content-Type': 'application/json',
       },
     });
+    console.log(await res.json())
     return await res.json();
   }
 }
