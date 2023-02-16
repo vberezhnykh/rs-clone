@@ -19,6 +19,8 @@ import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 import ProfileUser from '../profile_user/profile_user';
 import FavoritePage from '../../pages/favorite_page/favorite_page';
+import FavoriteTobaccosPage from '../../pages/favorite_tabacos_page/favorite_tabacos_page';
+import MyMixesPage from '../../pages/my_mixes_pages/my_mixes_pages';
 import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 
@@ -34,6 +36,8 @@ enum LocationPath {
   AccountPage = `/account`,
   EditAccount = `/account/edit`,
   FavoritePage = `/account/favorite`,
+  FavoriteTobaccosPage = `/account/favorite-tobaccos`,
+  MyMixesPage = `/account/my-mixes`,
   UserMixes = `/user-mixes`,
   MixPage = `/mix`,
   ChangePrefFlavors = `/change-pref/flavors`,
@@ -106,6 +110,18 @@ class App {
     } else if (location === LocationPath.FavoritePage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new FavoritePage();
+      } else {
+        changePage = new AccountPage();
+      }
+    } else if (location === LocationPath.FavoriteTobaccosPage) {
+      if ((await this.checkAuth.checkUserAuth()) === true) {
+        changePage = new FavoriteTobaccosPage();
+      } else {
+        changePage = new AccountPage();
+      }
+    } else if (location === LocationPath.MyMixesPage) {
+      if ((await this.checkAuth.checkUserAuth()) === true) {
+        changePage = new MyMixesPage();
       } else {
         changePage = new AccountPage();
       }

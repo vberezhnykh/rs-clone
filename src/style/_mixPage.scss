@@ -423,6 +423,17 @@
     .popup-flavor__must{
       width: 140px;
     }
+    .popup-flavor__favorite-icon {
+      margin: 130px auto 0 auto;
+      text-align: center;
+      font-size: 1.5rem;
+      img {
+        width: 35px;
+        vertical-align: middle;
+        margin-bottom: 5px;
+        margin-right: 10px;
+      }
+    }
     .popup-flavor__buttons{
       position: absolute;
       bottom: 0;

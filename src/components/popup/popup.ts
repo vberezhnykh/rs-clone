@@ -6,11 +6,18 @@ import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import preloader from '../preloader/preloader';
 import { MixerNowResult } from '../mixerResult/mixer-result';
+import favoriteIconSrc from '../../assets/images/favorite.svg';
+import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
+import CheckAuth from '../checkAuth/checkAuth';
+import ProfileUser from '../profile_user/profile_user';
+import ApiMix from '../api_mix/api_mix';
+import ModalWindowRegistration from '../modal_window_registration/modal_window_registration';
 
 const ADD_BUTTON_TEXT = 'Добавить в миксер';
 const REMOVE_BUTTON_TEXT = 'Удалить из миксера';
 
 export function createPopup(elem: HTMLElement): void {
+  console.log()
   if (!document.querySelector('.popup-flavor')) {
     const flavor = createHTMLElement('popup-flavor');
     flavor.innerHTML = `<div class="popup-flavor__inner">
@@ -21,27 +28,44 @@ export function createPopup(elem: HTMLElement): void {
           <div class="popup-flavor__desc"></div>
           <div class="popup-flavor__must"><button class="button button-2"></button></div>
         </div>
+        <div class="popup-flavor__favorite-icon"></div>
         <div class="popup-flavor__buttons">
         <button class="button button-3 popup-flavor__add-button">${ADD_BUTTON_TEXT}</button>
         <button class="button button-3 popup-flavor__pick-up-button">Подобрать миксы со вкусом</button>
         </div>
-      </div>`;
+      </div>
+      <div class="message_container">`;
     elem.appendChild(flavor);
     flavor.onclick = (e) => {
       if ((<HTMLElement>e.target).classList.contains('popup-flavor__img-cancel')) {
         (<HTMLElement>document.querySelector('.popup-flavor')).style.display = 'none';
+      } else if ((<HTMLElement>e.target).closest('.popup-flavor__favorite-icon')) {
+        clickAddToFavoriteButton(<HTMLElement>document.querySelector('.popup-flavor__favorite-icon'));
       }
     };
   }
 }
 
-export function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPageOrMixerPage?: Element): void {
+export async function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPageOrMixerPage?: Element) {
   const api = new Api();
   (<HTMLElement>document.querySelector('.popup-flavor__img')).setAttribute('src', api.getImage(flavorObj.image));
   (<HTMLElement>document.querySelector('.popup-flavor__title')).innerHTML = `${flavorObj.name}`;
   (<HTMLElement>document.querySelector('.popup-flavor__desc')).innerHTML = `${flavorObj.description}`;
   (<HTMLElement>document.querySelector('.popup-flavor__must')).children[0].innerHTML = `${flavorObj.brand}`;
   (<HTMLElement>document.querySelector('.popup-flavor')).style.display = 'block';
+  const favoriteElement = <HTMLElement>document.querySelector('.popup-flavor__favorite-icon');
+  favoriteElement.id = `${flavorObj.id}`;
+  favoriteElement.innerHTML = `<img src="${favoriteIconSrc}" class="favorite-ico"><span>Сохранить в "Мои табаки"</span>`;
+  const apiMix = new ApiMix();
+  const profileUser = new ProfileUser();
+  const userId = profileUser.getUserId();
+  if (typeof userId === 'string' && userId.length > 12) {
+    apiMix.getFavoriteFlavors(userId).then((data) => {
+      if (data.indexOf(flavorObj.id) !== -1) {
+        favoriteElement.innerHTML = `<img src="${favoriteActiveIconSrc}" class="favorite-ico favorite-active"><span>Удалить из "Мои табаки"</span>`;
+      }
+    });
+  }
   const addButton = document.querySelector('.popup-flavor__add-button');
   if (!(addButton instanceof HTMLElement)) return;
   markButtonIfFlavorAddedToMixer(flavorObj, addButton);
@@ -116,4 +140,37 @@ async function handleClickOnPickUpBtn(btn: HTMLButtonElement, flavor: Flavor, ap
   });
   document.body.appendChild(new MixerNowResult(matchingMixes).create());
   preloaderInstance.removePreloader();
+}
+
+async function clickAddToFavoriteButton(fav: HTMLElement) {
+  const checkAuth = new CheckAuth();
+  const profileUser = new ProfileUser();
+  const apiMix = new ApiMix();
+  const modalWindow = new ModalWindowRegistration();
+  const isActiveUser = await checkAuth.checkUserAuth();
+  if (await isActiveUser) {
+    const favoriteIco = fav.querySelector('.favorite-ico') as HTMLImageElement;
+    const favoriteText = fav.querySelector('span') as HTMLElement;
+    if (favoriteIco.classList.contains('favorite-active')) {
+      favoriteIco.src = favoriteIconSrc;
+      favoriteIco.classList.remove('favorite-active');
+      favoriteText.innerHTML = `Сохранить в "Мои табаки"`;
+    } else {
+      favoriteIco.src = favoriteActiveIconSrc;
+      favoriteIco.classList.add('favorite-active');
+      favoriteText.innerHTML = `Удалить из "Мои табаки"`;
+    }
+    const userId = profileUser.getUserId();
+    if (typeof userId === 'string' && userId.length > 12) {
+      apiMix.setFavoriteFlavor(userId, Number(fav.id));
+    }
+  } else {
+    const containerMessage = document.querySelector('.message_container') as HTMLElement;
+    containerMessage.append(
+      modalWindow.draw(
+        `Чтобы сохранить вкус, надо авторизоваться. <br><br>
+        Это займет мало времени, зато откроет новый мир возможностей.`
+      )
+    );
+  }
 }
