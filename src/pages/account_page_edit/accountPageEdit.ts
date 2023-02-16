@@ -4,29 +4,25 @@ import ApiUsers from '../../components/api_users/apiUsers';
 const favorite = require('../../assets/images/favorite.png');
 const profile = require('../../assets/images/profile.svg');
 const myMix = require('../../assets/images/my_mixes.svg');
-import Profile from '../../components/profile_user/profile_user';
+import ProfileUser from '../../components/profile_user/profile_user';
 import { server } from '../../components/server/server';
+import { Profile } from '../../components/types/types';
 
 class AccountPageEdit implements InterfaceContainerElement {
   private apiUsers;
-  private Profile;
+  private ProfileUser;
   private server;
   constructor() {
     this.apiUsers = new ApiUsers();
-    this.Profile = new Profile();
+    this.ProfileUser = new ProfileUser();
     this.server = server;
   }
 
   private handler = (e: Event): void => {
     const target = e.target as HTMLElement;
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const file = (fileInput.files as FileList)[0];
     if (target.closest('.button-save')) {
-      const file = (fileInput.files as FileList)[0];
-      let fileName = '';
-      if (file) {
-        fileName = file.name.replace(/ /g, '_');
-        this.apiUsers.uploadImage(file);
-      }
       const nameInput = document.getElementById('name') as HTMLInputElement;
       let name = '';
       if (nameInput.value) {
@@ -39,21 +35,37 @@ class AccountPageEdit implements InterfaceContainerElement {
         nameInstagram = nameInstagramInput.value[0] === '@' ? nameInstagramInput.value : `@${nameInstagramInput.value}`;
       }
 
-      this.Profile.getProfile().then((data) => {
+      const updateProfile = (data: false | Profile) => {
         if (data !== false) {
-          data.avatar = fileName ? fileName : data.avatar;
           data.name = name;
           data.instagramAccount = nameInstagram;
-          this.Profile.setProfile(data);
+          this.ProfileUser.setProfile(data);
         }
-      });
+      };
+      if (file) {
+        this.apiUsers.uploadImage(file).then((data) => {
+          const fileName = data.filename;
+          this.ProfileUser.getProfile().then((data) => {
+            if (data) {
+              data.avatar = fileName;
+              updateProfile(data);
+            }
+          });
+        });
+      } else {
+        this.ProfileUser.getProfile().then((data) => {
+          if (data) {
+            updateProfile(data);
+          }
+        });
+      }
       setTimeout(() => {
         window.location.hash = `/account`;
-      }, 700);
+      }, 100)
     } else if (target.classList.contains('text-change-button')) {
       fileInput.click();
     }
-    if (target.id === 'fileInput') {
+    if (file && target.id === 'fileInput') {
       const file = (fileInput.files as FileList)[0];
       if (file.size > 1024 * 1024 * 6) {
         alert('Файл превышает лимит (6 MB)');
@@ -68,7 +80,7 @@ class AccountPageEdit implements InterfaceContainerElement {
 
   draw(): HTMLElement {
     const main = createHTMLElement('main', 'main');
-    this.Profile.getProfile().then((data) => {
+    this.ProfileUser.getProfile().then((data) => {
       if (data !== false) {
         const photo = data.avatar ? `${this.server}/${data.avatar}` : profile;
         main.innerHTML = `
