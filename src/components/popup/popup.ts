@@ -115,5 +115,7 @@ async function handleClickOnPickUpBtn(btn: HTMLButtonElement, flavor: Flavor, ap
     return Object.values(mixComposition).includes(flavor.id);
   });
   document.body.appendChild(new MixerNowResult(matchingMixes).create());
+  const closePopUpBtn = document.querySelector('.popup-flavor__img-cancel');
+  if (closePopUpBtn) (closePopUpBtn as HTMLElement).click();
   preloaderInstance.removePreloader();
 }
