@@ -8,10 +8,9 @@ import backArrow from '../../assets/images/back-arrow-white.png';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
-import Header from '../../components/header/header';
+import getMainHeader from '../../components/getMainHeader/getMainHeader';
 
 class ListComplitationPage implements InterfaceContainerElement {
-  private header:InterfaceContainerElement;
   private api: Api;
   private mix: Mix;
   private preloader: preloader;
@@ -24,16 +23,12 @@ class ListComplitationPage implements InterfaceContainerElement {
   constructor() {
     this.brandId = Number(window.location.hash.split('complitation/')[window.location.hash.split('complitation/').length - 1]);
     this.api = new Api();
-    this.header= new Header();
     this.getData();
   }
   private async getData() {
     this.preloader = new preloader();
     this.preloader.draw();
-    // this.flavors = await this.api.getAllFlavors();
-    // this.mixes = await this.api.getAllMixes();
     this.brands = await this.api.getAllBrands();
-    console.log(this.brands);
     this.draw();
     this.preloader.removePreloader();
   }
@@ -42,10 +37,21 @@ class ListComplitationPage implements InterfaceContainerElement {
     const header = document.querySelector('.header')
     const headercontainer = document.querySelector('.header__container');
     if (header && headercontainer) {
-      header.classList.add('header-brands');
+      header.className='header header-brands';
       headercontainer.classList.add('container-complitation');
-      headercontainer.innerHTML = `<div class="complitation__buttons"><img src="${backArrow}" alt="back-arrow" class="arrow-back"></div>
-      <div class="complitation__title">Подборки: бренды</div>`;
+      headercontainer.innerHTML ='';
+      const complitationbuttons=createHTMLElement('complitation__buttons');
+      const imgarrow=new Image();
+      imgarrow.src=backArrow;
+      imgarrow.alt='back-arrow';
+      imgarrow.className='arrow-back';
+      imgarrow.onclick=()=>{window.location.hash = `/`;
+      getMainHeader()};
+      complitationbuttons.append(imgarrow);
+      headercontainer.append(complitationbuttons);
+      const complitationtitle=createHTMLElement('complitation__title');
+      complitationtitle.innerHTML='Подборки: бренды';
+      headercontainer.append(complitationtitle);
     }
   }
 
@@ -69,12 +75,11 @@ class ListComplitationPage implements InterfaceContainerElement {
         item.innerHTML = `<div class="complitation-name">${e.name}</div>
         <div class="complitation-desc">Миксы на все случаи жизни от ${brand}</div>`;
         item.onclick = () => {window.location.hash = `/complitation/${e.id}`;
-        document.querySelector('.header')?.remove();
-        document.body.prepend(this.header.draw());};
+        getMainHeader()};
         complitationlistitems?.append(item);
       }
       );
-
+      window.onpopstate=getMainHeader;
       setTimeout(() => {
         this.changeHeader();
       }, 0);

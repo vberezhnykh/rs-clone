@@ -1,38 +1,36 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import { Mix, Mixes, Flavors, PromiseFlavors, Flavor, mixRate } from '../../components/types/types';
+import { Mix, Mixes, Flavors, Brands} from '../../components/types/types';
 import Api from '../../components/api/api';
 import preloader from '../../components/preloader/preloader';
-import ApiMix from '../../components/api_mix/api_mix';
 import backArrow from '../../assets/images/back-arrow-white.png';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
-import Header from '../../components/header/header';
+import getMainHeader from '../../components/getMainHeader/getMainHeader';
 
 class ComplitationPage implements InterfaceContainerElement {
-  private header:InterfaceContainerElement;
   private api: Api;
   private mix: Mix;
   private preloader: preloader;
-  // private apiMix: ApiMix;
-  private brandId: number;
   private mixes: Mixes;
   private flavors: Flavors;
-  
-  private brand = 1;
+  private brands: Brands;
+  private brandId:number;
+  private brandName:string;
   constructor() {
     this.brandId = Number(window.location.hash.split('complitation/')[window.location.hash.split('complitation/').length - 1]);
+    console.log(this.brandId);
     this.api = new Api();
-    this.header= new Header();
     this.getData();
   }
   private async getData() {
     this.preloader = new preloader();
     this.preloader.draw();
+    this.brands = await this.api.getAllBrands();
     this.flavors = await this.api.getAllFlavors();
     this.mixes = await this.api.getAllMixes();
-
+    this.brandName=this.brands.filter(e=>e.id===this.brandId)[0].name;
     this.draw();
     this.preloader.removePreloader();
   }
@@ -41,10 +39,21 @@ class ComplitationPage implements InterfaceContainerElement {
     const header = document.querySelector('.header')
     const headercontainer = document.querySelector('.header__container');
     if (header && headercontainer) {
-      header.classList.add('header-brusko');
+      header.className=`header header-${this.brandName.replace(/[\s-]/g, '').toLocaleLowerCase()}`;
       headercontainer.classList.add('container-complitation');
-      headercontainer.innerHTML = `<div class="complitation__buttons"><img src="${backArrow}" alt="back-arrow" class="arrow-back"></div>
-      <div class="complitation__title">Brusko</div>`;
+      headercontainer.innerHTML ='';
+      const complitationbuttons=createHTMLElement('complitation__buttons');
+      const imgarrow=new Image();
+      imgarrow.src=backArrow;
+      imgarrow.alt='back-arrow';
+      imgarrow.className='arrow-back';
+      imgarrow.onclick=()=>{window.history.back();
+        getMainHeader();};
+      complitationbuttons.append(imgarrow);
+      headercontainer.append(complitationbuttons);
+      const complitationtitle=createHTMLElement('complitation__title');
+      complitationtitle.innerHTML=this.brandName;
+      headercontainer.append(complitationtitle);
     }
   }
 
@@ -59,9 +68,9 @@ class ComplitationPage implements InterfaceContainerElement {
       const maincontainer = createHTMLElement(['main__container', 'container']);
       maincontainer.innerHTML = `<div class="mixes-list mixes-list-complitation"></div>`;
       main.append(maincontainer);
-      const brandArr = this.flavors.filter(e => (e.brand).replace(/[\s-]/g, '').toLocaleLowerCase() === 'Burn'.replace(/[\s-]/g, '').toLocaleLowerCase()).map(e => e.id);
+      const brandArr = this.flavors.filter(e => e.brand == this.brandName).map(e => e.id);
       const brandComplitationArr = this.mixes.filter(e => Object.values(e.compositionById).every(v => brandArr.includes(v)));
-      console.log(brandComplitationArr);
+      // console.log(brandComplitationArr);
       const mixeslist = document.querySelector('.mixes-list-complitation');
 
       brandComplitationArr.forEach(e => {
@@ -76,12 +85,12 @@ class ComplitationPage implements InterfaceContainerElement {
       </div>
     </div>`;
         card.onclick = () => {window.location.hash = `/mix/${e.id}`;
-        document.querySelector('.header')?.remove();
-        document.body.prepend(this.header.draw());};
+        getMainHeader();};
         mixeslist?.append(card);
       }
       );
 
+      window.onpopstate=getMainHeader;
       setTimeout(() => {
         this.changeHeader();
       }, 0);

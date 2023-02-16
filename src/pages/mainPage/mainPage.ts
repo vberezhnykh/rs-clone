@@ -79,7 +79,7 @@ class MainPage implements InterfaceContainerElement {
     const brandsComplitation = createHTMLElement('complitation-list');
     brandsComplitation.innerHTML=`<div class="complitation-list__header">
     <div class="complitation-list__title">Подборки: брэнды</div>
-    <div class="class="complitation-list__more">См. ещё</div>
+    <div class="complitation-list__more">См. ещё</div>
     </div>
     <div class="complitation-list__items">
     <div class="complitation-list__item item-brusko">
@@ -95,6 +95,19 @@ class MainPage implements InterfaceContainerElement {
       <div class="complitation-desc">Миксы на все случаи жизни от Макса - кальянного гуру Hookan Blender</div>
     </div>
     </div>`;
+    brandsComplitation.onclick=(e:Event)=>{
+      if(e.target instanceof HTMLElement){
+      if(e.target.className.includes('more'))
+      window.location.hash = `/list-complitation`;
+
+      else if(e.target.className.includes('item-brusko'))
+      window.location.hash = `/complitation/1`;
+      else if(e.target.className.includes('item-musthave'))
+      window.location.hash = `/complitation/5`;
+      else if(e.target.className.includes('item-burn'))
+      window.location.hash = `/complitation/2`;
+      }
+    }
     return brandsComplitation;
   }
 }

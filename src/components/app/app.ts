@@ -115,7 +115,7 @@ class App {
       }
     } else if (location === LocationPath.ListComplitationPage) {
       changePage = new ListComplitationPage();
-    } else if (location === LocationPath.ComplitationPage) {
+    } else if (location.includes(LocationPath.ComplitationPage)) {
       changePage = new ComplitationPage();
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
