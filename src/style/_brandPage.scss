@@ -6,7 +6,11 @@
   height: 100vh;
   padding: 1rem;
   z-index: 1;
-  overflow: y;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &-header {
     display: flex;
@@ -33,6 +37,11 @@
     &:hover {
       cursor: pointer;
       opacity: 0.8;
+    }
+
+    @media (width <= 768px) {
+      padding: 1rem;
+      font-size: 1.2rem;
     }
   }
 }
