@@ -1,6 +1,6 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-import { Mix, Mixes, Flavors, Brands} from '../../components/types/types';
+import { Mix, Mixes, Flavors, Brands, Rates} from '../../components/types/types';
 import Api from '../../components/api/api';
 import preloader from '../../components/preloader/preloader';
 import backArrow from '../../assets/images/back-arrow-white.png';
@@ -16,11 +16,11 @@ class ComplitationPage implements InterfaceContainerElement {
   private mixes: Mixes;
   private flavors: Flavors;
   private brands: Brands;
+  private rates: Rates;
   private brandId:number;
   private brandName:string;
   constructor() {
     this.brandId = Number(window.location.hash.split('complitation/')[window.location.hash.split('complitation/').length - 1]);
-    console.log(this.brandId);
     this.api = new Api();
     this.getData();
   }
@@ -31,6 +31,9 @@ class ComplitationPage implements InterfaceContainerElement {
     this.flavors = await this.api.getAllFlavors();
     this.mixes = await this.api.getAllMixes();
     this.brandName=this.brands.filter(e=>e.id===this.brandId)[0].name;
+    this.rates=await this.api.getAllRate();
+    console.log(this.rates.result)
+    console.log(this.mixes);
     this.draw();
     this.preloader.removePreloader();
   }
@@ -75,13 +78,15 @@ class ComplitationPage implements InterfaceContainerElement {
 
       brandComplitationArr.forEach(e => {
         let card = createHTMLElement('mixes-list__card');
+        let rate=this.rates.result.filter(r=>r.id==e.id)[0]?.rate || '-';
+        // let rate='-';
         card.innerHTML = `<img class="mixes-list__card-img"
       src="${this.api.getImage(e.image)}">
     <div class="mixes-list__card-container"><span class="mixes-list__title">${e.name}</span>
       <div class="mixes-list__card-footer"><button class="mixes-list__button button-1">Попробовать</button>
         <div class="mixes-list__rating-container"><img class="mixes-list__favorite-icon"
             src="${favoriteIconSrc}"><img class="mixes-list__rating-icon"
-            src="${ratingStarIconSrc}"><span class="mixes-list__rating-num">4.3</span></div>
+            src="${ratingStarIconSrc}"><span class="mixes-list__rating-num">${rate}</span></div>
       </div>
     </div>`;
         card.onclick = () => {window.location.hash = `/mix/${e.id}`;
