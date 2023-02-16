@@ -67,38 +67,42 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private createHeaderBackBtn() {
-    const backBtn = createHTMLElement('flavor-suggest__back-button', 'button');
+    const backBtn = createHTMLElement('flavor-suggest-header__back-button', 'button');
     backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
     backBtn.onclick = () => (location.hash = CATALOG_PAGE_URL);
     return backBtn;
   }
 
   private createFlavorAddForm() {
-    const flavorAddForm = createHTMLElement('flavor-form', 'form');
-    flavorAddForm.appendChild(this.createBrandNameInput());
-    flavorAddForm.appendChild(this.createNameInput());
-    flavorAddForm.appendChild(this.createDescriptionInput());
+    const flavorAddForm = createHTMLElement('flavor-suggest-form', 'form');
+    flavorAddForm.appendChild(this.createBrandNameContainer());
+    flavorAddForm.appendChild(this.createNameContainer());
+    flavorAddForm.appendChild(this.createDescriptionContainer());
     flavorAddForm.appendChild(this.createStrengthFieldSet());
-    flavorAddForm.appendChild(this.createTagsInput());
-    flavorAddForm.appendChild(this.createImageInput());
+    flavorAddForm.appendChild(this.createTagsContainer());
+    flavorAddForm.appendChild(this.createImageContainer());
     flavorAddForm.appendChild(this.createSuggestFlavorBtn());
     return flavorAddForm;
   }
 
-  private createBrandNameInput() {
+  private createBrandNameContainer() {
     const container = createHTMLElement('brand-name-container');
-    container.appendChild(createHTMLElement('flavor-suggest__brand-name-label', 'span', LABEL_BRAND));
-    const brandNameInput = createHTMLElement('flavor-suggest__brand-name');
-    brandNameInput.appendChild(createHTMLElement('brand-name-input'));
-    const arrowImage = <HTMLImageElement>createHTMLElement('flavor-suggest__brand-name-img', 'img');
-    arrowImage.src = expandArrowImgSrc;
-    brandNameInput.appendChild(arrowImage);
-    container.appendChild(brandNameInput);
+    container.appendChild(createHTMLElement('brand-name__label', 'span', LABEL_BRAND));
+    container.appendChild(this.createBrandNameInput());
     container.onclick = () => {
       if (!this.brands) return;
       else this.openBrandSelector();
     };
     return container;
+  }
+
+  private createBrandNameInput() {
+    const brandNameInput = createHTMLElement('brand-name__input');
+    brandNameInput.appendChild(createHTMLElement('brand-name__place'));
+    const expandArrowImage = <HTMLImageElement>createHTMLElement('brand-name__img', 'img');
+    expandArrowImage.src = expandArrowImgSrc;
+    brandNameInput.appendChild(expandArrowImage);
+    return brandNameInput;
   }
 
   private openBrandSelector() {
@@ -110,12 +114,12 @@ export class FlavorSuggest implements InterfaceContainerElement {
 
   private createBrandSelectorHeader() {
     const header = createHTMLElement('brand-selector__header');
-    header.appendChild(this.createCloseBrandSelectorBtn());
+    header.appendChild(this.createBrandSelectorCloseBtn());
     header.appendChild(createHTMLElement('brand-selector__title', 'h3', BRAND_SELECTOR_TITLE));
     return header;
   }
 
-  private createCloseBrandSelectorBtn() {
+  private createBrandSelectorCloseBtn() {
     const closeBtn = createHTMLElement('brand-selector__close-btn', 'button');
     closeBtn.style.backgroundImage = `url(${closeBtnImgSrc})`;
     closeBtn.onclick = () => document.querySelector('.brand-selector')?.remove();
@@ -124,24 +128,24 @@ export class FlavorSuggest implements InterfaceContainerElement {
 
   private createBrandsFieldset() {
     const fieldset = createHTMLElement('brand-selector-fieldset', 'fieldset');
-    this.brands.forEach((brand) => fieldset.appendChild(this.createBrandInput(brand)));
+    this.brands.forEach((brand) => fieldset.appendChild(this.createBrandOption(brand)));
     return fieldset;
   }
 
-  private createBrandInput(brand: string) {
+  private createBrandOption(brand: string) {
     const container = createHTMLElement('brand-container');
     const input = <HTMLInputElement>createHTMLElement('brand-selector__input', 'input');
     input.name = 'brand';
     input.type = 'radio';
     if (brand === this.brand) input.checked = true;
-    input.onclick = (e) => this.handleClickOnBrandNameInput(brand, e);
+    input.onclick = (e) => this.handleBrandNameSelect(brand, e);
     container.appendChild(input);
     container.appendChild(createHTMLElement('brand-selector__label', 'label', brand));
     return container;
   }
 
-  private handleClickOnBrandNameInput(brand: string, e: MouseEvent) {
-    const brandName = document.querySelector('.brand-name-input');
+  private handleBrandNameSelect(brand: string, e: MouseEvent) {
+    const brandName = document.querySelector('.brand-name__place');
     if (!brandName) {
       e.preventDefault();
       return;
@@ -151,16 +155,20 @@ export class FlavorSuggest implements InterfaceContainerElement {
     this.handleSuggestFlavorBtn();
   }
 
+  private createNameContainer() {
+    const label = <HTMLLabelElement>createHTMLElement('name-container');
+    label.appendChild(createHTMLElement('name__label', 'label', LABEL_NAME));
+    label.appendChild(this.createNameInput());
+    return label;
+  }
+
   private createNameInput() {
-    const label = <HTMLLabelElement>createHTMLElement('flavor-suggest__name', 'label');
-    label.appendChild(createHTMLElement('flavor-suggest__name-label', 'span', LABEL_NAME));
-    const input = <HTMLInputElement>createHTMLElement('flavor-suggest__name-input', 'input');
+    const input = <HTMLInputElement>createHTMLElement('name__input', 'input');
     input.placeholder = NAME_INPUT_PLACEHOLDER;
     input.maxLength = NAME_INPUT_MAX_LENGTH;
     input.minLength = NAME_INPUT_MIN_LENGTH;
     input.onkeyup = () => this.handleKeyStrokeOnNameInput(input);
-    label.appendChild(input);
-    return label;
+    return input;
   }
 
   private handleKeyStrokeOnNameInput(input: HTMLInputElement) {
@@ -173,10 +181,10 @@ export class FlavorSuggest implements InterfaceContainerElement {
     return lowerCaseString.charAt(0).toUpperCase() + lowerCaseString.slice(1);
   }
 
-  private createDescriptionInput() {
-    const label = <HTMLLabelElement>createHTMLElement('flavor-suggest__description', 'label');
-    label.appendChild(createHTMLElement('flavor-suggest__description-label', 'label', LABEL_DESCRIPTION));
-    const textArea = <HTMLTextAreaElement>createHTMLElement('flavor-suggest__description-input', 'textarea');
+  private createDescriptionContainer() {
+    const container = <HTMLLabelElement>createHTMLElement('description-container');
+    container.appendChild(createHTMLElement('description__label', 'label', LABEL_DESCRIPTION));
+    const textArea = <HTMLTextAreaElement>createHTMLElement('description__input', 'textarea');
     textArea.placeholder = DESCRIPTION_INPUT_PLACEHOLDER;
     textArea.maxLength = DESCRIPTION_INPUT_MAX_LENGTH;
     textArea.minLength = DESCRIPTION_INPUT_MIN_LENGTH;
@@ -184,56 +192,63 @@ export class FlavorSuggest implements InterfaceContainerElement {
       this.description = textArea.value.trim().replace(/\s+/g, ' ');
       this.handleSuggestFlavorBtn();
     };
-    label.appendChild(textArea);
-    return label;
+    container.appendChild(textArea);
+    return container;
   }
 
   private createStrengthFieldSet() {
-    const fieldset = <HTMLFieldSetElement>createHTMLElement('flavor-suggest__strength', 'fieldset');
-    fieldset.appendChild(createHTMLElement('flavor-suggest__strength-legend', 'legend', LABEL_STRENGTH));
+    const fieldset = <HTMLFieldSetElement>createHTMLElement('strength-fieldset', 'fieldset');
+    fieldset.appendChild(createHTMLElement('strength-fieldset__legend', 'legend', LABEL_STRENGTH));
     for (const key in STRENGTH) {
-      const container = createHTMLElement('flavor-suggest__strength-container');
-      const input = <HTMLInputElement>createHTMLElement('flavor-suggest__strength-input', 'input');
-      input.type = 'radio';
-      input.name = 'strength';
-      container.appendChild(input);
-      const label = <HTMLLabelElement>(
-        createHTMLElement('flavor-suggest__strength-label', 'label', STRENGTH[key as Strength])
-      );
-      container.appendChild(label);
-      input.onclick = () => {
-        this.strength = key as Strength;
-        this.handleSuggestFlavorBtn();
-      };
-      fieldset.appendChild(container);
+      fieldset.appendChild(this.createStrengthContainer(key));
     }
     return fieldset;
   }
 
-  private createTagsInput() {
-    const tagsContainer = createHTMLElement('flavor-suggest__tags');
-    tagsContainer.appendChild(createHTMLElement('flavor-suggest__tags-label', 'span', LABEL_TAGS));
+  private createStrengthContainer(key: string) {
+    const container = createHTMLElement('strength-fieldset__strength-container');
+    container.appendChild(this.createStrengthInput(key));
+    container.appendChild(createHTMLElement('strength-fieldset__label', 'label', STRENGTH[key as Strength]));
+    return container;
+  }
+
+  private createStrengthInput(key: string) {
+    const input = <HTMLInputElement>createHTMLElement('strength-fieldset__input', 'input');
+    input.type = 'radio';
+    input.name = 'strength';
+    input.onclick = () => this.handleClickOnStrengthInput(key);
+    return input;
+  }
+
+  private handleClickOnStrengthInput(key: string) {
+    this.strength = key as Strength;
+    this.handleSuggestFlavorBtn();
+  }
+
+  private createTagsContainer() {
+    const tagsContainer = createHTMLElement('tags');
+    tagsContainer.appendChild(createHTMLElement('tags__label', 'span', LABEL_TAGS));
     tagsContainer.appendChild(createHTMLElement('selected-tags'));
-    tagsContainer.appendChild(this.createAddTagsBtn());
+    tagsContainer.appendChild(this.createAddTagBtn());
     tagsContainer.appendChild(this.createTagsTips());
     return tagsContainer;
   }
 
   private createTagsTips() {
-    const container = createHTMLElement('tags-tips-cointainer');
-    container.appendChild(createHTMLElement('flavor-suggest__tags-tips', 'span', TAGS_TIPS_TEXT));
+    const container = createHTMLElement('tags-tips-container');
+    container.appendChild(createHTMLElement('tags__tips', 'span', TAGS_TIPS_TEXT));
     container.appendChild(
-      createHTMLElement('tags-counter', 'span', `${this.selectedFlavorTags.length} / ${MAX_TAGS_LENGTH}`)
+      createHTMLElement('tags__counter', 'span', `${this.selectedFlavorTags.length} / ${MAX_TAGS_LENGTH}`)
     );
     return container;
   }
 
-  private createAddTagsBtn() {
-    const addButton = <HTMLButtonElement>createHTMLElement('flavor-suggest__tags-button', 'button', TAGS_BTN_TEXT);
+  private createAddTagBtn() {
+    const addButton = <HTMLButtonElement>createHTMLElement('tags__button', 'button', TAGS_BTN_TEXT);
     addButton.type = 'button';
     addButton.onclick = () => {
       if (!this.flavors) return;
-      else this.openTagsPopUp();
+      else document.body.appendChild(this.createTagsPopUp());
     };
     return addButton;
   }
@@ -259,27 +274,27 @@ export class FlavorSuggest implements InterfaceContainerElement {
     return closeBtn;
   }
 
-  private openTagsPopUp() {
-    document.body.appendChild(this.createTagsPopUp());
-  }
-
   private createTagsFieldSet() {
     const fieldset = createHTMLElement('tags-popup-fieldset', 'fieldset');
     const flavorsTags = [...new Set(this.flavors.map((flavor) => flavor.flavor).flat(2))];
-    flavorsTags.forEach((flavorTag) => fieldset.appendChild(this.createTagInput(flavorTag)));
+    flavorsTags.forEach((flavorTag) => fieldset.appendChild(this.createTagContainer(flavorTag)));
     return fieldset;
   }
 
-  private createTagInput(flavorTag: string) {
+  private createTagContainer(flavorTag: string) {
     const container = createHTMLElement('tag-container');
+    container.appendChild(this.createTagInput(flavorTag));
+    container.appendChild(createHTMLElement('tags-popup__label', 'label', flavorTag));
+    return container;
+  }
+
+  private createTagInput(flavorTag: string) {
     const input = <HTMLInputElement>createHTMLElement('tags-popup__input', 'input');
     input.type = 'checkbox';
     input.value = flavorTag;
     if (this.selectedFlavorTags.includes(flavorTag)) input.checked = true;
     input.onclick = (e) => this.handleClickOnTag(e, input);
-    container.appendChild(input);
-    container.appendChild(createHTMLElement('tags-popup__label', 'label', flavorTag));
-    return container;
+    return input;
   }
 
   private handleClickOnTag(e: MouseEvent, input: HTMLInputElement) {
@@ -300,52 +315,61 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private handleTagsCounter() {
-    const counter = document.querySelector('.tags-counter');
+    const counter = document.querySelector('.tags__counter');
     if (!counter) return;
     counter.textContent = `${this.selectedFlavorTags.length} / ${MAX_TAGS_LENGTH}`;
-    if (this.selectedFlavorTags.length > MAX_TAGS_LENGTH) counter.classList.add('tags-counter--exceed');
-    else counter.classList.remove('tags-counter--exceed');
+    if (this.selectedFlavorTags.length > MAX_TAGS_LENGTH) counter.classList.add('tags__counter--exceed');
+    else counter.classList.remove('tags__counter--exceed');
     this.handleSuggestFlavorBtn();
   }
 
   private createSelectedTag(inputValue: string) {
     const selectedTag = <HTMLButtonElement>createHTMLElement('selected-tag', 'button', inputValue.toUpperCase());
-    const removeSelectedTag = new Image();
-    removeSelectedTag.src = closeBtnImgSrc;
-    removeSelectedTag.onclick = () => {
-      selectedTag.remove();
-      this.selectedFlavorTags.splice(this.selectedFlavorTags.indexOf(inputValue), 1);
-      this.handleTagsCounter();
-    };
-    selectedTag.appendChild(removeSelectedTag);
+    const removeSelectedTagBtn = new Image();
+    removeSelectedTagBtn.src = closeBtnImgSrc;
+    removeSelectedTagBtn.onclick = () => this.handleRemovingOfSelectedTag(selectedTag, inputValue);
+    selectedTag.appendChild(removeSelectedTagBtn);
     selectedTag.id = inputValue;
     return selectedTag;
   }
 
+  private handleRemovingOfSelectedTag(selectedTag: HTMLButtonElement, inputValue: string) {
+    selectedTag.remove();
+    this.selectedFlavorTags.splice(this.selectedFlavorTags.indexOf(inputValue), 1);
+    this.handleTagsCounter();
+  }
+
+  private createImageContainer() {
+    const container = createHTMLElement('image-container', 'div', IMAGE_INPUT_CONTAINER_TEXT);
+    const input = this.createImageInput();
+    container.appendChild(input);
+    container.onclick = () => input.click();
+    input.onchange = (e) => this.handleImageLoading(input, e, container);
+    return container;
+  }
+
   private createImageInput() {
-    const container = createHTMLElement('flavor-suggest__image-container', 'div', IMAGE_INPUT_CONTAINER_TEXT);
-    const input = <HTMLInputElement>createHTMLElement('flavor-suggest__input-image', 'input');
+    const input = <HTMLInputElement>createHTMLElement('image__input-image', 'input');
     input.type = 'file';
     input.accept = 'image/*';
     input.hidden = true;
-    container.appendChild(input);
-    container.onclick = () => input.click();
-    input.onchange = (e) => {
-      if (!input.files) return;
-      const uploadedFile = input.files[0];
-      if (uploadedFile.size > MAX_FILE_SIZE) return this.handleExceedingOfMaxSize(e);
-      const reader = new FileReader();
-      reader.readAsDataURL(uploadedFile);
-      reader.onload = () => {
-        const src = reader.result;
-        if (typeof src !== 'string' /* || brandLogoPreview === null */) return;
-        /* const image = new Image();
-        image.src = src; */
-        container.textContent = '';
-        container.style.backgroundImage = `url(${src})`;
-      };
+    return input;
+  }
+
+  private handleImageLoading(input: HTMLInputElement, e: Event, container: HTMLElement) {
+    if (!input.files) return;
+    const uploadedFile = input.files[0];
+    if (uploadedFile.size > MAX_FILE_SIZE) return this.handleExceedingOfMaxSize(e);
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadedFile);
+    reader.onload = () => {
+      const src = reader.result;
+      if (typeof src !== 'string' /* || brandLogoPreview === null */) return;
+      /* const image = new Image();
+      image.src = src; */
+      container.textContent = '';
+      container.style.backgroundImage = `url(${src})`;
     };
-    return container;
   }
 
   private handleExceedingOfMaxSize(e: Event) {
@@ -363,8 +387,17 @@ export class FlavorSuggest implements InterfaceContainerElement {
   private handleSuggestFlavorBtn() {
     const button = document.querySelector('.flavor-suggest__button');
     if (!button || !(button instanceof HTMLButtonElement)) return;
-    if (this.isValidData()) button.disabled = false;
-    else button.disabled = true;
+    if (this.isValidData()) {
+      button.disabled = false;
+      /* this.api.setNewFlavor({
+        brand: this.brand,
+        name: this.name,
+        description: this.description,
+        image: '1',
+        strength: this.strength,
+        flavor: this.selectedFlavorTags,
+      }); */
+    } else button.disabled = true;
   }
 
   private isValidData() {
@@ -401,6 +434,6 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private isValidImage() {
-    return false;
+    return true;
   }
 }
