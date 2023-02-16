@@ -1,17 +1,34 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
+import Api from '../../components/api/api';
+import defaultBrandLogoImageSrc from '../../assets/images/default_brand_logo.png';
 
 const PAGE_TITLE = 'Добавить бренд';
-const LABEL_TEXT = 'Название бренда';
+const NAME_LABEL_TEXT = 'Название бренда';
+const LOGO_LABEL_TEXT = 'Логотипа бренда';
 const BUTTON_TEXT = 'Добавить в каталог';
 const POPUP_TITLE = 'Спасибо за заявку!';
 const POPUP_TEXT = 'Заявка на добавление бренда отправлена. Бренд скоро появится в каталоге.';
 const POPUP_BUTTON_TEXT = 'Хорошо';
 const CATALOG_PAGE_URL = `/mixer/brands`;
+const INPUT_PLACEHOLDER = 'Укажите название бренда';
+const MAX_FILE_SIZE = 1024 * 1024 * 6;
+const EXCEEDING_MAX_FILE_SIZE_MESSAGE = 'Файл превышает лимит (6 MB)';
+const INVALID_BRAND_NAME_MSG = 'Название бренда не введено или введено некорректно.';
+const INVALID_LOGO_IMG_MSG = 'Логотип не загружен. Попробуйте снова.';
+const MIN_BRAND_NAME_LENGTH = 2;
 
 export class BrandSuggest implements InterfaceContainerElement {
-  private inputValue?: string;
+  private brandName?: string;
+  private imageName?: string;
+  private image?: File;
+  private api: Api;
+  private currentBrands: string[];
+  constructor() {
+    this.api = new Api();
+    this.api.getAllBrands().then((brands) => (this.currentBrands = brands.map((brand) => brand.name.toLowerCase())));
+  }
   draw() {
     const brandSuggest = createHTMLElement('brand-suggest', 'div');
     brandSuggest.appendChild(this.createHeader());
@@ -29,37 +46,61 @@ export class BrandSuggest implements InterfaceContainerElement {
   private createHeaderBackBtn() {
     const backBtn = createHTMLElement('brand__back-button', 'button');
     backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
-    backBtn.onclick = () => history.back();
+    backBtn.onclick = () => (location.hash = CATALOG_PAGE_URL);
     return backBtn;
   }
 
   private createBrandAddForm() {
     const brandAddForm = createHTMLElement('brand-form', 'form');
-    brandAddForm.appendChild(createHTMLElement('brand-form__label', 'label', LABEL_TEXT));
     const suggestBrandBtn = this.createSuggestBrandButton();
-    brandAddForm.appendChild(this.createInput(suggestBrandBtn));
+    brandAddForm.appendChild(this.createBrandNameInput(suggestBrandBtn));
+    brandAddForm.appendChild(this.createBrandLogoInput());
     brandAddForm.appendChild(suggestBrandBtn);
     return brandAddForm;
   }
 
-  private createInput(suggestBrandButton: HTMLButtonElement) {
-    const input = <HTMLInputElement>createHTMLElement('brand-form__input', 'input');
-    input.onkeyup = () => {
-      this.inputValue = input.value;
-      if (input.value.length < 2) suggestBrandButton.disabled = true;
-      else suggestBrandButton.disabled = false;
-    };
-    return input;
+  private createBrandNameInput(suggestBrandButton: HTMLButtonElement) {
+    const label = createHTMLElement('brand-form__label', 'label');
+    label.appendChild(
+      createHTMLElement(['brand-form__label-text', 'brand-form__label-text--required'], 'span', NAME_LABEL_TEXT)
+    );
+    const input = <HTMLInputElement>createHTMLElement('brand-form__name-input', 'input');
+    input.placeholder = INPUT_PLACEHOLDER;
+    input.minLength = MIN_BRAND_NAME_LENGTH;
+    input.onkeyup = () => this.handleBrandNameInputKeyUp(input.value, suggestBrandButton);
+    label.appendChild(input);
+    return label;
+  }
+
+  private handleBrandNameInputKeyUp(inputValue: string, suggestBrandButton: HTMLButtonElement) {
+    if (this.isValidBrandName(inputValue)) {
+      suggestBrandButton.disabled = false;
+      this.brandName = inputValue;
+    } else suggestBrandButton.disabled = true;
+  }
+
+  private isValidBrandName(inputValue: string) {
+    return inputValue.length > MIN_BRAND_NAME_LENGTH && !this.currentBrands.includes(inputValue.toLowerCase());
   }
 
   private createSuggestBrandButton() {
     const button = <HTMLButtonElement>createHTMLElement('brand-form__button', 'button', BUTTON_TEXT);
     button.disabled = true;
-    button.onclick = () => {
-      /* Собрать данные из формы и отправить на бэк */
-      document.querySelector('.brand-suggest')?.before(this.createPopUp());
-    };
+    button.onclick = () => this.handleClickOnSuggestBrandBtn();
     return button;
+  }
+
+  private handleClickOnSuggestBrandBtn() {
+    if (!this.brandName) {
+      alert(INVALID_BRAND_NAME_MSG);
+      return;
+    } else if (!this.image || !this.imageName) {
+      alert(INVALID_LOGO_IMG_MSG);
+      return;
+    }
+    // this.api.setNewBrand(this.brandName, this.imageName);
+    /* TO-DO: Загрузить изображение */
+    document.querySelector('.brand-suggest')?.before(this.createPopUp());
   }
 
   private createPopUp() {
@@ -68,9 +109,65 @@ export class BrandSuggest implements InterfaceContainerElement {
     popUp.appendChild(createHTMLElement('suggest-popup__title', 'h4', POPUP_TITLE));
     popUp.appendChild(createHTMLElement('suggest-popup__text', 'p', POPUP_TEXT));
     const button = createHTMLElement('suggest-popup__button', 'button', POPUP_BUTTON_TEXT);
-    button.onclick = () => (window.location.hash = CATALOG_PAGE_URL);
+    button.onclick = () => {
+      window.location.hash = CATALOG_PAGE_URL;
+      document.querySelector('.suggest-overlay')?.remove();
+    };
     popUp.appendChild(button);
     overlay.appendChild(popUp);
     return overlay;
+  }
+
+  private createBrandLogoInput() {
+    const label = createHTMLElement('brand-form__label', 'label');
+    label.appendChild(createHTMLElement('brand-form__label-text', 'span', LOGO_LABEL_TEXT));
+    label.appendChild(this.createBrandLogoContainer());
+    const input = <HTMLInputElement>createHTMLElement('brand-form__image-input', 'input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => this.handleBrandLogoInput(input, e);
+    label.appendChild(input);
+    const addButton = <HTMLButtonElement>createHTMLElement('brand-form__add-image-btn', 'button', 'Выбрать логотип');
+    addButton.type = 'button';
+    addButton.onclick = () => this.handleClickOnAddImgButton(input);
+    label.appendChild(addButton);
+    return label;
+  }
+
+  private handleClickOnAddImgButton(input: HTMLInputElement) {
+    input.click();
+  }
+
+  private createBrandLogoContainer() {
+    const brandLogo = new Image();
+    brandLogo.className = 'brand-form__brand-logo';
+    brandLogo.src = defaultBrandLogoImageSrc;
+    return brandLogo;
+  }
+
+  private handleBrandLogoInput(input: HTMLInputElement, e: Event) {
+    if (!input.files) return;
+    const uploadedFile = input.files[0];
+    if (uploadedFile.size > MAX_FILE_SIZE) return this.handleExceedingOfMaxSize(e);
+    this.image = uploadedFile;
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadedFile);
+    reader.onload = () => {
+      const src = reader.result;
+      const brandLogoPreview = document.querySelector('.brand-form__brand-logo');
+      if (typeof src !== 'string' || brandLogoPreview === null) return;
+      (brandLogoPreview as HTMLImageElement).src = src;
+      this.imageName = this.brandName ? this.processString(this.brandName) : uploadedFile.name;
+    };
+  }
+
+  private processString(string: string): string {
+    return string.toLowerCase().trim().replace(' ', '_');
+  }
+
+  private handleExceedingOfMaxSize(e: Event) {
+    alert(EXCEEDING_MAX_FILE_SIZE_MESSAGE);
+    e.preventDefault();
+    return;
   }
 }

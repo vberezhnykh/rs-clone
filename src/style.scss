@@ -6,6 +6,7 @@
 @import './style/preferences';
 @import "./style/mixPage.scss";
 @import './style/catalog';
+@import './style/flavorSuggest';
 @import './style/mixer-now';
 @import './style/brandSuggest';
 @import './style/brandPage';
@@ -49,7 +50,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-font);
   font-family: 'Rosario', sans-serif;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
@@ -96,6 +97,12 @@ body {
       border-radius: 25px;
       .button{
         width: 65%;
+        &:hover {
+          opacity: 0.8;
+          a {
+            background-color: var(--color-accent--lighter);
+          }
+        }
         a{
           font-size: 1.2rem;
         }
@@ -174,7 +181,6 @@ body {
     transition-property: none;
     color: var(--color-font);
     display: flex;
-    // width: 150px;
     height: 40px;
     justify-content: center;
     align-items: center;

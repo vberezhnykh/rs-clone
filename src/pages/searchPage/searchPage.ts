@@ -34,7 +34,6 @@ class SearchPage implements InterfaceContainerElement {
 
   constructor() {
     this.api = new Api();
-    /* TO-DO: далее код не для продакшена */
     this.checkDataBase().then(() => this.getSuggestions());
   }
 

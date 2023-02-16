@@ -23,7 +23,6 @@ class AccountPage implements InterfaceContainerElement {
     this.server = server;
     this.apiMix = new ApiMix();
     this.preloader = new preloader();
-
   }
 
   private handler = (e: Event): void => {
@@ -56,11 +55,11 @@ class AccountPage implements InterfaceContainerElement {
         const photo = data.avatar ? `${this.server}/${data.avatar}` : profile;
         const getTextCountMix = (num: number, arr: string[]) => {
           num = Math.abs(num);
-            if (Number.isInteger(num)) {
+          if (Number.isInteger(num)) {
             const options = [2, 0, 1, 1, 1, 2];
-            return arr[(num % 100 > 4 && num % 100 < 20) ? 2 : options[(num % 10 < 5) ? num % 10 : 5]];
+            return arr[num % 100 > 4 && num % 100 < 20 ? 2 : options[num % 10 < 5 ? num % 10 : 5]];
           }
-        }
+        };
         main.innerHTML = `
         <div class="main__container container">
           <div class="flex-container">
@@ -89,12 +88,20 @@ class AccountPage implements InterfaceContainerElement {
               <div class="column cell-img favorite">
                 <img src="${favorite}">
                 <p class="name">Любимые</p>
-                <p class="amount">${data.favorite.length} ${getTextCountMix(data.favorite.length, ['микс', 'микса', 'миксов'])}</p>
+                <p class="amount">${data.favorite.length} ${getTextCountMix(data.favorite.length, [
+          'микс',
+          'микса',
+          'миксов',
+        ])}</p>
               </div>
               <div class="column cell-img">
                 <img src="${myMix}">
                 <p class="name">Мои миксы</p>
-                <p class="amount">${data.myMix.length} ${getTextCountMix(data.myMix.length, ['микс', 'микса', 'миксов'])}</p>
+                <p class="amount">${data.myMix.length} ${getTextCountMix(data.myMix.length, [
+          'микс',
+          'микса',
+          'миксов',
+        ])}</p>
               </div>
             </div>
           </div>
