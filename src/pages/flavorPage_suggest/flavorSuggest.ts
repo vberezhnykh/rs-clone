@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { Brands, Flavors, InterfaceContainerElement } from '../../components/types/types';
+import { Flavors, InterfaceContainerElement } from '../../components/types/types';
 import Api from '../../components/api/api';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import closeBtnImgSrc from '../../assets/images/cancel.svg';
@@ -12,9 +12,11 @@ const BRAND_SELECTOR_TITLE = 'Выбрать бренд';
 const LABEL_NAME = 'Название вкуса';
 const NAME_INPUT_PLACEHOLDER = 'Введите название вкуса';
 const NAME_INPUT_MAX_LENGTH = 50;
+const NAME_INPUT_MIN_LENGTH = 3;
 const LABEL_DESCRIPTION = 'Описание вкуса';
 const DESCRIPTION_INPUT_PLACEHOLDER = 'Введите описание вкуса';
 const DESCRIPTION_INPUT_MAX_LENGTH = 250;
+const DESCRIPTION_INPUT_MIN_LENGTH = 30;
 const LABEL_STRENGTH = 'Крепость';
 const STRENGTH = {
   легкий: 'Легкий (Light / Base)',
@@ -27,6 +29,7 @@ const TAGS_TIPS_TEXT =
   'Теги – категории вкуса, например: сладкий, ягоды и т.д. Ко вкусу можно добавить от 1 до 4 тегов.';
 const POPUP_TITLE = 'Выбрать теги';
 const MAX_TAGS_LENGTH = 4;
+const MIN_TAGS_LENGTH = 1;
 const IMAGE_INPUT_CONTAINER_TEXT = 'Добавить картинку вкуса';
 const MAX_FILE_SIZE = 1024 * 1024 * 6;
 const EXCEEDING_MAX_FILE_SIZE_MESSAGE = 'Файл превышает лимит (6 MB)';
@@ -43,6 +46,7 @@ export class FlavorSuggest implements InterfaceContainerElement {
   description = '';
   strength: Strength;
   selectedFlavorTags: string[] = [];
+  image: string;
   constructor() {
     this.api = new Api();
     this.api.getAllFlavors().then((allFlavors) => (this.flavors = allFlavors));
@@ -120,7 +124,6 @@ export class FlavorSuggest implements InterfaceContainerElement {
 
   private createBrandsFieldset() {
     const fieldset = createHTMLElement('brand-selector-fieldset', 'fieldset');
-    // const flavorsTags = [...new Set(this.brands.map((brand) => brand).flat(2))];
     this.brands.forEach((brand) => fieldset.appendChild(this.createBrandInput(brand)));
     return fieldset;
   }
@@ -145,6 +148,7 @@ export class FlavorSuggest implements InterfaceContainerElement {
     }
     this.brand = brand;
     brandName.textContent = brand;
+    this.handleSuggestFlavorBtn();
   }
 
   private createNameInput() {
@@ -153,9 +157,20 @@ export class FlavorSuggest implements InterfaceContainerElement {
     const input = <HTMLInputElement>createHTMLElement('flavor-suggest__name-input', 'input');
     input.placeholder = NAME_INPUT_PLACEHOLDER;
     input.maxLength = NAME_INPUT_MAX_LENGTH;
-    input.onkeyup = () => (this.name = input.value.trim());
+    input.minLength = NAME_INPUT_MIN_LENGTH;
+    input.onkeyup = () => this.handleKeyStrokeOnNameInput(input);
     label.appendChild(input);
     return label;
+  }
+
+  private handleKeyStrokeOnNameInput(input: HTMLInputElement) {
+    this.name = FlavorSuggest.processTheInputValue(input.value);
+    this.handleSuggestFlavorBtn();
+  }
+
+  static processTheInputValue(string: string) {
+    const lowerCaseString = string.replace(/\s+/g, ' ').trim().toLowerCase();
+    return lowerCaseString.charAt(0).toUpperCase() + lowerCaseString.slice(1);
   }
 
   private createDescriptionInput() {
@@ -164,7 +179,11 @@ export class FlavorSuggest implements InterfaceContainerElement {
     const textArea = <HTMLTextAreaElement>createHTMLElement('flavor-suggest__description-input', 'textarea');
     textArea.placeholder = DESCRIPTION_INPUT_PLACEHOLDER;
     textArea.maxLength = DESCRIPTION_INPUT_MAX_LENGTH;
-    textArea.onkeyup = () => (this.description = textArea.value.trim());
+    textArea.minLength = DESCRIPTION_INPUT_MIN_LENGTH;
+    textArea.onkeyup = () => {
+      this.description = textArea.value.trim().replace(/\s+/g, ' ');
+      this.handleSuggestFlavorBtn();
+    };
     label.appendChild(textArea);
     return label;
   }
@@ -182,7 +201,10 @@ export class FlavorSuggest implements InterfaceContainerElement {
         createHTMLElement('flavor-suggest__strength-label', 'label', STRENGTH[key as Strength])
       );
       container.appendChild(label);
-      input.onclick = () => (this.strength = key as Strength);
+      input.onclick = () => {
+        this.strength = key as Strength;
+        this.handleSuggestFlavorBtn();
+      };
       fieldset.appendChild(container);
     }
     return fieldset;
@@ -207,7 +229,8 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private createAddTagsBtn() {
-    const addButton = createHTMLElement('flavor-suggest__tags-button', 'button', TAGS_BTN_TEXT);
+    const addButton = <HTMLButtonElement>createHTMLElement('flavor-suggest__tags-button', 'button', TAGS_BTN_TEXT);
+    addButton.type = 'button';
     addButton.onclick = () => {
       if (!this.flavors) return;
       else this.openTagsPopUp();
@@ -282,6 +305,7 @@ export class FlavorSuggest implements InterfaceContainerElement {
     counter.textContent = `${this.selectedFlavorTags.length} / ${MAX_TAGS_LENGTH}`;
     if (this.selectedFlavorTags.length > MAX_TAGS_LENGTH) counter.classList.add('tags-counter--exceed');
     else counter.classList.remove('tags-counter--exceed');
+    this.handleSuggestFlavorBtn();
   }
 
   private createSelectedTag(inputValue: string) {
@@ -334,5 +358,49 @@ export class FlavorSuggest implements InterfaceContainerElement {
     const button = <HTMLButtonElement>createHTMLElement('flavor-suggest__button', 'button', ADD_BTN_TEXT);
     button.disabled = true;
     return button;
+  }
+
+  private handleSuggestFlavorBtn() {
+    const button = document.querySelector('.flavor-suggest__button');
+    if (!button || !(button instanceof HTMLButtonElement)) return;
+    if (this.isValidData()) button.disabled = false;
+    else button.disabled = true;
+  }
+
+  private isValidData() {
+    return (
+      this.isValidName() &&
+      this.isValidBrandName() &&
+      this.isValidDescription() &&
+      this.isValidStrength() &&
+      this.isValidSelectedFlavorTags() &&
+      this.isValidImage()
+    );
+  }
+
+  private isValidName() {
+    return this.name.length >= NAME_INPUT_MIN_LENGTH && this.name.length < NAME_INPUT_MAX_LENGTH;
+  }
+
+  private isValidBrandName() {
+    return Boolean(this.brand);
+  }
+
+  private isValidDescription() {
+    return (
+      this.description.length >= DESCRIPTION_INPUT_MIN_LENGTH && this.description.length < DESCRIPTION_INPUT_MAX_LENGTH
+    );
+  }
+
+  private isValidStrength() {
+    return Boolean(this.strength);
+  }
+
+  private isValidSelectedFlavorTags() {
+    return this.selectedFlavorTags.length >= MIN_TAGS_LENGTH && this.selectedFlavorTags.length < MAX_TAGS_LENGTH;
+  }
+
+  private isValidImage() {
+    return false;
   }
 }

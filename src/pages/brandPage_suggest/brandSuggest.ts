@@ -98,7 +98,7 @@ export class BrandSuggest implements InterfaceContainerElement {
       alert(INVALID_LOGO_IMG_MSG);
       return;
     }
-    this.api.setNewBrand(this.brandName, this.imageName);
+    // this.api.setNewBrand(this.brandName, this.imageName);
     /* TO-DO: Загрузить изображение */
     document.querySelector('.brand-suggest')?.before(this.createPopUp());
   }
@@ -127,7 +127,8 @@ export class BrandSuggest implements InterfaceContainerElement {
     input.accept = 'image/*';
     input.onchange = (e) => this.handleBrandLogoInput(input, e);
     label.appendChild(input);
-    const addButton = createHTMLElement('brand-form__add-image-btn', 'button', 'Выбрать логотип');
+    const addButton = <HTMLButtonElement>createHTMLElement('brand-form__add-image-btn', 'button', 'Выбрать логотип');
+    addButton.type = 'button';
     addButton.onclick = () => this.handleClickOnAddImgButton(input);
     label.appendChild(addButton);
     return label;

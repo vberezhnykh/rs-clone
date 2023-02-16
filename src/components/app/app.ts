@@ -130,7 +130,6 @@ class App {
   private handleHashChange(): void {
     window.addEventListener('hashchange', this.loadHashPage);
     window.addEventListener('load', this.loadHashPage);
-    handleChangeOfFlavorsInMixer();
   }
 
   private loadHashPage = (): void => {
@@ -140,6 +139,7 @@ class App {
       window.location.hash = `/`;
     }
     this.drawNewPage(hash);
+    handleChangeOfFlavorsInMixer();
   };
 
   start(): void {
