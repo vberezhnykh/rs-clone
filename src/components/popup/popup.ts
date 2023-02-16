@@ -17,7 +17,6 @@ const ADD_BUTTON_TEXT = 'Добавить в миксер';
 const REMOVE_BUTTON_TEXT = 'Удалить из миксера';
 
 export function createPopup(elem: HTMLElement): void {
-  console.log()
   if (!document.querySelector('.popup-flavor')) {
     const flavor = createHTMLElement('popup-flavor');
     flavor.innerHTML = `<div class="popup-flavor__inner">
@@ -46,7 +45,7 @@ export function createPopup(elem: HTMLElement): void {
   }
 }
 
-export async function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPageOrMixerPage?: Element) {
+export function openFlavorPopup(flavorObj: Flavor, addButtonOnBrandPageOrMixerPage?: Element): void {
   const api = new Api();
   (<HTMLElement>document.querySelector('.popup-flavor__img')).setAttribute('src', api.getImage(flavorObj.image));
   (<HTMLElement>document.querySelector('.popup-flavor__title')).innerHTML = `${flavorObj.name}`;
