@@ -73,6 +73,12 @@ export interface mixRate {
   rate: number;
   vote: number;
 }
+interface Rate{
+  id: number;
+  rate: number;
+  vote: number;
+}
+export type Rates=Rate[];
 
 export interface NewFlavor {
   brand: string;

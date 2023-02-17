@@ -10,6 +10,7 @@ import ProfileUser from '../../components/profile_user/profile_user';
 import { server } from '../../components/server/server';
 import ApiMix from '../../components/api_mix/api_mix';
 import preloader from '../../components/preloader/preloader';
+import { getTextCountMix } from '../../components/getTextCountMix/getTextCountMix';
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
@@ -58,13 +59,13 @@ class AccountPage implements InterfaceContainerElement {
     this.profileUser.getProfile().then((data) => {
       if (data !== false) {
         const photo = data.avatar ? `${this.server}/${data.avatar}` : profile;
-        const getTextCountMix = (num: number, arr: string[]) => {
-          num = Math.abs(num);
-          if (Number.isInteger(num)) {
-            const options = [2, 0, 1, 1, 1, 2];
-            return arr[num % 100 > 4 && num % 100 < 20 ? 2 : options[num % 10 < 5 ? num % 10 : 5]];
-          }
-        };
+        // const getTextCountMix = (num: number, arr: string[]) => {
+        //   num = Math.abs(num);
+        //     if (Number.isInteger(num)) {
+        //     const options = [2, 0, 1, 1, 1, 2];
+        //     return arr[(num % 100 > 4 && num % 100 < 20) ? 2 : options[(num % 10 < 5) ? num % 10 : 5]];
+        //   }
+        // }
         main.innerHTML = `
         <div class="main__container container">
           <div class="flex-container">
