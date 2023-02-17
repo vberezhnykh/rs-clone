@@ -67,7 +67,8 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private createHeaderBackBtn() {
-    const backBtn = createHTMLElement('flavor-suggest-header__back-button', 'button');
+    const backBtn = <HTMLButtonElement>createHTMLElement('flavor-suggest-header__back-button', 'button');
+    backBtn.type = 'button';
     backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
     backBtn.onclick = () => (location.hash = CATALOG_PAGE_URL);
     return backBtn;
@@ -120,7 +121,8 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private createBrandSelectorCloseBtn() {
-    const closeBtn = createHTMLElement('brand-selector__close-btn', 'button');
+    const closeBtn = <HTMLButtonElement>createHTMLElement('brand-selector__close-btn', 'button');
+    closeBtn.type = 'button';
     closeBtn.style.backgroundImage = `url(${closeBtnImgSrc})`;
     closeBtn.onclick = () => document.querySelector('.brand-selector')?.remove();
     return closeBtn;
@@ -325,6 +327,7 @@ export class FlavorSuggest implements InterfaceContainerElement {
 
   private createSelectedTag(inputValue: string) {
     const selectedTag = <HTMLButtonElement>createHTMLElement('selected-tag', 'button', inputValue.toUpperCase());
+    selectedTag.disabled = true;
     const removeSelectedTagBtn = new Image();
     removeSelectedTagBtn.src = closeBtnImgSrc;
     removeSelectedTagBtn.onclick = () => this.handleRemovingOfSelectedTag(selectedTag, inputValue);

@@ -111,7 +111,11 @@ class AccountPage implements InterfaceContainerElement {
               <div class="column cell-img favorite-tobaccos">
                 <img src="${flavor}">
                 <p class="name">Мои табаки</p>
-                <p class="amount">${data.favoriteFlavors.length} ${getTextCountMix(data.favoriteFlavors.length, ['табак', 'табака', 'табаков'])}</p>
+                <p class="amount">${data.favoriteFlavors.length} ${getTextCountMix(data.favoriteFlavors.length, [
+          'табак',
+          'табака',
+          'табаков',
+        ])}</p>
               </div>
             </div>
           </div>

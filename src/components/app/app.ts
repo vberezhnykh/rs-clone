@@ -98,7 +98,7 @@ class App {
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
     } else if (location.includes(LocationPath.CatalogPage)) {
-      changePage = isBrandPage() ? new BrandPage() : new ErrorPage();
+      changePage = (await isBrandPage()) ? new BrandPage() : new ErrorPage();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();

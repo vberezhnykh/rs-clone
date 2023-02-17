@@ -106,8 +106,8 @@ export class BrandPage implements InterfaceContainerElement {
 
   private async createFlavorsList(flavors?: Flavors) {
     const flavorsList = createHTMLElement('flavor-list', 'ul');
-    if (flavors?.length === 0) return this.showErrorMessage(flavorsList);
     if (!this.flavors) await this.getAllFlavorsByBrand();
+    if (flavors?.length === 0 || this.flavors.length === 0) return this.showErrorMessage(flavorsList);
     const flavorsToIterate = flavors ?? this.flavors;
     for (let i = 0; i < flavorsToIterate.length; i++) {
       flavorsList.appendChild(this.createFlavorListItem(i, flavorsToIterate));
