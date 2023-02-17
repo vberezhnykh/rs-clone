@@ -139,6 +139,7 @@ export class Catalog implements InterfaceContainerElement {
     const brandName = createHTMLElement('brand-name', 'span', brands[i].name);
     container.appendChild(brandName);
     if (this.flavors.length === 0) this.flavors = await this.api.getAllFlavors();
+    console.log(this.flavors);
     const flavorsNum = createHTMLElement('flavors-count', 'span', this.getFlavorsNum(brands, i));
     container.appendChild(flavorsNum);
     return container;
