@@ -37,7 +37,7 @@ class ListComplitationPage implements InterfaceContainerElement {
     const header = document.querySelector('.header')
     const headercontainer = document.querySelector('.header__container');
     if (header && headercontainer) {
-      header.className='header header-brands';
+      header.className='header header-complitation';
       headercontainer.classList.add('container-complitation');
       headercontainer.innerHTML ='';
       const complitationbuttons=createHTMLElement('complitation__buttons');

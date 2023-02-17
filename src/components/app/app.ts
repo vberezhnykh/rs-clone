@@ -23,6 +23,7 @@ import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import ComplitationPage from '../../pages/complitationPage/complitationPage';
 import ListComplitationPage from '../../pages/listComplitationPage/listcomplitationPage';
+import PopularMixes from '../../pages/popularMixes/popularMixes';
 
 enum LocationPath {
   MainPage = `/`,
@@ -42,6 +43,7 @@ enum LocationPath {
   ChangePrefBrands = `/change-pref/brands`,
   ComplitationPage = `/complitation`,
   ListComplitationPage = `/list-complitation`,
+  PopularMixes = `/popular-mixes`,
 }
 
 class App {
@@ -117,6 +119,8 @@ class App {
       changePage = new ListComplitationPage();
     } else if (location.includes(LocationPath.ComplitationPage)) {
       changePage = new ComplitationPage();
+    } else if (location === LocationPath.PopularMixes) {
+      changePage = new PopularMixes();
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
     } else {

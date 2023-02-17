@@ -9,29 +9,34 @@ import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import getMainHeader from '../../components/getMainHeader/getMainHeader';
 
-class ComplitationPage implements InterfaceContainerElement {
+class PopularMixes implements InterfaceContainerElement {
   private api: Api;
   private mix: Mix;
   private preloader: preloader;
   private mixes: Mixes;
-  private flavors: Flavors;
-  private brands: Brands;
+  // private flavors: Flavors;
+  // private brands: Brands;
   private rates: Rates;
-  private brandId:number;
-  private brandName:string;
+  // private brandId:number;
+  // private brandName:string;
+  private popularMixes:Mixes;
   constructor() {
-    this.brandId = Number(window.location.hash.split('complitation/')[window.location.hash.split('complitation/').length - 1]);
+    // this.brandId = Number(window.location.hash.split('complitation/')[window.location.hash.split('complitation/').length - 1]);
     this.api = new Api();
     this.getData();
   }
   private async getData() {
     this.preloader = new preloader();
     this.preloader.draw();
-    this.brands = await this.api.getAllBrands();
-    this.flavors = await this.api.getAllFlavors();
-    this.mixes = await this.api.getAllMixes();
-    this.brandName=this.brands.filter(e=>e.id===this.brandId)[0].name;
+    // this.brands = await this.api.getAllBrands();
+    // this.flavors = await this.api.getAllFlavors();
+    // this.mixes = await this.api.getAllMixes();
+    // this.brandName=this.brands.filter(e=>e.id===this.brandId)[0].name;
+    this.popularMixes = await this.api.getTop10();
+    console.log(this.popularMixes);
     this.rates=await this.api.getAllRate();
+    // console.log(this.rates.result)
+    // console.log(this.mixes);
     this.draw();
     this.preloader.removePreloader();
   }
@@ -40,7 +45,7 @@ class ComplitationPage implements InterfaceContainerElement {
     const header = document.querySelector('.header')
     const headercontainer = document.querySelector('.header__container');
     if (header && headercontainer) {
-      header.className=`header header-${this.brandName.replace(/[\s-]/g, '').toLocaleLowerCase()}`;
+      header.className=`header header-complitation`;
       headercontainer.classList.add('container-complitation');
       headercontainer.innerHTML ='';
       const complitationbuttons=createHTMLElement('complitation__buttons');
@@ -53,7 +58,7 @@ class ComplitationPage implements InterfaceContainerElement {
       complitationbuttons.append(imgarrow);
       headercontainer.append(complitationbuttons);
       const complitationtitle=createHTMLElement('complitation__title');
-      complitationtitle.innerHTML=this.brandName;
+      complitationtitle.innerHTML='Популярные миксы';
       headercontainer.append(complitationtitle);
     }
   }
@@ -61,7 +66,7 @@ class ComplitationPage implements InterfaceContainerElement {
 
 
   draw(): HTMLElement {
-    if (this.mixes === undefined) {
+    if (this.popularMixes === undefined) {
       const main = createHTMLElement('main', 'main');
       return main;
     } else {
@@ -69,14 +74,15 @@ class ComplitationPage implements InterfaceContainerElement {
       const maincontainer = createHTMLElement(['main__container', 'container']);
       maincontainer.innerHTML = `<div class="mixes-list mixes-list-complitation"></div>`;
       main.append(maincontainer);
-      const brandArr = this.flavors.filter(e => e.brand == this.brandName).map(e => e.id);
-      const brandComplitationArr = this.mixes.filter(e => Object.values(e.compositionById).every(v => brandArr.includes(v)));
+      // const brandArr = this.flavors.filter(e => e.brand == this.brandName).map(e => e.id);
+      // const brandComplitationArr = this.mixes.filter(e => Object.values(e.compositionById).every(v => brandArr.includes(v)));
       // console.log(brandComplitationArr);
       const mixeslist = document.querySelector('.mixes-list-complitation');
 
-      brandComplitationArr.forEach(e => {
+      this.popularMixes.forEach(e => {
         let card = createHTMLElement('mixes-list__card');
         let rate=this.rates.filter(r=>r.id==e.id)[0]?.rate || '-';
+        // let rate='-';
         card.innerHTML = `<img class="mixes-list__card-img"
       src="${this.api.getImage(e.image)}">
     <div class="mixes-list__card-container"><span class="mixes-list__title">${e.name}</span>
@@ -101,4 +107,4 @@ class ComplitationPage implements InterfaceContainerElement {
   }
 }
 
-export default ComplitationPage;
+export default PopularMixes;

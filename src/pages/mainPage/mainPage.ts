@@ -1,25 +1,40 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement } from '../../components/types/types';
+import { InterfaceContainerElement, Mixes, Rates } from '../../components/types/types';
 import Api from '../../components/api/api';
 import changePrefIconSrc from '../../assets/images/change-pref-icon.png';
+import emptystar from '../../assets/images/star-empty.svg';
 
 class MainPage implements InterfaceContainerElement {
   private api;
+  private rates: Rates;
+  private popularmixes:Mixes;
   constructor() {
     this.api = new Api();
+    this.getData();
+    
   }
+
+  private async getData(){
+    this.popularmixes= await this.api.getTop10();
+    this.rates=await this.api.getAllRate();
+    console.log(this.popularmixes);
+    this.draw();
+  }
+
   draw(): HTMLElement {
+    if(this.popularmixes===undefined){
     const main = createHTMLElement('main', 'main');
     const container = createHTMLElement(['main__container', 'container']);
     main.appendChild(container);
-
-    /* main.innerHTML = `
-    <div class="main__container">
-    </div>
-    `; */
-    container.appendChild(this.createTopBlock());
-    container.appendChild(this.createBrandsComplitation());
-    return main;
+    return main;}
+    else{
+      const main=document.querySelector('.main') as HTMLElement;
+      const container=document.querySelector('.main__container') as HTMLElement;
+      container.appendChild(this.createTopBlock());
+      container.appendChild(this.createPopularMixes());
+      container.appendChild(this.createBrandsComplitation());
+      main.appendChild(container);
+      return main;}
   }
 
   private createTopBlock() {
@@ -79,7 +94,38 @@ class MainPage implements InterfaceContainerElement {
   private openFlavorsPreferences() {
     /* TO-DO */
   }
-  
+  private createPopularMixes(){
+    let items='';
+    for(let i:number=0; i<5;i++){
+      let rate=this.rates.filter(r=>r.id==this.popularmixes[i].id)[0]?.rate || '-';
+      items+=`<div class="popular-list__item">
+      <img src="${this.api.getImage(this.popularmixes[i].image)}" class="item-img">
+      <div class="item-name">${this.popularmixes[i].name}</div>
+      <div class="item-rating"><div class="item-rate">${rate}</div><img src="${emptystar}" class="item-star"></div>
+    </div>`;
+    } 
+    const popularMixes = createHTMLElement('popular-list');
+    popularMixes.innerHTML=`<div class="popular-list__header">
+    <div class="popular-list__title">Популярные миксы</div>
+    <div class="popular-list__more">См. ещё</div>
+    </div>
+    <div class="popular-list__items">
+    ${items}
+    </div>`;
+    
+    popularMixes.onclick=(e:Event)=>{
+      if(e.target instanceof HTMLElement){
+      if(e.target.className.includes('more'))
+      window.location.hash = `/popular-mixes`;
+      else if(e.target.className.includes('popular-list__item') || e.target.parentElement?.className.includes('popular-list__item') || e.target.parentElement?.className.includes('item-rating')){
+        const index=Array.from(document.querySelectorAll(`.${e.target.classList[0]}`)).indexOf(e.target);
+        window.location.hash = `/mix/${this.popularmixes[index].id}`;
+      }}
+    }
+    return popularMixes;
+  }
+
+
   private createBrandsComplitation(){
     const brandsComplitation = createHTMLElement('complitation-list');
     brandsComplitation.innerHTML=`<div class="complitation-list__header">

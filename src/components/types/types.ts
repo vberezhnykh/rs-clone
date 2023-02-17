@@ -78,7 +78,7 @@ interface Rate{
   rate: number;
   vote: number;
 }
-export type Rates={result:Rate[]};
+export type Rates=Rate[];
 
 export interface NewFlavor {
   brand: string;
