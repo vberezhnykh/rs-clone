@@ -6,6 +6,7 @@ import preloader from '../../components/preloader/preloader';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
+import { getImgSrc } from '../../utils/getImgUrl';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
 const MIXER_PAGE_URL = `/mixer`;
@@ -82,6 +83,7 @@ export class Catalog implements InterfaceContainerElement {
 
   private async handleKeyupOnInput(searchInput: HTMLInputElement) {
     if (this.brands.length === 0) return;
+    console.log(this.brands);
     const sortedBrands = this.brands.filter((brand) =>
       brand.name.toLowerCase().includes(searchInput.value.toLowerCase())
     );
@@ -127,7 +129,7 @@ export class Catalog implements InterfaceContainerElement {
 
   private createBrandImage(brands: Brands, i: number) {
     const brandImg = new Image();
-    brandImg.src = this.api.getImage(brands[i].image);
+    brandImg.src = getImgSrc(brands[i].image, this.api.getImage(brands[i].image));
     brandImg.alt = 'brand-name';
     return brandImg;
   }

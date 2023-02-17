@@ -133,6 +133,5 @@ class Api {
     });
     return await res.json();
   }
-
 }
 export default Api;

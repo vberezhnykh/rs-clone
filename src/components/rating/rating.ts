@@ -29,19 +29,19 @@ class rating {
     this.starstop = '';
     let half = false;
     if (this.getRateResult.rate % 1 == 0) {
-      for (let i: number = 0; i < 5; i++) {
-        if (this.getRateResult.rate > i)
-          this.starstop += `<img src="${stargold}" class="mix-card__star" alt="star">`;
+      for (let i = 0; i < 5; i++) {
+        if (this.getRateResult.rate > i) this.starstop += `<img src="${stargold}" class="mix-card__star" alt="star">`;
         else this.starstop += `<img src="${starempty}" class="mix-card__star" alt="star">`;
       }
-    }
-    else {
-      for (let i: number = 0; i < 5; i++) {
+    } else {
+      for (let i = 0; i < 5; i++) {
         if (Math.floor(this.getRateResult.rate) > i)
           this.starstop += `<img src="${stargold}" class="mix-card__star" alt="star">`;
         else {
-          if (!half) { this.starstop += `<img src="${starhalf}" class="mix-card__star" alt="star">`; half = true; }
-          else this.starstop += `<img src="${starempty}" class="mix-card__star" alt="star">`;
+          if (!half) {
+            this.starstop += `<img src="${starhalf}" class="mix-card__star" alt="star">`;
+            half = true;
+          } else this.starstop += `<img src="${starempty}" class="mix-card__star" alt="star">`;
         }
       }
     }
@@ -73,20 +73,27 @@ class rating {
   }
   private open = (e: Event) => {
     const mixratingstars = document.querySelector('.mix-rating__stars') as HTMLElement;
-    if (((<HTMLElement>e.target).classList.contains('mix-rating__stars') || (<HTMLElement>e.target).classList.contains('rating__star')) && !mixratingstars?.classList.contains('active')) {
+    if (
+      ((<HTMLElement>e.target).classList.contains('mix-rating__stars') ||
+        (<HTMLElement>e.target).classList.contains('rating__star')) &&
+      !mixratingstars?.classList.contains('active')
+    ) {
       mixratingstars?.classList.add('active');
       let stars = ``;
-      for (let i: number = 0; i < 5; i++) {
+      for (let i = 0; i < 5; i++) {
         if (this.vote > 0) {
           if (this.vote > i) stars += `<img src="${stargold}" class="rating__star" alt="star" width="28" height="28">`;
           else stars += `<img src="${starempty}" class="rating__star" alt="star" width="28" height="28">`;
-        }
-        else stars += `<img src="${staremptyblack}" class="rating__star" alt="star" width="28" height="28">`;
+        } else stars += `<img src="${staremptyblack}" class="rating__star" alt="star" width="28" height="28">`;
       }
-      setTimeout(() => { mixratingstars.innerHTML = stars }, 150);
-    }
-    else if ((<HTMLElement>e.target).classList.contains('rating__star') && mixratingstars?.classList.contains('active')) {
-      const index = Array.from(document.querySelectorAll('.rating__star')).indexOf((<HTMLElement>e.target));
+      setTimeout(() => {
+        mixratingstars.innerHTML = stars;
+      }, 150);
+    } else if (
+      (<HTMLElement>e.target).classList.contains('rating__star') &&
+      mixratingstars?.classList.contains('active')
+    ) {
+      const index = Array.from(document.querySelectorAll('.rating__star')).indexOf(<HTMLElement>e.target);
       this.vote = index + 1;
       mixratingstars.classList.remove('active');
       mixratingstars.innerHTML = `<img src="${stargold}" class="rating__star" alt="star" width="28" height="28">`;
@@ -99,7 +106,7 @@ class rating {
       (async () => {
         if (typeof this.profileId === 'string') {
           this.Apimix.setRate(this.profileId, this.mixId, this.vote)
-            .then(result => this.getRateResult = result)
+            .then((result) => (this.getRateResult = result))
             .then(() => {
               this.topdraw();
               const mixcardstars = document.querySelector('.mix-card__stars');
@@ -108,18 +115,24 @@ class rating {
                 mixcardstars.innerHTML = this.starstop;
                 mixcardrating.innerHTML = this.rate;
               }
-            })
+            });
         }
       })();
-    }
-    else if ((<HTMLElement>e.target).classList.contains('mix-rating__stars') && mixratingstars?.classList.contains('active') && !mixratingstars?.classList.contains('rated')) {
+    } else if (
+      (<HTMLElement>e.target).classList.contains('mix-rating__stars') &&
+      mixratingstars?.classList.contains('active') &&
+      !mixratingstars?.classList.contains('rated')
+    ) {
       mixratingstars.classList.remove('active');
       mixratingstars.innerHTML = `<img src="${staremptyblack}" class="rating__star" alt="star" width="28" height="28">`;
-    }
-    else if ((<HTMLElement>e.target).classList.contains('mix-rating__stars') && mixratingstars?.classList.contains('active') && mixratingstars?.classList.contains('rated')) {
+    } else if (
+      (<HTMLElement>e.target).classList.contains('mix-rating__stars') &&
+      mixratingstars?.classList.contains('active') &&
+      mixratingstars?.classList.contains('rated')
+    ) {
       mixratingstars.classList.remove('active');
       mixratingstars.innerHTML = `<img src="${stargold}" class="rating__star" alt="star" width="28" height="28">`;
     }
-  }
+  };
 }
 export default rating;

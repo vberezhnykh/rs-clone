@@ -12,6 +12,8 @@ import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { changeFlavorNumInBrandPageHeader } from '../../utils/changeFlavorNum';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
+const SUGGEST_FLAVOR_HASH = '/flavor-suggest';
+const SUGGEST_FLAVOR_BTN_TEXT = 'Добавить вкус';
 
 export class BrandPage implements InterfaceContainerElement {
   private brand: string;
@@ -28,6 +30,7 @@ export class BrandPage implements InterfaceContainerElement {
     const brandPage = createHTMLElement('brand-page');
     brandPage.appendChild(this.createHeader());
     brandPage.appendChild(this.createSearchPanel());
+    brandPage.appendChild(this.createSuggestFlavorBtn());
     this.createFlavorsList().then((element) => brandPage.appendChild(element));
     createPopup(brandPage);
     return brandPage;
@@ -42,7 +45,10 @@ export class BrandPage implements InterfaceContainerElement {
   }
 
   private getBrandName() {
-    return this.brand[0].toUpperCase() + this.brand.slice(1);
+    return this.brand
+      .split(' ')
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   private createHeaderBackBtn() {
@@ -95,10 +101,16 @@ export class BrandPage implements InterfaceContainerElement {
     flavorsList.replaceWith(await this.createFlavorsList(sortedFlavors));
   }
 
+  private createSuggestFlavorBtn() {
+    const addButton = <HTMLButtonElement>createHTMLElement('brand-page__add-btn', 'button', SUGGEST_FLAVOR_BTN_TEXT);
+    addButton.onclick = () => (location.hash = SUGGEST_FLAVOR_HASH);
+    return addButton;
+  }
+
   private async createFlavorsList(flavors?: Flavors) {
     const flavorsList = createHTMLElement('flavor-list', 'ul');
-    if (flavors?.length === 0) return this.showErrorMessage(flavorsList);
     if (!this.flavors) await this.getAllFlavorsByBrand();
+    if (flavors?.length === 0 || this.flavors.length === 0) return this.showErrorMessage(flavorsList);
     const flavorsToIterate = flavors ?? this.flavors;
     for (let i = 0; i < flavorsToIterate.length; i++) {
       flavorsList.appendChild(this.createFlavorListItem(i, flavorsToIterate));

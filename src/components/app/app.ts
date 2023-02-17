@@ -19,17 +19,21 @@ import { UserMixes } from '../userMixes/user-mixes';
 import { PreferencesPage } from '../preferences/preferences';
 import ProfileUser from '../profile_user/profile_user';
 import FavoritePage from '../../pages/favorite_page/favorite_page';
+import FavoriteTobaccosPage from '../../pages/favorite_tabacos_page/favorite_tabacos_page';
+import MyMixesPage from '../../pages/my_mixes_pages/my_mixes_pages';
 import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import ComplitationPage from '../../pages/complitationPage/complitationPage';
 import ListComplitationPage from '../../pages/listComplitationPage/listcomplitationPage';
 import PopularMixes from '../../pages/popularMixes/popularMixes';
+import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
 
 enum LocationPath {
   MainPage = `/`,
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   CatalogPage = `/mixer/brands`,
+  FlavorsSuggestPage = `/flavor-suggest`,
   MixerNowPage = `/mixer/mixer-now`,
   BrandSuggestPage = `/brand-suggest`,
   PreferencesFlavorsPage = `/mixer/preferences/flavors`,
@@ -37,6 +41,8 @@ enum LocationPath {
   AccountPage = `/account`,
   EditAccount = `/account/edit`,
   FavoritePage = `/account/favorite`,
+  FavoriteTobaccosPage = `/account/favorite-tobaccos`,
+  MyMixesPage = `/account/my-mixes`,
   UserMixes = `/user-mixes`,
   MixPage = `/mix`,
   ChangePrefFlavors = `/change-pref/flavors`,
@@ -91,12 +97,14 @@ class App {
       changePage = new MixerPage();
     } else if (location === LocationPath.CatalogPage) {
       changePage = new Catalog();
+    } else if (location === LocationPath.FlavorsSuggestPage) {
+      changePage = new FlavorSuggest();
     } else if (location === LocationPath.MixerNowPage) {
       changePage = new MixerNowPage();
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
     } else if (location.includes(LocationPath.CatalogPage)) {
-      changePage = isBrandPage() ? new BrandPage() : new ErrorPage();
+      changePage = (await isBrandPage()) ? new BrandPage() : new ErrorPage();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();
@@ -121,6 +129,18 @@ class App {
       changePage = new ComplitationPage();
     } else if (location === LocationPath.PopularMixes) {
       changePage = new PopularMixes();
+    } else if (location === LocationPath.FavoriteTobaccosPage) {
+      if ((await this.checkAuth.checkUserAuth()) === true) {
+        changePage = new FavoriteTobaccosPage();
+      } else {
+        changePage = new AccountPage();
+      }
+    } else if (location === LocationPath.MyMixesPage) {
+      if ((await this.checkAuth.checkUserAuth()) === true) {
+        changePage = new MyMixesPage();
+      } else {
+        changePage = new AccountPage();
+      }
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
     } else {
@@ -138,7 +158,6 @@ class App {
   private handleHashChange(): void {
     window.addEventListener('hashchange', this.loadHashPage);
     window.addEventListener('load', this.loadHashPage);
-    handleChangeOfFlavorsInMixer();
   }
 
   private loadHashPage = (): void => {
@@ -148,6 +167,7 @@ class App {
       window.location.hash = `/`;
     }
     this.drawNewPage(hash);
+    handleChangeOfFlavorsInMixer();
   };
 
   start(): void {

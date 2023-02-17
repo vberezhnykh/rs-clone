@@ -1,9 +1,9 @@
 .user-mixes-container {
-  background-color: black;
+  background-color: var(--color-bg);
   position: fixed;
   top: 0;
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
   overflow-y: scroll;
   z-index: 3;
 }

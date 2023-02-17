@@ -98,11 +98,11 @@ class ApiMix {
     }
   }
 
-  public async getFavoriteFlavor(userId: string) {
+  public async getFavoriteFlavors(userId: string) {
     const localStorageAuth: string | null = window.localStorage.getItem('blenderProfile');
     if (localStorageAuth) {
-      const favoriteFlavor = JSON.parse(localStorageAuth).favoriteFlavor;
-      return favoriteFlavor;
+      const favoriteFlavors = JSON.parse(localStorageAuth).favoriteFlavors;
+      return favoriteFlavors;
     }
     const res = await fetch(`${this.favoriteFlavor}:${userId}`, {
       method: 'GET',

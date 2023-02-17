@@ -7,6 +7,12 @@
   -webkit-transition: color 350ms ease, background-color 350ms ease;
   transition: color 350ms ease, background-color 350ms ease;
 
+  @media (width < 426px) {
+    margin: 0;
+    padding: 0.5rem;
+    border-radius: 0;
+  }
+
   &__inner {
     font-size: 20px;
     display: flex;
@@ -24,6 +30,10 @@
       color: #ffffff;
       outline: none;
       height: 100%;
+
+      @media (width < 426px) {
+        
+      }
     }
 
   }
@@ -38,6 +48,10 @@
 .search-list {
   text-align: center;
   margin: 0 40px 0 40px;
+
+  @media (width < 426px) {
+    margin: 0 1rem;
+  }
 }
 
 .search-error-message {
@@ -61,6 +75,13 @@
 .tabs {
   font-size: 0;
   margin: 30px 40px 0 40px;
+
+  @media (width < 426px) {
+    margin: 2rem 1rem 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
 
   input[type="radio"] {
     display: none;
@@ -87,12 +108,26 @@
     position: relative;
     top: 1px;
 
+    @media (width < 426px) {
+      width: 100%;
+      &:nth-of-type(2) {
+        border-radius: 0 25px 0 0;
+      }
+
+      &:nth-of-type(3) {
+        border-radius: 0 0 0 25px;
+      }
+    }
+
     &:nth-of-type(1){
       border-radius: 25px 0 0;
     }
 
     &:nth-of-type(4){
       border-radius: 0 25px 0 0;
+      @media (width < 426px) {
+        border-radius: 0 0 25px 0;
+      }
     }
 
     &:hover {
@@ -168,6 +203,10 @@
   &--hidden {
     display: none;
   }
+
+  @media (width < 426px) {
+    margin: 1rem;
+  }
 }
 
 .queries__title {
@@ -177,6 +216,7 @@
 .queries-buttons {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .queries-buttons__button {

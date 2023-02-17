@@ -110,19 +110,19 @@ class ApiUsers {
     return await res.json();
   }
 
-  public async flavorPreferenceAccessor(userId: string, flavors?: string[], strange?: string) {
+  public async flavorPreferenceAccessor(userId: string, flavors?: string[], strange?: string, brands?: string[]) {
     const res = await fetch(`${this.flavorPreference}`, {
       method: 'POST',
       body: JSON.stringify({
         userId: userId,
         flavors: flavors,
         strange: strange,
+        brands: brands,
       }),
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    console.log(await res.json())
     return await res.json();
   }
 }
