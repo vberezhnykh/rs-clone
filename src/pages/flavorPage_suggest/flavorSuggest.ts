@@ -48,10 +48,10 @@ export class FlavorSuggest implements InterfaceContainerElement {
   apiUsers: ApiUsers;
   brand = '';
   name = '';
-  description: string;
+  description = '';
   strength: Strength;
   selectedFlavorTags: string[] = [];
-  image: string;
+  image: '';
   constructor() {
     this.api = new Api();
     this.apiUsers = new ApiUsers();
