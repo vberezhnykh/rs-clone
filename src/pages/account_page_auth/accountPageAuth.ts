@@ -2,6 +2,7 @@ import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement, Profile } from '../../components/types/types';
 import ApiUsers from '../../components/api_users/apiUsers';
 const favorite = require('../../assets/images/favorite.png');
+const flavor = require('../../assets/images/my_tobacos.svg');
 const profile = require('../../assets/images/profile.svg');
 const myMix = require('../../assets/images/my_mixes.svg');
 const instagramLogo = require('../../assets/images/instagram_logo.svg');
@@ -35,6 +36,10 @@ class AccountPage implements InterfaceContainerElement {
       window.location.hash = `/account/edit`;
     } else if (target.closest('.favorite')) {
       window.location.hash = `/account/favorite`;
+    } else if (target.closest('.favorite-tobaccos')) {
+      window.location.hash = `/account/favorite-tobaccos`;
+    } else if (target.closest('.my-mix')) {
+      window.location.hash = `/account/my-mixes`;
     }
   };
 
@@ -94,7 +99,7 @@ class AccountPage implements InterfaceContainerElement {
           'миксов',
         ])}</p>
               </div>
-              <div class="column cell-img">
+              <div class="column cell-img my-mix">
                 <img src="${myMix}">
                 <p class="name">Мои миксы</p>
                 <p class="amount">${data.myMix.length} ${getTextCountMix(data.myMix.length, [
@@ -102,6 +107,11 @@ class AccountPage implements InterfaceContainerElement {
           'микса',
           'миксов',
         ])}</p>
+              </div>
+              <div class="column cell-img favorite-tobaccos">
+                <img src="${flavor}">
+                <p class="name">Мои табаки</p>
+                <p class="amount">${data.favoriteFlavors.length} ${getTextCountMix(data.favoriteFlavors.length, ['табак', 'табака', 'табаков'])}</p>
               </div>
             </div>
           </div>
