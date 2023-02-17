@@ -8,6 +8,12 @@
     grid-template-columns: 1fr;
   }
 
+  &--error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 }
 
 .mixes-list__card {
