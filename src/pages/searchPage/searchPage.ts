@@ -18,6 +18,7 @@ import { sortFoundBrandResults, sortFoundFlavorResults, sortFoundMixResults } fr
 import { MixesList } from '../../components/mixesList/mixesList';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import preloader from '../../components/preloader/preloader';
+import { getImgSrc } from '../../utils/getImgUrl';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 /* TO-DO: Добавить статистику настоящих популярных поисковых запросов */
@@ -181,7 +182,7 @@ class SearchPage implements InterfaceContainerElement {
     for (let i = 0; i < resultByTab.length; i++) {
       const listItem = createHTMLElement('brands-list__item', 'li');
       const brandImg = new Image();
-      brandImg.src = this.api.getImage(resultByTab[i].image);
+      brandImg.src = getImgSrc(resultByTab[i].image, this.api.getImage(resultByTab[i].image));
       brandImg.alt = 'brand-name';
       listItem.appendChild(brandImg);
       const container = createHTMLElement('brands-list__item-container');

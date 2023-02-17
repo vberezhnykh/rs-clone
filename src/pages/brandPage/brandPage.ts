@@ -45,7 +45,10 @@ export class BrandPage implements InterfaceContainerElement {
   }
 
   private getBrandName() {
-    return this.brand[0].toUpperCase() + this.brand.slice(1);
+    return this.brand
+      .split(' ')
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   private createHeaderBackBtn() {

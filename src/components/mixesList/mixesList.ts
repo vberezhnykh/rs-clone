@@ -9,11 +9,6 @@ import ProfileUser from '../profile_user/profile_user';
 
 const ERROR_MESSAGE = 'Произошла ошибка. Ничего не найдено. Попробуйте снова...';
 
-/* enum SortOptions {
-  'popular' = 'популярные',
-  'new' = 'новинки',
-  'rating' = 'высокие рейтинги',
-} */
 type MixesListOptions = {
   isSearchList?: boolean;
   sortBy?: string;
@@ -38,11 +33,6 @@ export class MixesList {
       list.textContent = ERROR_MESSAGE;
       return list;
     }
-    /*  if (options?.sortBy) {
-      this.mixes.sort((a, b) => {
-        
-      });
-    } */
     for (let i = 0; i < this.mixes.length; i++) {
       const listItem = this.createListItem(i);
       if (listItem) list.appendChild(listItem);
