@@ -11,7 +11,6 @@ import searchImgSrc from '../../assets/images/search.svg';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 
-
 import { Flavor } from '../../components/types/types';
 import infoImgSrc from '../../assets/images/info.svg';
 import addNewImgSrc from '../../assets/images/add-new.png';
@@ -42,8 +41,8 @@ class FavoriteTobaccosPage implements InterfaceContainerElement {
     // this.createFlavorsList().then((element) => brandPage.appendChild(element));
     // createPopup(brandPage);
     this.api.getAllRate().then((data) => {
-      console.log(1111, data)
-    })
+      console.log(1111, data);
+    });
     const header = createHTMLElement('brand-page-header', 'div');
 
     return header;

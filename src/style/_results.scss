@@ -8,6 +8,8 @@
   padding: 1rem;
   z-index: 2;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 }
 
 .result__title {
@@ -19,6 +21,7 @@
 
 .result__list {
   margin-bottom: 1rem;
+  flex-grow: 1;
 }
 
 .result__reset-btn {

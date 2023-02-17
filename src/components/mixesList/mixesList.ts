@@ -7,13 +7,8 @@ import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import ProfileUser from '../profile_user/profile_user';
 
-const ERROR_MESSAGE = 'Произошла ошибка. Ничего не найдено. Попробуйте снова...';
+const ERROR_MESSAGE = 'Ничего не найдено. Попробуйте снова...';
 
-/* enum SortOptions {
-  'popular' = 'популярные',
-  'new' = 'новинки',
-  'rating' = 'высокие рейтинги',
-} */
 type MixesListOptions = {
   isSearchList?: boolean;
   sortBy?: string;
@@ -28,21 +23,16 @@ export class MixesList {
     this.api = new Api();
     this.apiMix = new ApiMix();
     this.profileUser = new ProfileUser();
-    if (mixes) this.mixes = mixes;
+    if (mixes && mixes.length > 0) this.mixes = mixes;
   }
   public create(options?: MixesListOptions): HTMLElement {
     const list = createHTMLElement('mixes-list', 'ul');
     if (options?.isSearchList) list.classList.add('search-list');
     if (!this.mixes) {
-      list.classList.add('mixes-list--error-mesage');
+      list.classList.add('mixes-list--error-message');
       list.textContent = ERROR_MESSAGE;
       return list;
     }
-    /*  if (options?.sortBy) {
-      this.mixes.sort((a, b) => {
-        
-      });
-    } */
     for (let i = 0; i < this.mixes.length; i++) {
       const listItem = this.createListItem(i);
       if (listItem) list.appendChild(listItem);
