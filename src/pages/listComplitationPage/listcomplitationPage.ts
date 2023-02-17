@@ -68,15 +68,15 @@ class ListComplitationPage implements InterfaceContainerElement {
       <div class="complitation-list__items"></div></div>`;
       main.append(maincontainer);
       const complitationlistitems = document.querySelector('.complitation-list__items');
-
       this.brands.forEach(e => {
+        if(Object.keys(e).length<4){
         let brand=e.name.replace(/[\s-]/g, '').toLocaleLowerCase();
         let item = createHTMLElement([`complitation-list__item`, `item-${brand}`]);
         item.innerHTML = `<div class="complitation-name">${e.name}</div>
         <div class="complitation-desc">Миксы на все случаи жизни от ${brand}</div>`;
         item.onclick = () => {window.location.hash = `/complitation/${e.id}`;
         getMainHeader()};
-        complitationlistitems?.append(item);
+        complitationlistitems?.append(item);}
       }
       );
       window.onpopstate=getMainHeader;

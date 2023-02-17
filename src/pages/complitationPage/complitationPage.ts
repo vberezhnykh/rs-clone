@@ -71,7 +71,6 @@ class ComplitationPage implements InterfaceContainerElement {
       main.append(maincontainer);
       const brandArr = this.flavors.filter(e => e.brand == this.brandName).map(e => e.id);
       const brandComplitationArr = this.mixes.filter(e => Object.values(e.compositionById).every(v => brandArr.includes(v)));
-      // console.log(brandComplitationArr);
       const mixeslist = document.querySelector('.mixes-list-complitation');
 
       brandComplitationArr.forEach(e => {
