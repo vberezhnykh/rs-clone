@@ -107,7 +107,7 @@ class MainPage implements InterfaceContainerElement {
     const popularMixes = createHTMLElement('popular-list');
     popularMixes.innerHTML=`<div class="popular-list__header">
     <div class="popular-list__title">Популярные миксы</div>
-    <div class="popular-list__more">См. ещё</div>
+    <div class="popular-list__more more">См. ещё</div>
     </div>
     <div class="popular-list__items">
     ${items}
@@ -130,7 +130,7 @@ class MainPage implements InterfaceContainerElement {
     const brandsComplitation = createHTMLElement('complitation-list');
     brandsComplitation.innerHTML=`<div class="complitation-list__header">
     <div class="complitation-list__title">Подборки: брэнды</div>
-    <div class="complitation-list__more">См. ещё</div>
+    <div class="complitation-list__more more">См. ещё</div>
     </div>
     <div class="complitation-list__items">
     <div class="complitation-list__item item-brusko">
