@@ -24,7 +24,7 @@
   @each $name,
   $img in $brands-name {
 
-    &__item{
+    &__item {
         border-radius: 10px;
         background-repeat: no-repeat;
         background-size: cover;
@@ -36,7 +36,11 @@
         background-image: linear-gradient(to right top, #032c6a, #082354, #0a1b40, #0a122c, #03041a);
       &.item-#{$name} {
         background-image: url(assets/images/complitation/#{$img}.jpg);
+        cursor: pointer;
         
+        &:hover {
+          opacity: 0.8;
+        }
       }
     } 
   }

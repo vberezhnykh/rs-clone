@@ -1,5 +1,6 @@
 .popular-list {
   margin: 1rem 3rem;
+  overflow-x: hidden;
 
   &__header {
     display: flex;
@@ -23,6 +24,11 @@
     flex-direction: column;
     justify-content: space-around;
     background-color: rgba(23, 15, 48, 0.5294117647);
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
   }
 
   .item-img {
