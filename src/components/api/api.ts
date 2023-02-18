@@ -133,5 +133,16 @@ class Api {
     });
     return await res.json();
   }
+
+  public async getTimeChange(): Promise<Date> {
+    const res = await fetch(`${this.base}/change-time`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return await res.json();
+  }
+
 }
 export default Api;
