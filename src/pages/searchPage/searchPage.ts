@@ -19,10 +19,12 @@ import { MixesList } from '../../components/mixesList/mixesList';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import preloader from '../../components/preloader/preloader';
 import { getImgSrc } from '../../utils/getImgUrl';
+import ApiUsers from '../../components/api_users/apiUsers';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 /* TO-DO: Добавить статистику настоящих популярных поисковых запросов */
 const FAKE_POPULAR_QUERIES = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
+const POPULAR_QUERIES_TITLE = 'Популярные запросы';
 
 class SearchPage implements InterfaceContainerElement {
   private brands?: Brands;
@@ -32,10 +34,12 @@ class SearchPage implements InterfaceContainerElement {
   private foundResults?: FoundResults | null = null;
   private suggestions: string[] = [];
   private preloader: preloader;
+  private apiUsers: ApiUsers;
 
   constructor() {
     this.api = new Api();
     this.checkDataBase().then(() => this.getSuggestions());
+    this.apiUsers = new ApiUsers();
   }
 
   draw(): HTMLElement {
@@ -52,25 +56,32 @@ class SearchPage implements InterfaceContainerElement {
 
   private createAsidePanel() {
     const asidePanel = createHTMLElement('search-aside', 'aside');
-    const popularQueries = this.createPopularQueries();
-    asidePanel.appendChild(popularQueries);
+    this.createPopularQueriesContainer().then((element) => asidePanel.appendChild(element));
     return asidePanel;
   }
 
-  private createPopularQueries() {
+  private async createPopularQueriesContainer() {
     const popularQueries = createHTMLElement('queries');
-    const title = createHTMLElement('queries__title', 'h3');
-    title.textContent = 'Популярные запросы';
-    popularQueries.appendChild(title);
-    const buttons = createHTMLElement('queries-buttons');
-    for (let i = 0; i < FAKE_POPULAR_QUERIES.length; i++) {
-      const button = createHTMLElement('queries-buttons__button', 'button');
-      button.textContent = FAKE_POPULAR_QUERIES[i].toUpperCase();
-      buttons.appendChild(button);
-      button.onclick = () => this.handleClickOnQueryButton(button as HTMLButtonElement);
-    }
-    popularQueries.appendChild(buttons);
+    const POPULAR_QUERIES: Awaited<Promise<string[] | undefined>> = await this.apiUsers.searchAccessor();
+    popularQueries.appendChild(createHTMLElement('queries__title', 'h3', POPULAR_QUERIES_TITLE));
+    popularQueries.appendChild(this.createPopularQueriesBtns(POPULAR_QUERIES));
     return popularQueries;
+  }
+
+  private createPopularQueriesBtns(POPULAR_QUERIES?: string[]) {
+    const POPULAR_QUERIES_TO_ITERATE = POPULAR_QUERIES ? POPULAR_QUERIES : FAKE_POPULAR_QUERIES;
+    const buttons = createHTMLElement('queries-buttons');
+    for (let i = 0; i < POPULAR_QUERIES_TO_ITERATE.length; i++) {
+      buttons.appendChild(this.createSinglePopularQuery(i, POPULAR_QUERIES_TO_ITERATE));
+    }
+    return buttons;
+  }
+
+  private createSinglePopularQuery(i: number, POPULAR_QUERIES: string[]) {
+    const button = createHTMLElement('queries-buttons__button', 'button');
+    button.textContent = POPULAR_QUERIES[i].toUpperCase();
+    button.onclick = () => this.handleClickOnQueryButton(button as HTMLButtonElement);
+    return button;
   }
 
   private handleClickOnQueryButton(button: HTMLButtonElement) {
@@ -222,6 +233,7 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private searchByAll(inputValue: string): FoundResults {
+    this.apiUsers.searchAccessor(inputValue);
     const foundFlavors = <Flavors | null>this.searchBy(inputValue, 'flavors');
     const foundMixes = <Mixes | null>this.searchBy(inputValue, 'mixes');
     const foundBrands = <Brands | null>this.searchBy(inputValue, 'brands');
