@@ -47,7 +47,7 @@ class SearchPage implements InterfaceContainerElement {
 
   draw(): HTMLElement {
     const main = createHTMLElement('main', 'main');
-    const container = createHTMLElement(['main__container', 'container']);
+    const container = createHTMLElement('search__container');
     main.appendChild(container);
     container.appendChild(this.createSearchPanel());
     container.appendChild(this.createAsidePanel());
@@ -146,7 +146,7 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private handleClickOnTab(tabId: TabBtnId) {
-    const container = document.querySelector('.main__container');
+    const container = document.querySelector('.search__container');
     if (!container) return;
     container.appendChild(this.createListOfResults(tabId));
   }
@@ -322,7 +322,7 @@ class SearchPage implements InterfaceContainerElement {
     if (this.suggestions.length === 0) return;
     const suggestionsContainer =
       document.querySelector('.suggestions-container') ??
-      document.querySelector('.main__container')?.appendChild(createHTMLElement('suggestions-container'));
+      document.querySelector('.search__container')?.appendChild(createHTMLElement('suggestions-container'));
     if (!suggestionsContainer) return;
     suggestionsContainer.innerHTML = '';
     suggestionsContainer.classList.remove('suggestions-container--hidden');
@@ -342,7 +342,8 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private showSearchResults() {
-    const container = document.querySelector('.main__container');
+    const container = document.querySelector('.search__container');
+    console.log(container);
     if (!container) return;
     const tabs = document.querySelector('.tabs') ?? container.appendChild(this.createSearchTabs());
     this.makePreviouslyCheckedTabActive(tabs);
