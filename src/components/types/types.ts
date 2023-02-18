@@ -50,6 +50,12 @@ export enum Tabs {
 
 export type TabBtnId = 'tab-btn-1' | 'tab-btn-2' | 'tab-btn-3';
 
+export enum TabBtnIds {
+  'tab-btn-1' = 1,
+  'tab-btn-2',
+  'tab-btn-3',
+}
+
 export type SearchCategory = 'flavors' | 'mixes' | 'brands';
 
 export interface PromiseFlavor {
@@ -73,12 +79,12 @@ export interface mixRate {
   rate: number;
   vote: number;
 }
-interface Rate{
+interface Rate {
   id: number;
   rate: number;
   vote: number;
 }
-export type Rates=Rate[];
+export type Rates = Rate[];
 
 export interface NewFlavor {
   brand: string;
