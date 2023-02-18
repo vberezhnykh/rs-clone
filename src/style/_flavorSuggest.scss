@@ -1,7 +1,7 @@
 .flavor-suggest {
   position: fixed;
   top: 0;
-  background-color: var(--color-bg);
+  background-color: hsl(237, 79%, 12%);
   width: 100%;
   height: 100vh;
   z-index: 1;
@@ -18,7 +18,7 @@
 .flavor-suggest-header {
   display: flex;
   gap: 1rem;
-  background-color: var(--gray);
+  background-color: #4cc9f0ff;
   padding: 0.5rem;
 
   &__back-button {
