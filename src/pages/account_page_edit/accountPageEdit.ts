@@ -61,7 +61,7 @@ class AccountPageEdit implements InterfaceContainerElement {
       }
       setTimeout(() => {
         window.location.hash = `/account`;
-      }, 100)
+      }, 100);
     } else if (target.classList.contains('text-change-button')) {
       fileInput.click();
     }

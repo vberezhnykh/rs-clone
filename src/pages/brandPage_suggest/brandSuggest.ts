@@ -3,6 +3,7 @@ import { InterfaceContainerElement } from '../../components/types/types';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import Api from '../../components/api/api';
 import defaultBrandLogoImageSrc from '../../assets/images/default_brand_logo.png';
+import ApiUsers from '../../components/api_users/apiUsers';
 
 const PAGE_TITLE = 'Добавить бренд';
 const NAME_LABEL_TEXT = 'Название бренда';
@@ -22,11 +23,12 @@ const MIN_BRAND_NAME_LENGTH = 2;
 export class BrandSuggest implements InterfaceContainerElement {
   private brandName?: string;
   private imageName?: string;
-  private image?: File;
   private api: Api;
+  private apiUsers: ApiUsers;
   private currentBrands: string[];
   constructor() {
     this.api = new Api();
+    this.apiUsers = new ApiUsers();
     this.api.getAllBrands().then((brands) => (this.currentBrands = brands.map((brand) => brand.name.toLowerCase())));
   }
   draw() {
@@ -86,20 +88,23 @@ export class BrandSuggest implements InterfaceContainerElement {
   private createSuggestBrandButton() {
     const button = <HTMLButtonElement>createHTMLElement('brand-form__button', 'button', BUTTON_TEXT);
     button.disabled = true;
-    button.onclick = () => this.handleClickOnSuggestBrandBtn();
+    button.type = 'button';
+    button.onclick = (e) => this.handleClickOnSuggestBrandBtn(e);
     return button;
   }
 
-  private handleClickOnSuggestBrandBtn() {
+  private handleClickOnSuggestBrandBtn(e: MouseEvent) {
+    console.log(this.brandName, this.imageName);
     if (!this.brandName) {
       alert(INVALID_BRAND_NAME_MSG);
+      e.preventDefault();
       return;
-    } else if (!this.image || !this.imageName) {
+    } else if (!this.imageName) {
       alert(INVALID_LOGO_IMG_MSG);
+      e.preventDefault();
       return;
     }
-    // this.api.setNewBrand(this.brandName, this.imageName);
-    /* TO-DO: Загрузить изображение */
+    this.api.setNewBrand(this.brandName, this.imageName);
     document.querySelector('.brand-suggest')?.before(this.createPopUp());
   }
 
@@ -108,7 +113,8 @@ export class BrandSuggest implements InterfaceContainerElement {
     const popUp = createHTMLElement('suggest-popup');
     popUp.appendChild(createHTMLElement('suggest-popup__title', 'h4', POPUP_TITLE));
     popUp.appendChild(createHTMLElement('suggest-popup__text', 'p', POPUP_TEXT));
-    const button = createHTMLElement('suggest-popup__button', 'button', POPUP_BUTTON_TEXT);
+    const button = <HTMLButtonElement>createHTMLElement('suggest-popup__button', 'button', POPUP_BUTTON_TEXT);
+    button.type = 'button';
     button.onclick = () => {
       window.location.hash = CATALOG_PAGE_URL;
       document.querySelector('.suggest-overlay')?.remove();
@@ -149,7 +155,9 @@ export class BrandSuggest implements InterfaceContainerElement {
     if (!input.files) return;
     const uploadedFile = input.files[0];
     if (uploadedFile.size > MAX_FILE_SIZE) return this.handleExceedingOfMaxSize(e);
-    this.image = uploadedFile;
+    this.apiUsers.uploadImage(uploadedFile).then((res) => {
+      this.imageName = res.filename;
+    });
     const reader = new FileReader();
     reader.readAsDataURL(uploadedFile);
     reader.onload = () => {

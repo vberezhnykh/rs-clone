@@ -23,6 +23,9 @@ import FavoriteTobaccosPage from '../../pages/favorite_tabacos_page/favorite_tab
 import MyMixesPage from '../../pages/my_mixes_pages/my_mixes_pages';
 import { MixerNowPage } from '../../pages/mixerPage_now/mixer-now';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
+import ComplitationPage from '../../pages/complitationPage/complitationPage';
+import ListComplitationPage from '../../pages/listComplitationPage/listcomplitationPage';
+import PopularMixes from '../../pages/popularMixes/popularMixes';
 import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
 
 enum LocationPath {
@@ -44,6 +47,9 @@ enum LocationPath {
   MixPage = `/mix`,
   ChangePrefFlavors = `/change-pref/flavors`,
   ChangePrefBrands = `/change-pref/brands`,
+  ComplitationPage = `/complitation`,
+  ListComplitationPage = `/list-complitation`,
+  PopularMixes = `/popular-mixes`,
 }
 
 class App {
@@ -98,7 +104,7 @@ class App {
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
     } else if (location.includes(LocationPath.CatalogPage)) {
-      changePage = isBrandPage() ? new BrandPage() : new ErrorPage();
+      changePage = (await isBrandPage()) ? new BrandPage() : new ErrorPage();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new AccountPageAuth();
@@ -117,6 +123,12 @@ class App {
       } else {
         changePage = new AccountPage();
       }
+    } else if (location === LocationPath.ListComplitationPage) {
+      changePage = new ListComplitationPage();
+    } else if (location.includes(LocationPath.ComplitationPage)) {
+      changePage = new ComplitationPage();
+    } else if (location === LocationPath.PopularMixes) {
+      changePage = new PopularMixes();
     } else if (location === LocationPath.FavoriteTobaccosPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
         changePage = new FavoriteTobaccosPage();

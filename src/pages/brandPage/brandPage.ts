@@ -45,7 +45,10 @@ export class BrandPage implements InterfaceContainerElement {
   }
 
   private getBrandName() {
-    return this.brand[0].toUpperCase() + this.brand.slice(1);
+    return this.brand
+      .split(' ')
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   private createHeaderBackBtn() {
@@ -106,8 +109,8 @@ export class BrandPage implements InterfaceContainerElement {
 
   private async createFlavorsList(flavors?: Flavors) {
     const flavorsList = createHTMLElement('flavor-list', 'ul');
-    if (flavors?.length === 0) return this.showErrorMessage(flavorsList);
     if (!this.flavors) await this.getAllFlavorsByBrand();
+    if (flavors?.length === 0 || this.flavors.length === 0) return this.showErrorMessage(flavorsList);
     const flavorsToIterate = flavors ?? this.flavors;
     for (let i = 0; i < flavorsToIterate.length; i++) {
       flavorsList.appendChild(this.createFlavorListItem(i, flavorsToIterate));

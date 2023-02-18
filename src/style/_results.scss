@@ -8,6 +8,8 @@
   padding: 1rem;
   z-index: 2;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 }
 
 .result__title {

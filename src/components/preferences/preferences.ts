@@ -189,6 +189,7 @@ export class PreferencesPage implements InterfaceContainerElement {
   private async showMixesOnPreferences() {
     this.preloader.draw();
     const matchingMixes = await this.getMathcingMixes();
+    console.log(matchingMixes);
     document.body.appendChild(new MixerNowResult(matchingMixes).create());
     this.preloader.removePreloader();
   }

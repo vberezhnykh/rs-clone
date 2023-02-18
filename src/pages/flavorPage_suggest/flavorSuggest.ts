@@ -4,6 +4,7 @@ import Api from '../../components/api/api';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import closeBtnImgSrc from '../../assets/images/cancel.svg';
 import expandArrowImgSrc from '../../assets/images/expand-arrow.png';
+import ApiUsers from '../../components/api_users/apiUsers';
 
 const PAGE_TITLE = 'Добавить вкус';
 const CATALOG_PAGE_URL = `/mixer/brands`;
@@ -34,6 +35,9 @@ const IMAGE_INPUT_CONTAINER_TEXT = 'Добавить картинку вкуса
 const MAX_FILE_SIZE = 1024 * 1024 * 6;
 const EXCEEDING_MAX_FILE_SIZE_MESSAGE = 'Файл превышает лимит (6 MB)';
 const ADD_BTN_TEXT = 'Добавить в каталог';
+const POPUP_SUCCESS_TITLE = 'Спасибо за заявку!';
+const POPUP_TEXT = 'Заявка на добавление вкуса отправлена. Вкус скоро появится в каталоге.';
+const POPUP_BUTTON_TEXT = 'Хорошо';
 
 type Strength = 'легкий' | 'средний' | 'крепкий';
 
@@ -41,14 +45,16 @@ export class FlavorSuggest implements InterfaceContainerElement {
   flavors: Flavors;
   brands: string[];
   api: Api;
+  apiUsers: ApiUsers;
   brand = '';
   name = '';
   description = '';
   strength: Strength;
   selectedFlavorTags: string[] = [];
-  image: string;
+  image: '';
   constructor() {
     this.api = new Api();
+    this.apiUsers = new ApiUsers();
     this.api.getAllFlavors().then((allFlavors) => (this.flavors = allFlavors));
     this.api.getAllBrands().then((allBrands) => (this.brands = allBrands.map((brand) => brand.name)));
   }
@@ -62,12 +68,13 @@ export class FlavorSuggest implements InterfaceContainerElement {
   private createHeader() {
     const header = createHTMLElement('flavor-suggest-header');
     header.appendChild(this.createHeaderBackBtn());
-    header.appendChild(createHTMLElement('brand-suggest__title', 'h2', PAGE_TITLE));
+    header.appendChild(createHTMLElement('flavor-suggest__title', 'h2', PAGE_TITLE));
     return header;
   }
 
   private createHeaderBackBtn() {
-    const backBtn = createHTMLElement('flavor-suggest-header__back-button', 'button');
+    const backBtn = <HTMLButtonElement>createHTMLElement('flavor-suggest-header__back-button', 'button');
+    backBtn.type = 'button';
     backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
     backBtn.onclick = () => (location.hash = CATALOG_PAGE_URL);
     return backBtn;
@@ -120,7 +127,8 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private createBrandSelectorCloseBtn() {
-    const closeBtn = createHTMLElement('brand-selector__close-btn', 'button');
+    const closeBtn = <HTMLButtonElement>createHTMLElement('brand-selector__close-btn', 'button');
+    closeBtn.type = 'button';
     closeBtn.style.backgroundImage = `url(${closeBtnImgSrc})`;
     closeBtn.onclick = () => document.querySelector('.brand-selector')?.remove();
     return closeBtn;
@@ -325,6 +333,7 @@ export class FlavorSuggest implements InterfaceContainerElement {
 
   private createSelectedTag(inputValue: string) {
     const selectedTag = <HTMLButtonElement>createHTMLElement('selected-tag', 'button', inputValue.toUpperCase());
+    selectedTag.disabled = true;
     const removeSelectedTagBtn = new Image();
     removeSelectedTagBtn.src = closeBtnImgSrc;
     removeSelectedTagBtn.onclick = () => this.handleRemovingOfSelectedTag(selectedTag, inputValue);
@@ -360,13 +369,15 @@ export class FlavorSuggest implements InterfaceContainerElement {
     if (!input.files) return;
     const uploadedFile = input.files[0];
     if (uploadedFile.size > MAX_FILE_SIZE) return this.handleExceedingOfMaxSize(e);
+    this.apiUsers.uploadImage(uploadedFile).then((res) => {
+      this.image = res.filename;
+      this.handleSuggestFlavorBtn();
+    });
     const reader = new FileReader();
     reader.readAsDataURL(uploadedFile);
     reader.onload = () => {
       const src = reader.result;
-      if (typeof src !== 'string' /* || brandLogoPreview === null */) return;
-      /* const image = new Image();
-      image.src = src; */
+      if (typeof src !== 'string') return;
       container.textContent = '';
       container.style.backgroundImage = `url(${src})`;
     };
@@ -381,23 +392,49 @@ export class FlavorSuggest implements InterfaceContainerElement {
   private createSuggestFlavorBtn() {
     const button = <HTMLButtonElement>createHTMLElement('flavor-suggest__button', 'button', ADD_BTN_TEXT);
     button.disabled = true;
+    button.type = 'button';
+    button.onclick = () => this.handleClickOnSuggestFlavorBtn(button);
     return button;
   }
 
-  private handleSuggestFlavorBtn() {
-    const button = document.querySelector('.flavor-suggest__button');
-    if (!button || !(button instanceof HTMLButtonElement)) return;
-    if (this.isValidData()) {
-      button.disabled = false;
-      /* this.api.setNewFlavor({
+  private handleClickOnSuggestFlavorBtn(button: HTMLButtonElement) {
+    button.disabled = true;
+    this.api
+      .setNewFlavor({
         brand: this.brand,
         name: this.name,
         description: this.description,
-        image: '1',
+        image: this.image,
         strength: this.strength,
         flavor: this.selectedFlavorTags,
-      }); */
-    } else button.disabled = true;
+      })
+      .then(() => {
+        document.querySelector('.flavor-suggest')?.before(this.createPopUp());
+      });
+  }
+
+  private createPopUp() {
+    const overlay = createHTMLElement('suggest-overlay');
+    const popUp = createHTMLElement('suggest-popup');
+    popUp.appendChild(createHTMLElement('suggest-popup__title', 'h4', POPUP_SUCCESS_TITLE));
+    popUp.appendChild(createHTMLElement('suggest-popup__text', 'p', POPUP_TEXT));
+    const button = <HTMLButtonElement>createHTMLElement('suggest-popup__button', 'button', POPUP_BUTTON_TEXT);
+    button.type = 'button';
+    button.onclick = () => {
+      window.location.hash = CATALOG_PAGE_URL;
+      document.querySelector('.suggest-overlay')?.remove();
+    };
+    popUp.appendChild(button);
+    overlay.appendChild(popUp);
+    return overlay;
+  }
+
+  private handleSuggestFlavorBtn() {
+    console.log(this.isValidData());
+    const button = document.querySelector('.flavor-suggest__button');
+    if (!button || !(button instanceof HTMLButtonElement)) return;
+    if (this.isValidData()) button.disabled = false;
+    else button.disabled = true;
   }
 
   private isValidData() {
@@ -434,6 +471,6 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private isValidImage() {
-    return true;
+    return Boolean(this.image);
   }
 }

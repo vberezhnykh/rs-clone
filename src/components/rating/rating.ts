@@ -6,6 +6,7 @@ import starhalf from '../../assets/images/star-half.svg';
 import ApiMix from '../api_mix/api_mix';
 import ProfileUser from '../profile_user/profile_user';
 import { mixRate } from '../../components/types/types';
+import { getTextCountMix } from '../getTextCountMix/getTextCountMix';
 
 class rating {
   private mixId: number;
@@ -44,7 +45,7 @@ class rating {
         }
       }
     }
-    this.rate = `${this.getRateResult.rate} ・ ${this.getRateResult.vote} оценка`;
+    this.rate = `${this.getRateResult.rate} ・ ${this.getRateResult.vote} ${getTextCountMix(this.getRateResult.vote, ['оценка', 'оценки', 'оценок'])}`;
   }
   draw(): void {
     this.starstop = `<img src="${starempty}" class="mix-card__star" alt="star">`.repeat(5);
@@ -56,17 +57,16 @@ class rating {
     ratingtop.innerHTML = `<div class="mix-card__stars">${this.starstop}</div><div class="mix-card__rating">${this.rate}</div>`;
     document.querySelector('.mix-card__more-info')?.prepend(ratingtop);
     let rated = '';
+    let title= `Поставь свою оценку`;
     let starbottom = staremptyblack;
-    if (this.vote > 0) {
-      rated = 'rated';
-      starbottom = stargold;
-    }
+    if (this.vote > 0) { rated = 'rated'; starbottom = stargold; title=`Твоё мнение учтено!`}
     const ratingbottom = createHTMLElement('mix-rating');
     ratingbottom.innerHTML = `
     <div class="mix-rating__inner">
       <div class="mix-rating__stars ${rated}">
         <img src="${starbottom}" class="rating__star" alt="star" width="28" height="28">
       </div>
+      <div class="mix-rating__title">${title}</div>
     </div>`;
     ratingbottom.onclick = this.open;
     document.querySelector('.main__container')?.append(ratingbottom);
@@ -98,6 +98,10 @@ class rating {
       mixratingstars.classList.remove('active');
       mixratingstars.innerHTML = `<img src="${stargold}" class="rating__star" alt="star" width="28" height="28">`;
       mixratingstars.classList.add('rated');
+      const mixratingtitle=document.querySelector('.mix-rating__title');
+      if(mixratingtitle!==null)
+      mixratingtitle.innerHTML=`Твоё мнение учтено!`;
+      
 
       (async () => {
         if (typeof this.profileId === 'string') {
