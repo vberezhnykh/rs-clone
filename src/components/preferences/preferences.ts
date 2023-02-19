@@ -1,4 +1,4 @@
-import { Brand, Flavors, InterfaceContainerElement } from '../types/types';
+import { Brand, Flavors, InterfaceContainerElement, Mixes } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import backArrowImgSrc from '../../assets/images/back-arrow.png';
 import Api from '../api/api';
@@ -28,6 +28,7 @@ export class PreferencesPage implements InterfaceContainerElement {
   strength = '';
   selectedBrands: string[] = [];
   allFlavors: Flavors = [];
+  allMixes: Mixes = [];
   constructor() {
     this.api = new Api();
     this.preloader = new Preloader();
@@ -35,6 +36,8 @@ export class PreferencesPage implements InterfaceContainerElement {
     if (brandsInLS) this.brands = JSON.parse(brandsInLS).map((brand: Brand) => brand.name);
     const flavorsInLS = localStorage.getItem('flavors');
     if (flavorsInLS) this.allFlavors = JSON.parse(flavorsInLS);
+    const mixesInLS = localStorage.getItem('mixes');
+    if (mixesInLS) this.allMixes = JSON.parse(mixesInLS);
   }
   draw() {
     const main = createHTMLElement('main', 'main');
@@ -193,7 +196,6 @@ export class PreferencesPage implements InterfaceContainerElement {
   private async showMixesOnPreferences() {
     this.preloader.draw();
     const matchingMixes = await this.getMathcingMixes();
-    console.log(matchingMixes);
     document.body.appendChild(new MixerNowResult(matchingMixes).create());
     this.preloader.removePreloader();
   }
@@ -240,8 +242,9 @@ export class PreferencesPage implements InterfaceContainerElement {
   }
 
   private async getMathcingMixes() {
+    if (this.allMixes.length === 0) this.allMixes = await this.api.getAllMixes();
     const matchingFlavorsIds = (await this.getMatchingFlavorsByBrand()).map((matchingFlavor) => matchingFlavor.id);
-    return (await this.api.getAllMixes()).filter((mix) => {
+    return this.allMixes.filter((mix) => {
       const composition = mix.compositionById;
       if (!(composition instanceof Object)) return;
       return Object.values(composition).some((elem) => matchingFlavorsIds.includes(elem));
