@@ -2,7 +2,7 @@ import { InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import backArrowImgSrc from '../../assets/images/back-arrow.png';
 import Api from '../api/api';
-import preloader from '../preloader/preloader';
+import Preloader from '../preloader/preloader';
 import { MixerNowResult } from '../mixerResult/mixer-result';
 
 const FLAVORS_TAGS = ['цитрусовый', 'ягодный', 'травяной', 'фруктовый', 'тропический', 'десертный', 'напиточный'];
@@ -23,13 +23,13 @@ const PREFERRED_BRANDS_KEY = 'preferredBrands';
 export class PreferencesPage implements InterfaceContainerElement {
   BRANDS: string[] = [];
   api: Api;
-  preloader: preloader;
+  preloader: Preloader;
   flavors: string[] = [];
   strength = '';
   selectedBrands: string[] = [];
   constructor() {
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
     this.api.getAllBrands().then((brands) => (this.BRANDS = brands.map((brand) => brand.name)));
   }
   draw() {

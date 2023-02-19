@@ -5,18 +5,18 @@ import { MixesList } from '../mixesList/mixesList';
 import selectorImgSrc from '../../assets/images/selector-icon.png';
 import expandArrowImgSrc from '../../assets/images/expand-arrow.png';
 import Api from '../api/api';
-import preloader from '../preloader/preloader';
+import Preloader from '../preloader/preloader';
 
 const SELECT_OPTIONS = ['Популярные', 'Новинки', 'Высокие рейтинги'];
 
 export class UserMixes implements InterfaceContainerElement {
   mixes?: Mixes;
   api: Api;
-  preloader: preloader;
+  preloader: Preloader;
   sortOption = 'популярные';
   constructor() {
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
   }
   draw() {
     const main = createHTMLElement('main', 'main');

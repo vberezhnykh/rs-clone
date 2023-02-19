@@ -8,7 +8,7 @@ import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 import Api from '../../components/api/api';
 import { MixerNowResult } from '../../components/mixerResult/mixer-result';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 
 const MIXER_PAGE_URL = `/mixer`;
 const PAGE_TITLE = 'Миксер';
@@ -18,10 +18,10 @@ const CONTINUE_BTN_TEXT = 'Найти миксы';
 
 export class MixerNowPage implements InterfaceContainerElement {
   api: Api;
-  preloader: preloader;
+  preloader: Preloader;
   constructor() {
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
   }
   draw() {
     const mixerNowPage = createHTMLElement('mixer-now');
@@ -96,7 +96,7 @@ export class MixerNowPage implements InterfaceContainerElement {
     const flavorsInMixer = getFlavorsInMixer();
     const indexOfFlavorInMixer = flavorsInMixer.findIndex((flavorInMixer) => flavorInMixer.id === flavor.id);
     flavorsInMixer.splice(indexOfFlavorInMixer, 1);
-    localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
+    localStorage.setItem('flavorsInMixer', JSON.stringify(flavorsInMixer));
     button.parentElement?.remove();
     handleChangeOfFlavorsInMixer();
     if (flavorsInMixer.length === 0) {

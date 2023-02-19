@@ -4,7 +4,7 @@ import { Flavor, Flavors } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
-import preloader from '../preloader/preloader';
+import Preloader from '../preloader/preloader';
 import { MixerNowResult } from '../mixerResult/mixer-result';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
@@ -101,7 +101,7 @@ function handleClickOnAddButton(addButton: HTMLElement, flavor: Flavor, addBtnOn
     if (!addBtnOnBrandPageOrMixerPage?.classList.contains('mixer-now__info-btn')) return;
     removeFlavorFromMixerPage(addBtnOnBrandPageOrMixerPage);
   }
-  localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
+  localStorage.setItem('flavorsInMixer', JSON.stringify(flavorsInMixer));
   handleChangeOfFlavorsInMixer();
 }
 
@@ -134,7 +134,7 @@ function removeFlavorFromMixerPage(btn: Element) {
 }
 
 async function handleClickOnPickUpBtn(btn: HTMLButtonElement, flavor: Flavor, api: Api) {
-  const preloaderInstance = new preloader();
+  const preloaderInstance = new Preloader();
   preloaderInstance.draw();
   const matchingMixes = (await api.getAllMixes()).filter((mix) => {
     const mixComposition = mix.compositionById;

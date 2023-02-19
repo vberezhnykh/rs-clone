@@ -1,8 +1,8 @@
 import Api from '../components/api/api';
-import preloader from '../components/preloader/preloader';
+import Preloader from '../components/preloader/preloader';
 
 export async function isBrandPage() {
-  const loader = new preloader();
+  const loader = new Preloader();
   loader.draw();
   const BRANDS = (await new Api().getAllBrands()).map((brand) => brand.name.toLowerCase());
   const locationArr = window.location.hash.split('/');

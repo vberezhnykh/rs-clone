@@ -7,7 +7,7 @@ import '../../../node_modules/chartjs-plugin-outerlabels';
 import { Mix, PromiseFlavors, Flavor, mixRate } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import ProfileUser from '../../components/profile_user/profile_user';
@@ -26,7 +26,7 @@ class MixPage implements InterfaceContainerElement {
   private flavorsNames: string[] = [];
   private flavorsBrands: string[] = [];
   private flavorsStrength: number[] = [];
-  private preloader: preloader;
+  private preloader: Preloader;
   private profileUser: ProfileUser;
   private apiMix: ApiMix;
   private checkAuth: CheckAuth;
@@ -46,7 +46,7 @@ class MixPage implements InterfaceContainerElement {
     this.getData();
   }
   private async getData() {
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
     this.preloader.draw();
     if (isNaN(this.mixId)) this.mixId = await getRandomMixNumber();
     this.vote = this.apiMix.getVote(this.mixId);

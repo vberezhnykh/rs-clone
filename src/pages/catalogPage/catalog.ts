@@ -2,7 +2,7 @@ import { Brands, Flavors, InterfaceContainerElement } from '../../components/typ
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import searchImgSrc from '../../assets/images/search.svg';
 import Api from '../../components/api/api';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
@@ -14,12 +14,12 @@ const BRAND_SUGGEST_URL = '/brand-suggest';
 
 export class Catalog implements InterfaceContainerElement {
   api: Api;
-  preloader: preloader;
+  preloader: Preloader;
   brands: Brands = [];
   flavors: Flavors = [];
   constructor() {
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
   }
   draw() {
     document.querySelector('.result-container')?.remove();

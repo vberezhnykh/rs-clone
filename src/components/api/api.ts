@@ -1,4 +1,4 @@
-import { Brands, Flavor, Flavors, Mix, Mixes, NewFlavor, Rates } from '../types/types';
+import { Brands, DateResponse, Flavor, Flavors, Mix, Mixes, NewFlavor, Rates } from '../types/types';
 import { server } from '../server/server';
 
 class Api {
@@ -124,7 +124,7 @@ class Api {
     return await res.json();
   }
 
-  public async getAllRate():Promise<Rates> {
+  public async getAllRate(): Promise<Rates> {
     const res = await fetch(`${this.allRate}`, {
       method: 'GET',
       headers: {
@@ -134,7 +134,7 @@ class Api {
     return await res.json();
   }
 
-  public async getTimeChange(): Promise<Date> {
+  public async getTimeChange(): Promise<DateResponse> {
     const res = await fetch(`${this.base}/change-time`, {
       method: 'GET',
       headers: {
@@ -143,6 +143,5 @@ class Api {
     });
     return await res.json();
   }
-
 }
 export default Api;

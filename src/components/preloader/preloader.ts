@@ -1,7 +1,7 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import preloaderimg from '../../assets/images/preloader.gif';
 
-class preloader {
+class Preloader {
   draw(): void {
     const preloader = createHTMLElement('preloader');
     preloader.innerHTML = `<img src="${preloaderimg}" class="preloader__img">
@@ -12,4 +12,4 @@ class preloader {
     document.querySelector('.preloader')?.remove();
   }
 }
-export default preloader;
+export default Preloader;

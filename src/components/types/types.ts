@@ -94,3 +94,7 @@ export interface NewFlavor {
   strength: string;
   flavor: string[];
 }
+
+export type DateResponse = {
+  message: Date;
+};

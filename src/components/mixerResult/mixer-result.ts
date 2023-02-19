@@ -27,7 +27,7 @@ export class MixerNowResult {
   private createResetBtn() {
     const resetButton = createHTMLElement('result__reset-btn', 'button', RESET_BTN_TEXT);
     resetButton.onclick = () => {
-      localStorage.removeItem('flavors');
+      localStorage.removeItem('flavorsInMixer');
       document.querySelector('.result-container')?.remove();
       location.hash = '#';
     };

@@ -27,6 +27,7 @@ import ComplitationPage from '../../pages/complitationPage/complitationPage';
 import ListComplitationPage from '../../pages/listComplitationPage/listcomplitationPage';
 import PopularMixes from '../../pages/popularMixes/popularMixes';
 import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
+import { getAllData, isDatabaseOutdated, isDataInLocalStorage } from '../../utils/getAllData';
 
 enum LocationPath {
   MainPage = `/`,
@@ -66,11 +67,13 @@ class App {
     this.header = new Header();
     this.footer = new Footer();
     this.checkAuth = new CheckAuth();
-    localStorage.removeItem('flavors');
+    localStorage.removeItem('flavorsInMixer');
     this.profileUser = new ProfileUser();
   }
 
   private async drawNewPage(location: string) {
+    if (!isDataInLocalStorage() || (await isDatabaseOutdated())) await getAllData();
+
     this.wrapper.innerHTML = '';
 
     let changePage: InterfaceContainerElement;
@@ -170,9 +173,11 @@ class App {
     handleChangeOfFlavorsInMixer();
   };
 
-  start(): void {
+  async start(): Promise<void> {
     const localStorageStartProfile: string | null = window.localStorage.getItem('blenderStartProfile');
     if (!localStorageStartProfile) this.profileUser.getStartProfile();
+    localStorage.setItem('lastDbUpdateTime', Date.now().toString());
+    // await getAllData();
     this.handleHashChange();
     this.root.append(this.header.draw(), this.wrapper, this.footer.draw());
   }

@@ -3,19 +3,19 @@ import { InterfaceContainerElement, Mixes } from '../../components/types/types';
 import backArrowImgSrc from '../../assets/images/back-arrow.png';
 import { MixesList } from '../../components/mixesList/mixesList';
 import Api from '../../components/api/api';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import ApiMix from '../../components/api_mix/api_mix';
 import ProfileUser from '../../components/profile_user/profile_user';
 
 class MyMixesPage implements InterfaceContainerElement {
   mixes?: Mixes;
   api: Api;
-  preloader: preloader;
+  preloader: Preloader;
   private apiMix;
   private profileUser;
   constructor() {
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
     this.apiMix = new ApiMix();
     this.profileUser = new ProfileUser();
   }
