@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement } from '../../components/types/types';
+import { InterfaceContainerElement, Mixes } from '../../components/types/types';
 import info from '../../assets/images/info.svg';
 import { initSlider, onResizeSlider, onSliderChange } from '../../components/slider/slider';
 import Chart from 'chart.js/auto';
@@ -50,7 +50,13 @@ class MixPage implements InterfaceContainerElement {
     if (isNaN(this.mixId)) this.mixId = (await this.api.getRandomMix()).id;
     this.vote = this.apiMix.getVote(this.mixId);
     this.getRateResult = await this.apiMix.getRate(this.mixId);
-    this.mix = await this.api.getMix(this.mixId);
+    let allMixes: Mixes;
+    const mixesInLS = localStorage.getItem('mixes');
+    if (mixesInLS) {
+      allMixes = JSON.parse(mixesInLS);
+      const matchedMix = allMixes.find((mix) => mix.id === this.mixId);
+      if (matchedMix) this.mix = matchedMix;
+    } else this.mix = await this.api.getMix(this.mixId);
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
     this.flavorsOfMix = await Promise.allSettled(this.flavorsIds.map((id) => this.api.getFlavor(id))).then(
