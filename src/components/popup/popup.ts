@@ -1,6 +1,6 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import cancel from '../../assets/images/cancel.svg';
-import { Flavor, Flavors } from '../../components/types/types';
+import { Flavor, Flavors, Mixes } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
@@ -136,7 +136,11 @@ function removeFlavorFromMixerPage(btn: Element) {
 async function handleClickOnPickUpBtn(btn: HTMLButtonElement, flavor: Flavor, api: Api) {
   const preloaderInstance = new Preloader();
   preloaderInstance.draw();
-  const matchingMixes = (await api.getAllMixes()).filter((mix) => {
+  let allMixes: Mixes = [];
+  const mixesInLS = localStorage.getItem('mixes');
+  if (mixesInLS) allMixes = JSON.parse(mixesInLS);
+  else allMixes = await api.getAllMixes();
+  const matchingMixes = allMixes.filter((mix) => {
     const mixComposition = mix.compositionById;
     if (!(mixComposition instanceof Object)) return;
     return Object.values(mixComposition).includes(flavor.id);
