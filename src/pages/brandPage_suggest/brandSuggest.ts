@@ -4,6 +4,7 @@ import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import Api from '../../components/api/api';
 import defaultBrandLogoImageSrc from '../../assets/images/default_brand_logo.png';
 import ApiUsers from '../../components/api_users/apiUsers';
+import { Brand } from '../../components/types/types';
 
 const PAGE_TITLE = 'Добавить бренд';
 const NAME_LABEL_TEXT = 'Название бренда';
@@ -29,7 +30,8 @@ export class BrandSuggest implements InterfaceContainerElement {
   constructor() {
     this.api = new Api();
     this.apiUsers = new ApiUsers();
-    this.api.getAllBrands().then((brands) => (this.currentBrands = brands.map((brand) => brand.name.toLowerCase())));
+    const brandsInLS = localStorage.getItem('brands');
+    if (brandsInLS) this.currentBrands = JSON.parse(brandsInLS).map((brand: Brand) => brand.name.toLowerCase());
   }
   draw() {
     const brandSuggest = createHTMLElement('brand-suggest', 'div');

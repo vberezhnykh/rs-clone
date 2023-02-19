@@ -72,11 +72,14 @@ class App {
     this.profileUser = new ProfileUser();
   }
 
-  private async drawNewPage(location: string) {
+  private async drawNewPage(location: string, preloader?: Preloader) {
     if (!isDataInLocalStorage() || (await isDatabaseOutdated())) {
+      const preloader = new Preloader();
+      preloader.draw();
       await getAllData();
-      console.log('here');
+      preloader.removePreloader();
     }
+    if (preloader) preloader.removePreloader();
 
     this.wrapper.innerHTML = '';
 
@@ -175,17 +178,17 @@ class App {
     if (!hash) {
       window.location.hash = `/`;
     }
-    this.drawNewPage(hash);
+    this.drawNewPage(hash, preloader);
     handleChangeOfFlavorsInMixer();
-    if (preloader) preloader.removePreloader();
+    // if (preloader) preloader.removePreloader();
   };
 
   async start(): Promise<void> {
+    const preloader = new Preloader();
+    preloader.draw();
     const localStorageStartProfile: string | null = window.localStorage.getItem('blenderStartProfile');
     if (!localStorageStartProfile) this.profileUser.getStartProfile();
     localStorage.setItem('lastDbUpdateTime', Date.now().toString());
-    const preloader = new Preloader();
-    preloader.draw();
     this.root.append(this.header.draw(), this.wrapper, this.footer.draw());
     this.handleHashChange(preloader);
   }

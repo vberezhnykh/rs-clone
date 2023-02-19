@@ -21,7 +21,7 @@ export class BrandPage implements InterfaceContainerElement {
   api: Api;
   preloader: Preloader;
   constructor() {
-    this.brand = window.location.hash.split('/')[3].replace('%20', ' ');
+    this.brand = decodeURI(window.location.hash.split('/')[3]);
     this.api = new Api();
     this.preloader = new Preloader();
     const flavorsInLS = localStorage.getItem('flavors');

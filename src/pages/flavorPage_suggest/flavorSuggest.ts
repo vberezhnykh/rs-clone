@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { Flavors, Flavor, InterfaceContainerElement, Brand } from '../../components/types/types';
+import { Flavors, InterfaceContainerElement, Brand } from '../../components/types/types';
 import Api from '../../components/api/api';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import closeBtnImgSrc from '../../assets/images/cancel.svg';
@@ -59,11 +59,8 @@ export class FlavorSuggest implements InterfaceContainerElement {
     const brandsInLS = localStorage.getItem('brands');
     if (!flavorsInLS) return;
     if (!brandsInLS) return;
-    this.flavors = JSON.parse(flavorsInLS).filter(
-      (flavor: Flavor) => flavor.brand.toLowerCase() === this.brand.toLowerCase()
-    );
-    this.brands = JSON.parse(flavorsInLS).map((brand: Brand) => brand.name);
-    // localStorage.setItem('lastDbUpdateTime', Date.now().toString());
+    this.flavors = JSON.parse(flavorsInLS);
+    this.brands = JSON.parse(brandsInLS).map((brand: Brand) => brand.name);
   }
   draw() {
     const flavorSuggest = createHTMLElement('flavor-suggest');
@@ -437,7 +434,6 @@ export class FlavorSuggest implements InterfaceContainerElement {
   }
 
   private handleSuggestFlavorBtn() {
-    console.log(this.isValidData());
     const button = document.querySelector('.flavor-suggest__button');
     if (!button || !(button instanceof HTMLButtonElement)) return;
     if (this.isValidData()) button.disabled = false;
