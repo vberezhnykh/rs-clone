@@ -15,7 +15,6 @@ import ApiMix from '../../components/api_mix/api_mix';
 import CheckAuth from '../../components/checkAuth/checkAuth';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 import rating from '../../components/rating/rating';
-import { getRandomMixNumber } from '../../utils/getRandomMixNumber';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -48,7 +47,7 @@ class MixPage implements InterfaceContainerElement {
   private async getData() {
     this.preloader = new Preloader();
     this.preloader.draw();
-    if (isNaN(this.mixId)) this.mixId = await getRandomMixNumber();
+    if (isNaN(this.mixId)) this.mixId = (await this.api.getRandomMix()).id;
     this.vote = this.apiMix.getVote(this.mixId);
     this.getRateResult = await this.apiMix.getRate(this.mixId);
     this.mix = await this.api.getMix(this.mixId);
