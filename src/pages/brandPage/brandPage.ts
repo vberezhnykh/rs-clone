@@ -24,6 +24,11 @@ export class BrandPage implements InterfaceContainerElement {
     this.brand = window.location.hash.split('/')[3].replace('%20', ' ');
     this.api = new Api();
     this.preloader = new Preloader();
+    const flavorsInLS = localStorage.getItem('flavors');
+    if (!flavorsInLS) return;
+    this.flavors = JSON.parse(flavorsInLS).filter(
+      (flavor: Flavor) => flavor.brand.toLowerCase() === this.brand.toLowerCase()
+    );
   }
   draw() {
     document.querySelector('.result-container')?.remove();
