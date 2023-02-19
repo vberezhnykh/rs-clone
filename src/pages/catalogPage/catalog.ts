@@ -7,6 +7,7 @@ import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { getImgSrc } from '../../utils/getImgUrl';
+import { isDataInLocalStorage } from '../../utils/getAllData';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
 const MIXER_PAGE_URL = `/mixer`;
@@ -20,10 +21,14 @@ export class Catalog implements InterfaceContainerElement {
   constructor() {
     this.api = new Api();
     this.preloader = new Preloader();
+    if (!isDataInLocalStorage()) return;
+    const brandsInLS = localStorage.getItem('brands');
+    this.brands = brandsInLS ? JSON.parse(brandsInLS) : [];
+    const flavorsInLS = localStorage.getItem('flavors');
+    this.flavors = flavorsInLS ? JSON.parse(flavorsInLS) : [];
   }
   draw() {
     document.querySelector('.result-container')?.remove();
-    this.api.getAllBrands().then((brands) => (this.brands = brands));
     const catalog = createHTMLElement('catalog', 'div');
     catalog.appendChild(this.createHeader());
     catalog.appendChild(this.createSearchPanel());

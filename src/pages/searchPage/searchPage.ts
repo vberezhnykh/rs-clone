@@ -67,7 +67,6 @@ class SearchPage implements InterfaceContainerElement {
     const popularQueriesContainer = createHTMLElement('queries');
     const POPULAR_QUERIES: Awaited<Promise<string[] | undefined>> = await this.apiUsers.searchAccessor();
     popularQueriesContainer.appendChild(createHTMLElement('queries__title', 'h3', POPULAR_QUERIES_TITLE));
-    console.log(this.popularQueries);
     popularQueriesContainer.appendChild(this.createPopularQueriesBtns(POPULAR_QUERIES));
     return popularQueriesContainer;
   }
