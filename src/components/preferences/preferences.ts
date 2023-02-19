@@ -1,4 +1,4 @@
-import { InterfaceContainerElement } from '../types/types';
+import { Brand, Flavors, InterfaceContainerElement } from '../types/types';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import backArrowImgSrc from '../../assets/images/back-arrow.png';
 import Api from '../api/api';
@@ -21,16 +21,20 @@ const PREFERRED_STRENGTH_KEY = 'preferredStrength';
 const PREFERRED_BRANDS_KEY = 'preferredBrands';
 
 export class PreferencesPage implements InterfaceContainerElement {
-  BRANDS: string[] = [];
+  brands: string[] = [];
   api: Api;
   preloader: Preloader;
   flavors: string[] = [];
   strength = '';
   selectedBrands: string[] = [];
+  allFlavors: Flavors = [];
   constructor() {
     this.api = new Api();
     this.preloader = new Preloader();
-    this.api.getAllBrands().then((brands) => (this.BRANDS = brands.map((brand) => brand.name)));
+    const brandsInLS = localStorage.getItem('brands');
+    if (brandsInLS) this.brands = JSON.parse(brandsInLS).map((brand: Brand) => brand.name);
+    const flavorsInLS = localStorage.getItem('flavors');
+    if (flavorsInLS) this.allFlavors = JSON.parse(flavorsInLS);
   }
   draw() {
     const main = createHTMLElement('main', 'main');
@@ -99,7 +103,7 @@ export class PreferencesPage implements InterfaceContainerElement {
     button.classList.toggle('preferences__button--active');
     if (category === STRENGTH) this.handleClickOnStrengthBtn(button);
     else if (category === FLAVORS_TAGS) this.handleClickOnFlavorBtn(button);
-    else if (category === this.BRANDS) this.handleClickOnBrandBtn(button);
+    else if (category === this.brands) this.handleClickOnBrandBtn(button);
     const continueButton = document.querySelector('.preferences__continue-btn');
     if (!continueButton) return;
     if ((this.flavors.length > 0 && this.strength) || this.selectedBrands.length > 0)
@@ -195,16 +199,16 @@ export class PreferencesPage implements InterfaceContainerElement {
   }
 
   private async createBrandsContainer() {
-    if (this.BRANDS.length === 0) {
+    if (this.brands.length === 0) {
       this.preloader.draw();
-      this.BRANDS = (await this.api.getAllBrands()).map((brand) => brand.name);
+      this.brands = (await this.api.getAllBrands()).map((brand) => brand.name);
     }
     const brandsContainer = createHTMLElement('brands-container');
     const enabledBrands = [
       ...new Set((await this.getMatchingFlavorsByFlavorAndStrength()).map((flavor) => flavor.brand)),
     ];
     brandsContainer.appendChild(createHTMLElement('preferences__brands-title', 'h4', BRANDS_CONTAINER_TITLE));
-    brandsContainer.appendChild(this.createPreferencesList(this.BRANDS, 'brands-button', enabledBrands));
+    brandsContainer.appendChild(this.createPreferencesList(this.brands, 'brands-button', enabledBrands));
     this.preloader.removePreloader();
     return brandsContainer;
   }
@@ -212,7 +216,10 @@ export class PreferencesPage implements InterfaceContainerElement {
   private async getMatchingFlavorsByFlavorAndStrength() {
     const preferredFlavors = this.getItemPreferencesFromStorage(PREFERRED_FLAVORS_KEY);
     const prefereedStrength = localStorage.getItem(PREFERRED_STRENGTH_KEY) ?? '';
-    const sortedFlavorsByTag = (await this.api.getAllFlavors()).filter((flavor) => {
+    if (this.allFlavors.length === 0) {
+      this.allFlavors = await this.api.getAllFlavors();
+    }
+    const sortedFlavorsByTag = this.allFlavors.filter((flavor) => {
       return flavor.flavor.some((elem) => preferredFlavors.includes(elem));
     });
     const sortedFlavorsByStrength = sortedFlavorsByTag.filter((flavor) => flavor.strength === prefereedStrength);
