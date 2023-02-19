@@ -19,6 +19,8 @@ export async function isDatabaseOutdated() {
   const lastTimeUpdatedInLS = getDateFromLS();
   preloader.removePreloader();
   if (!lastTimeUpdatedInLS) return false;
+  console.log(lastTimeUpdated, lastTimeUpdatedInLS);
+  console.log(lastTimeUpdated > lastTimeUpdatedInLS);
   return lastTimeUpdated > lastTimeUpdatedInLS;
 }
 

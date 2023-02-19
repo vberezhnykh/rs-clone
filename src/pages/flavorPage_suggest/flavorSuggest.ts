@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { Flavors, InterfaceContainerElement } from '../../components/types/types';
+import { Flavors, Flavor, InterfaceContainerElement, Brand } from '../../components/types/types';
 import Api from '../../components/api/api';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import closeBtnImgSrc from '../../assets/images/cancel.svg';
@@ -55,8 +55,15 @@ export class FlavorSuggest implements InterfaceContainerElement {
   constructor() {
     this.api = new Api();
     this.apiUsers = new ApiUsers();
-    this.api.getAllFlavors().then((allFlavors) => (this.flavors = allFlavors));
-    this.api.getAllBrands().then((allBrands) => (this.brands = allBrands.map((brand) => brand.name)));
+    const flavorsInLS = localStorage.getItem('flavors');
+    const brandsInLS = localStorage.getItem('brands');
+    if (!flavorsInLS) return;
+    if (!brandsInLS) return;
+    this.flavors = JSON.parse(flavorsInLS).filter(
+      (flavor: Flavor) => flavor.brand.toLowerCase() === this.brand.toLowerCase()
+    );
+    this.brands = JSON.parse(flavorsInLS).map((brand: Brand) => brand.name);
+    // localStorage.setItem('lastDbUpdateTime', Date.now().toString());
   }
   draw() {
     const flavorSuggest = createHTMLElement('flavor-suggest');

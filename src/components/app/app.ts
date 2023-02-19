@@ -28,6 +28,7 @@ import ListComplitationPage from '../../pages/listComplitationPage/listcomplitat
 import PopularMixes from '../../pages/popularMixes/popularMixes';
 import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
 import { getAllData, isDatabaseOutdated, isDataInLocalStorage } from '../../utils/getAllData';
+import Preloader from '../preloader/preloader';
 
 enum LocationPath {
   MainPage = `/`,
@@ -72,7 +73,10 @@ class App {
   }
 
   private async drawNewPage(location: string) {
-    if (!isDataInLocalStorage() || (await isDatabaseOutdated())) await getAllData();
+    if (!isDataInLocalStorage() || (await isDatabaseOutdated())) {
+      await getAllData();
+      console.log('here');
+    }
 
     this.wrapper.innerHTML = '';
 
@@ -158,12 +162,14 @@ class App {
     }
   }
 
-  private handleHashChange(): void {
-    window.addEventListener('hashchange', this.loadHashPage);
-    window.addEventListener('load', this.loadHashPage);
+  private handleHashChange(preloader: Preloader): void {
+    window.addEventListener('hashchange', () => this.loadHashPage());
+    window.addEventListener('load', () => {
+      this.loadHashPage(preloader);
+    });
   }
 
-  private loadHashPage = (): void => {
+  private loadHashPage = (preloader?: Preloader): void => {
     const hash = window.location.hash.slice(1);
 
     if (!hash) {
@@ -171,15 +177,17 @@ class App {
     }
     this.drawNewPage(hash);
     handleChangeOfFlavorsInMixer();
+    if (preloader) preloader.removePreloader();
   };
 
   async start(): Promise<void> {
     const localStorageStartProfile: string | null = window.localStorage.getItem('blenderStartProfile');
     if (!localStorageStartProfile) this.profileUser.getStartProfile();
     localStorage.setItem('lastDbUpdateTime', Date.now().toString());
-    // await getAllData();
-    this.handleHashChange();
+    const preloader = new Preloader();
+    preloader.draw();
     this.root.append(this.header.draw(), this.wrapper, this.footer.draw());
+    this.handleHashChange(preloader);
   }
 }
 
