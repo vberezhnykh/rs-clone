@@ -27,6 +27,8 @@ import ComplitationPage from '../../pages/complitationPage/complitationPage';
 import ListComplitationPage from '../../pages/listComplitationPage/listcomplitationPage';
 import PopularMixes from '../../pages/popularMixes/popularMixes';
 import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
+import { getAllData, isDatabaseOutdated, isDataInLocalStorage } from '../../utils/getAllData';
+import Preloader from '../preloader/preloader';
 
 enum LocationPath {
   MainPage = `/`,
@@ -66,11 +68,19 @@ class App {
     this.header = new Header();
     this.footer = new Footer();
     this.checkAuth = new CheckAuth();
-    localStorage.removeItem('flavors');
+    localStorage.removeItem('flavorsInMixer');
     this.profileUser = new ProfileUser();
   }
 
-  private async drawNewPage(location: string) {
+  private async drawNewPage(location: string, preloader?: Preloader) {
+    if (!isDataInLocalStorage() || (await isDatabaseOutdated())) {
+      const preloader = new Preloader();
+      preloader.draw();
+      await getAllData();
+      preloader.removePreloader();
+    }
+    if (preloader) preloader.removePreloader();
+
     this.wrapper.innerHTML = '';
 
     let changePage: InterfaceContainerElement;
@@ -155,26 +165,32 @@ class App {
     }
   }
 
-  private handleHashChange(): void {
-    window.addEventListener('hashchange', this.loadHashPage);
-    window.addEventListener('load', this.loadHashPage);
+  private handleHashChange(preloader: Preloader): void {
+    window.addEventListener('hashchange', () => this.loadHashPage());
+    window.addEventListener('load', () => {
+      this.loadHashPage(preloader);
+    });
   }
 
-  private loadHashPage = (): void => {
+  private loadHashPage = (preloader?: Preloader): void => {
     const hash = window.location.hash.slice(1);
 
     if (!hash) {
       window.location.hash = `/`;
     }
-    this.drawNewPage(hash);
+    this.drawNewPage(hash, preloader);
     handleChangeOfFlavorsInMixer();
+    // if (preloader) preloader.removePreloader();
   };
 
-  start(): void {
+  async start(): Promise<void> {
+    const preloader = new Preloader();
+    preloader.draw();
     const localStorageStartProfile: string | null = window.localStorage.getItem('blenderStartProfile');
     if (!localStorageStartProfile) this.profileUser.getStartProfile();
-    this.handleHashChange();
+    localStorage.setItem('lastDbUpdateTime', Date.now().toString());
     this.root.append(this.header.draw(), this.wrapper, this.footer.draw());
+    this.handleHashChange(preloader);
   }
 }
 

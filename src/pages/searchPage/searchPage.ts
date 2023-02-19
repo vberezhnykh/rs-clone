@@ -18,7 +18,7 @@ import searchImgSrc from '../../assets/images/search.svg';
 import { sortFoundBrandResults, sortFoundFlavorResults, sortFoundMixResults } from '../../utils/sortFoundResults';
 import { MixesList } from '../../components/mixesList/mixesList';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import { getImgSrc } from '../../utils/getImgUrl';
 import ApiUsers from '../../components/api_users/apiUsers';
 
@@ -36,13 +36,15 @@ class SearchPage implements InterfaceContainerElement {
   private api: Api;
   private foundResults?: FoundResults | null = null;
   private suggestions: string[] = [];
-  private preloader: preloader;
+  private preloader: Preloader;
   private apiUsers: ApiUsers;
+  private popularQueries: string[];
 
   constructor() {
     this.api = new Api();
-    this.checkDataBase().then(() => this.getSuggestions());
+    this.checkDataBase();
     this.apiUsers = new ApiUsers();
+    this.preloader = new Preloader();
   }
 
   draw(): HTMLElement {
@@ -269,12 +271,17 @@ class SearchPage implements InterfaceContainerElement {
 
   private async checkDataBase() {
     if (this.brands && this.flavors && this.mixes) return;
-    this.preloader = new preloader();
-    this.preloader.draw();
-    this.brands = await this.api.getAllBrands();
-    this.flavors = await this.api.getAllFlavors();
-    this.mixes = await this.api.getAllMixes();
-    this.preloader.removePreloader();
+    await this.updateData();
+  }
+
+  private async updateData() {
+    const brandsInLS = localStorage.getItem('brands');
+    this.brands = brandsInLS ? JSON.parse(brandsInLS) : await this.api.getAllBrands();
+    const flavorsInLs = localStorage.getItem('flavors');
+    this.flavors = flavorsInLs ? JSON.parse(flavorsInLs) : await this.api.getAllFlavors();
+    const mixesInLs = localStorage.getItem('mixes');
+    this.mixes = mixesInLs ? JSON.parse(mixesInLs) : await this.api.getAllMixes();
+    await this.getSuggestions();
   }
 
   private async handleEnterKeyOnSearchInput(event: KeyboardEvent) {
@@ -343,7 +350,6 @@ class SearchPage implements InterfaceContainerElement {
 
   private showSearchResults() {
     const container = document.querySelector('.search__container');
-    console.log(container);
     if (!container) return;
     const tabs = document.querySelector('.tabs') ?? container.appendChild(this.createSearchTabs());
     this.makePreviouslyCheckedTabActive(tabs);
@@ -356,7 +362,7 @@ class SearchPage implements InterfaceContainerElement {
     });
   }
 
-  private getSuggestions() {
+  private async getSuggestions() {
     if (!this.brands || !this.flavors || !this.mixes) return;
     const brandsNamesArr = this.brands.map((brand) => brand.name.toLowerCase());
     const flavorsNamesArr = this.flavors.map((flavor) => flavor.name.toLowerCase());

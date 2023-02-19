@@ -5,7 +5,7 @@ import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import searchImgSrc from '../../assets/images/search.svg';
 import infoImgSrc from '../../assets/images/info.svg';
 import addNewImgSrc from '../../assets/images/add-new.png';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
@@ -19,11 +19,16 @@ export class BrandPage implements InterfaceContainerElement {
   private brand: string;
   private flavors: Flavors;
   api: Api;
-  preloader: preloader;
+  preloader: Preloader;
   constructor() {
-    this.brand = window.location.hash.split('/')[3].replace('%20', ' ');
+    this.brand = decodeURI(window.location.hash.split('/')[3]);
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
+    const flavorsInLS = localStorage.getItem('flavors');
+    if (!flavorsInLS) return;
+    this.flavors = JSON.parse(flavorsInLS).filter(
+      (flavor: Flavor) => flavor.brand.toLowerCase() === this.brand.toLowerCase()
+    );
   }
   draw() {
     document.querySelector('.result-container')?.remove();
@@ -162,7 +167,7 @@ export class BrandPage implements InterfaceContainerElement {
     const indexOfFlavorInMixer = flavorsInMixer.findIndex((flavorInMixer) => flavorInMixer.id === flavor.id);
     if (image.classList.contains('flavor__image--added') && indexOfFlavorInMixer === -1) flavorsInMixer.push(flavor);
     else flavorsInMixer.splice(indexOfFlavorInMixer, 1);
-    localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
+    localStorage.setItem('flavorsInMixer', JSON.stringify(flavorsInMixer));
     changeFlavorNumInBrandPageHeader();
   }
 

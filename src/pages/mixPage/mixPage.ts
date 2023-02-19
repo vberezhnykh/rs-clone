@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement } from '../../components/types/types';
+import { InterfaceContainerElement, Mixes } from '../../components/types/types';
 import info from '../../assets/images/info.svg';
 import { initSlider, onResizeSlider, onSliderChange } from '../../components/slider/slider';
 import Chart from 'chart.js/auto';
@@ -7,7 +7,7 @@ import '../../../node_modules/chartjs-plugin-outerlabels';
 import { Mix, PromiseFlavors, Flavor, mixRate } from '../../components/types/types';
 import Api from '../../components/api/api';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import ProfileUser from '../../components/profile_user/profile_user';
@@ -15,7 +15,6 @@ import ApiMix from '../../components/api_mix/api_mix';
 import CheckAuth from '../../components/checkAuth/checkAuth';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 import rating from '../../components/rating/rating';
-import { getRandomMixNumber } from '../../utils/getRandomMixNumber';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -26,7 +25,7 @@ class MixPage implements InterfaceContainerElement {
   private flavorsNames: string[] = [];
   private flavorsBrands: string[] = [];
   private flavorsStrength: number[] = [];
-  private preloader: preloader;
+  private preloader: Preloader;
   private profileUser: ProfileUser;
   private apiMix: ApiMix;
   private checkAuth: CheckAuth;
@@ -46,12 +45,18 @@ class MixPage implements InterfaceContainerElement {
     this.getData();
   }
   private async getData() {
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
     this.preloader.draw();
-    if (isNaN(this.mixId)) this.mixId = await getRandomMixNumber();
+    if (isNaN(this.mixId)) this.mixId = (await this.api.getRandomMix()).id;
     this.vote = this.apiMix.getVote(this.mixId);
     this.getRateResult = await this.apiMix.getRate(this.mixId);
-    this.mix = await this.api.getMix(this.mixId);
+    let allMixes: Mixes;
+    const mixesInLS = localStorage.getItem('mixes');
+    if (mixesInLS) {
+      allMixes = JSON.parse(mixesInLS);
+      const matchedMix = allMixes.find((mix) => mix.id === this.mixId);
+      if (matchedMix) this.mix = matchedMix;
+    } else this.mix = await this.api.getMix(this.mixId);
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
     this.flavorsOfMix = await Promise.allSettled(this.flavorsIds.map((id) => this.api.getFlavor(id))).then(

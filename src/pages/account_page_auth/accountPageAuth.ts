@@ -9,7 +9,7 @@ const instagramLogo = require('../../assets/images/instagram_logo.svg');
 import ProfileUser from '../../components/profile_user/profile_user';
 import { server } from '../../components/server/server';
 import ApiMix from '../../components/api_mix/api_mix';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import { getTextCountMix } from '../../components/getTextCountMix/getTextCountMix';
 
 class AccountPage implements InterfaceContainerElement {
@@ -24,7 +24,7 @@ class AccountPage implements InterfaceContainerElement {
     this.profileUser = new ProfileUser();
     this.server = server;
     this.apiMix = new ApiMix();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
   }
 
   private handler = (e: Event): void => {

@@ -2,7 +2,7 @@ import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import Api from '../../components/api/api';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import ApiMix from '../../components/api_mix/api_mix';
 import ProfileUser from '../../components/profile_user/profile_user';
 import { Flavors } from '../../components/types/types';
@@ -21,12 +21,12 @@ class FavoriteTobaccosPage implements InterfaceContainerElement {
   private flavors: Flavors;
   api: Api;
   apiMix: ApiMix;
-  preloader: preloader;
+  preloader: Preloader;
   private profileUser;
   private brandList: [string, number][];
   constructor() {
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
     this.apiMix = new ApiMix();
     this.profileUser = new ProfileUser();
   }
@@ -210,7 +210,7 @@ class FavoriteTobaccosPage implements InterfaceContainerElement {
     const indexOfFlavorInMixer = flavorsInMixer.findIndex((flavorInMixer) => flavorInMixer.id === flavor.id);
     if (image.classList.contains('flavor__image--added') && indexOfFlavorInMixer === -1) flavorsInMixer.push(flavor);
     else flavorsInMixer.splice(indexOfFlavorInMixer, 1);
-    localStorage.setItem('flavors', JSON.stringify(flavorsInMixer));
+    localStorage.setItem('flavorsInMixer', JSON.stringify(flavorsInMixer));
     changeFlavorNumInBrandPageHeader();
   }
 }

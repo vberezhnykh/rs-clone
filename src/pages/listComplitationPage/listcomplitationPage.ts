@@ -2,7 +2,7 @@ import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
 import { Mix, Mixes, Flavors, Brands } from '../../components/types/types';
 import Api from '../../components/api/api';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import ApiMix from '../../components/api_mix/api_mix';
 import backArrow from '../../assets/images/back-arrow-white.png';
 import ratingStarIconSrc from '../../assets/images/star-empty.svg';
@@ -13,20 +13,22 @@ import getMainHeader from '../../components/getMainHeader/getMainHeader';
 class ListComplitationPage implements InterfaceContainerElement {
   private api: Api;
   private mix: Mix;
-  private preloader: preloader;
+  private preloader: Preloader;
   // private apiMix: ApiMix;
   private brandId: number;
   private mixes: Mixes;
   private flavors: Flavors;
   private brands: Brands;
-  
+
   constructor() {
-    this.brandId = Number(window.location.hash.split('complitation/')[window.location.hash.split('complitation/').length - 1]);
+    this.brandId = Number(
+      window.location.hash.split('complitation/')[window.location.hash.split('complitation/').length - 1]
+    );
     this.api = new Api();
     this.getData();
   }
   private async getData() {
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
     this.preloader.draw();
     this.brands = await this.api.getAllBrands();
     this.draw();
@@ -34,28 +36,28 @@ class ListComplitationPage implements InterfaceContainerElement {
   }
 
   changeHeader(): void {
-    const header = document.querySelector('.header')
+    const header = document.querySelector('.header');
     const headercontainer = document.querySelector('.header__container');
     if (header && headercontainer) {
-      header.className='header header-complitation';
+      header.className = 'header header-complitation';
       headercontainer.classList.add('container-complitation');
-      headercontainer.innerHTML ='';
-      const complitationbuttons=createHTMLElement('complitation__buttons');
-      const imgarrow=new Image();
-      imgarrow.src=backArrow;
-      imgarrow.alt='back-arrow';
-      imgarrow.className='arrow-back';
-      imgarrow.onclick=()=>{window.location.hash = `/`;
-      getMainHeader()};
+      headercontainer.innerHTML = '';
+      const complitationbuttons = createHTMLElement('complitation__buttons');
+      const imgarrow = new Image();
+      imgarrow.src = backArrow;
+      imgarrow.alt = 'back-arrow';
+      imgarrow.className = 'arrow-back';
+      imgarrow.onclick = () => {
+        window.location.hash = `/`;
+        getMainHeader();
+      };
       complitationbuttons.append(imgarrow);
       headercontainer.append(complitationbuttons);
-      const complitationtitle=createHTMLElement('complitation__title');
-      complitationtitle.innerHTML='Подборки: бренды';
+      const complitationtitle = createHTMLElement('complitation__title');
+      complitationtitle.innerHTML = 'Подборки: бренды';
       headercontainer.append(complitationtitle);
     }
   }
-
-
 
   draw(): HTMLElement {
     if (this.brands === undefined) {
@@ -68,18 +70,20 @@ class ListComplitationPage implements InterfaceContainerElement {
       <div class="complitation-list__items"></div></div>`;
       main.append(maincontainer);
       const complitationlistitems = document.querySelector('.complitation-list__items');
-      this.brands.forEach(e => {
-        if(Object.keys(e).length<4){
-        let brand=e.name.replace(/[\s-]/g, '').toLocaleLowerCase();
-        let item = createHTMLElement([`complitation-list__item`, `item-${brand}`]);
-        item.innerHTML = `<div class="complitation-name">${e.name}</div>
+      this.brands.forEach((e) => {
+        if (Object.keys(e).length < 4) {
+          const brand = e.name.replace(/[\s-]/g, '').toLocaleLowerCase();
+          const item = createHTMLElement([`complitation-list__item`, `item-${brand}`]);
+          item.innerHTML = `<div class="complitation-name">${e.name}</div>
         <div class="complitation-desc">Миксы на все случаи жизни от ${brand}</div>`;
-        item.onclick = () => {window.location.hash = `/complitation/${e.id}`;
-        getMainHeader()};
-        complitationlistitems?.append(item);}
-      }
-      );
-      window.onpopstate=getMainHeader;
+          item.onclick = () => {
+            window.location.hash = `/complitation/${e.id}`;
+            getMainHeader();
+          };
+          complitationlistitems?.append(item);
+        }
+      });
+      window.onpopstate = getMainHeader;
       setTimeout(() => {
         this.changeHeader();
       }, 0);

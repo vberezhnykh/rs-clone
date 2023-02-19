@@ -7,7 +7,7 @@ class MixerPage implements InterfaceContainerElement {
     const main = createHTMLElement('main', 'main');
 
     main.innerHTML = `
-    <div class="main__container container">
+    <div class="mixer__container container">
 
     <div class="mixer">
       <div class="mixer__inner">

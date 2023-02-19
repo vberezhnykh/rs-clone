@@ -2,11 +2,12 @@ import { Brands, Flavors, InterfaceContainerElement } from '../../components/typ
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import searchImgSrc from '../../assets/images/search.svg';
 import Api from '../../components/api/api';
-import preloader from '../../components/preloader/preloader';
+import Preloader from '../../components/preloader/preloader';
 import backArrowImgSrc from '../../assets/images/back-arrow-white.png';
 import mixerButtonImgSrc from '../../assets/images/blender.svg';
 import { getFlavorsInMixer } from '../../utils/getFlavorsInMixer';
 import { getImgSrc } from '../../utils/getImgUrl';
+import { isDataInLocalStorage } from '../../utils/getAllData';
 
 const ERROR_MESSAGE = 'К сожалению, по вашему запросу ничего не найдено...';
 const MIXER_PAGE_URL = `/mixer`;
@@ -14,16 +15,20 @@ const BRAND_SUGGEST_URL = '/brand-suggest';
 
 export class Catalog implements InterfaceContainerElement {
   api: Api;
-  preloader: preloader;
+  preloader: Preloader;
   brands: Brands = [];
   flavors: Flavors = [];
   constructor() {
     this.api = new Api();
-    this.preloader = new preloader();
+    this.preloader = new Preloader();
+    if (!isDataInLocalStorage()) return;
+    const brandsInLS = localStorage.getItem('brands');
+    this.brands = brandsInLS ? JSON.parse(brandsInLS) : [];
+    const flavorsInLS = localStorage.getItem('flavors');
+    this.flavors = flavorsInLS ? JSON.parse(flavorsInLS) : [];
   }
   draw() {
     document.querySelector('.result-container')?.remove();
-    this.api.getAllBrands().then((brands) => (this.brands = brands));
     const catalog = createHTMLElement('catalog', 'div');
     catalog.appendChild(this.createHeader());
     catalog.appendChild(this.createSearchPanel());
