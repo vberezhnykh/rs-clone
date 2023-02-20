@@ -2,7 +2,7 @@ import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement, Mixes, Rates } from '../../components/types/types';
 import Api from '../../components/api/api';
 import changePrefIconSrc from '../../assets/images/change-pref-icon.png';
-import emptystar from '../../assets/images/star-empty.svg';
+import getRatingStar from '../../components/getRatingStar/getRatingStar';
 
 class MainPage implements InterfaceContainerElement {
   private api;
@@ -100,7 +100,7 @@ class MainPage implements InterfaceContainerElement {
       items += `<div class="popular-list__item">
       <img src="${this.api.getImage(this.popularmixes[i].image)}" class="item-img">
       <div class="item-name">${this.popularmixes[i].name}</div>
-      <div class="item-rating"><div class="item-rate">${rate}</div><img src="${emptystar}" class="item-star"></div>
+      <div class="item-rating"><div class="item-rate">${rate}</div><img src="${getRatingStar(this.popularmixes[i].id)}" class="item-star"></div>
     </div>`;
     }
     const popularMixes = createHTMLElement('popular-list');

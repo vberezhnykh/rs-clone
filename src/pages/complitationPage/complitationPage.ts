@@ -8,6 +8,7 @@ import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import getMainHeader from '../../components/getMainHeader/getMainHeader';
+import getRatingStar from '../../components/getRatingStar/getRatingStar';
 
 class ComplitationPage implements InterfaceContainerElement {
   private api: Api;
@@ -86,7 +87,7 @@ class ComplitationPage implements InterfaceContainerElement {
       <div class="mixes-list__card-footer"><button class="mixes-list__button button-1">Попробовать</button>
         <div class="mixes-list__rating-container"><img class="mixes-list__favorite-icon"
             src="${favoriteIconSrc}"><img class="mixes-list__rating-icon"
-            src="${ratingStarIconSrc}"><span class="mixes-list__rating-num">${rate}</span></div>
+            src="${getRatingStar(e.id)}"><span class="mixes-list__rating-num">${rate}</span></div>
       </div>
     </div>`;
         card.onclick = () => {
