@@ -3,39 +3,33 @@ import { Brands, InterfaceContainerElement, Mixes, Rates } from '../../component
 import Api from '../../components/api/api';
 import changePrefIconSrc from '../../assets/images/change-pref-icon.png';
 import getRatingStar from '../../components/getRatingStar/getRatingStar';
+import { getDataFromLS } from '../../utils/getAllData';
 
 class MainPage implements InterfaceContainerElement {
   private api;
   private rates: Rates;
   private popularmixes: Mixes;
-  private brands: Brands
+  private brands: Brands;
   constructor() {
     this.api = new Api();
     this.getData();
   }
 
   private async getData() {
-    this.popularmixes = await this.api.getTop10();
-    this.rates = await this.api.getAllRate();
-    this.brands = await this.api.getAllBrands();
+    this.popularmixes = getDataFromLS('top10') ?? (await this.api.getTop10());
+    this.rates = getDataFromLS('rates') ?? (await this.api.getAllRate());
+    this.brands = getDataFromLS('brands') ?? (await this.api.getAllBrands());
     this.draw();
   }
 
   draw(): HTMLElement {
-    if (this.popularmixes === undefined) {
-      const main = createHTMLElement('main', 'main');
-      const container = createHTMLElement(['main__container', 'container']);
-      main.appendChild(container);
-      return main;
-    } else {
-      const main = document.querySelector('.main') as HTMLElement;
-      const container = document.querySelector('.main__container') as HTMLElement;
-      container.appendChild(this.createTopBlock());
-      container.appendChild(this.createPopularMixes());
-      container.appendChild(this.createBrandsComplitation());
-      main.appendChild(container);
-      return main;
-    }
+    const main = createHTMLElement('main', 'main');
+    const container = createHTMLElement(['main__container', 'container']);
+    container.appendChild(this.createTopBlock());
+    container.appendChild(this.createPopularMixes());
+    container.appendChild(this.createBrandsComplitation());
+    main.appendChild(container);
+    return main;
   }
 
   private createTopBlock() {
@@ -48,12 +42,8 @@ class MainPage implements InterfaceContainerElement {
 
   private createMixWeekCard() {
     const mixWeekCard = createHTMLElement('mix-week-card');
-    const title = createHTMLElement('mix-week-card__title', 'h4');
-    title.textContent = 'ВКУС НЕДЕЛИ';
-    mixWeekCard.appendChild(title);
-    const cardText = createHTMLElement('mix-week-card__text');
-    cardText.textContent = 'Вкусно и точка.';
-    mixWeekCard.appendChild(cardText);
+    mixWeekCard.appendChild(createHTMLElement('mix-week-card__title', 'h4', 'ВКУС НЕДЕЛИ'));
+    mixWeekCard.appendChild(createHTMLElement('mix-week-card__text', 'div', 'Вкусно и точка.'));
     mixWeekCard.onclick = () => this.openMixWeekCard();
     return mixWeekCard;
   }
@@ -68,33 +58,24 @@ class MainPage implements InterfaceContainerElement {
 
   private createUserMixesCard() {
     const userMixesCard = createHTMLElement('user-mixes-card');
-    const title = createHTMLElement('user-mixes-card__title', 'h4');
-    title.textContent = 'Миксы пользователей';
-    userMixesCard.appendChild(title);
-    const tryButton = createHTMLElement(['button-1', 'user-mixes-card__button'], 'button');
-    tryButton.textContent = 'ПРОБОВАТЬ';
-    userMixesCard.appendChild(tryButton);
+    userMixesCard.appendChild(createHTMLElement('user-mixes-card__title', 'h4', 'Миксы пользователей'));
+    userMixesCard.appendChild(createHTMLElement(['button-1', 'user-mixes-card__button'], 'button', 'ПРОБОВАТЬ'));
     userMixesCard.onclick = () => (window.location.hash += 'user-mixes');
     return userMixesCard;
   }
 
   private createFlavorPreferencesCard() {
     const flavorPreferencesCard = createHTMLElement('flavor-preferences-card');
-    flavorPreferencesCard.onclick = () => this.openFlavorsPreferences();
-    const title = createHTMLElement('flavor-preferences-card__title', 'h4');
-    title.textContent = 'Изменить вкусовые предпочтения';
-    flavorPreferencesCard.appendChild(title);
-    const changePrefIcon = new Image();
-    changePrefIcon.className = 'flavor-preferences-card__image';
+    flavorPreferencesCard.appendChild(
+      createHTMLElement('flavor-preferences-card__title', 'h4', 'Изменить вкусовые предпочтения')
+    );
+    const changePrefIcon = <HTMLImageElement>createHTMLElement('lavor-preferences-card__image', 'img');
     changePrefIcon.src = changePrefIconSrc;
     flavorPreferencesCard.appendChild(changePrefIcon);
     flavorPreferencesCard.onclick = () => (window.location.hash += 'change-pref/flavors');
     return flavorPreferencesCard;
   }
 
-  private openFlavorsPreferences() {
-    /* TO-DO */
-  }
   private createPopularMixes() {
     let items = '';
     for (let i = 0; i < 5; i++) {
@@ -102,7 +83,9 @@ class MainPage implements InterfaceContainerElement {
       items += `<div class="popular-list__item">
       <img src="${this.api.getImage(this.popularmixes[i].image)}" class="item-img">
       <div class="item-name">${this.popularmixes[i].name}</div>
-      <div class="item-rating"><div class="item-rate">${rate}</div><img src="${getRatingStar(this.popularmixes[i].id)}" class="item-star"></div>
+      <div class="item-rating"><div class="item-rate">${rate}</div><img src="${getRatingStar(
+        this.popularmixes[i].id
+      )}" class="item-star"></div>
     </div>`;
     }
     const popularMixes = createHTMLElement('popular-list');
@@ -136,9 +119,9 @@ class MainPage implements InterfaceContainerElement {
     <div class="complitation-list__title">Подборки: брэнды</div>
     <div class="complitation-list__more more">См. ещё</div>
     </div>`;
-    const complitationlistitems=createHTMLElement("complitation-list__items");
+    const complitationlistitems = createHTMLElement('complitation-list__items');
     brandsComplitation.append(complitationlistitems);
-    this.brands.forEach((e,i) => {
+    this.brands.forEach((e, i) => {
       if (i < 3) {
         const brand = e.name.replace(/[\s-]/g, '').toLocaleLowerCase();
         const item = createHTMLElement([`complitation-list__item`, `item-${brand}`]);

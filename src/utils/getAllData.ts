@@ -7,6 +7,8 @@ export async function getAllData() {
   localStorage.setItem('mixes', JSON.stringify(await api.getAllMixes()));
   localStorage.setItem('flavors', JSON.stringify(await api.getAllFlavors()));
   localStorage.setItem('lastDbUpdateTime', Date.now().toString());
+  localStorage.setItem('top10', JSON.stringify(await api.getTop10()));
+  localStorage.setItem('rates', JSON.stringify(await api.getAllRate()));
 }
 
 export async function isDatabaseOutdated() {
@@ -30,6 +32,14 @@ export function isDataInLocalStorage() {
   return (
     localStorage.getItem('brands') !== null &&
     localStorage.getItem('flavors') !== null &&
-    localStorage.getItem('mixes') !== null
+    localStorage.getItem('mixes') !== null &&
+    localStorage.getItem('top10') !== null &&
+    localStorage.getItem('rates') !== null
   );
+}
+
+export function getDataFromLS(key: string) {
+  const keyInLS = localStorage.getItem(`${key}`);
+  if (keyInLS) return JSON.parse(keyInLS);
+  return null;
 }
