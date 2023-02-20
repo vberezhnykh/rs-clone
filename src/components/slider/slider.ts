@@ -21,10 +21,10 @@ function onSliderInput(event: Event) {
 }
 
 function onSliderChange(elem: HTMLInputElement) {
+  updateValue(elem);
+  updateValuePosition(elem);
   updateLabels(elem);
   updateProgress(elem);
-  updateValuePosition(elem);
-  updateValue(elem);
 }
 
 function setMaxSliderLabel(maxLabel: number) {
@@ -141,6 +141,3 @@ function onResizeSlider() {
 export { onResizeSlider };
 export { initSlider };
 export { onSliderChange };
-
-// window.onload = init;
-// window.addEventListener("resize", onResize);
