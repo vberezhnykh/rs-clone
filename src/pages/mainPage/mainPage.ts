@@ -116,7 +116,7 @@ class MainPage implements InterfaceContainerElement {
   private createBrandsComplitation() {
     const brandsComplitation = createHTMLElement('complitation-list');
     brandsComplitation.innerHTML = `<div class="complitation-list__header">
-    <div class="complitation-list__title">Подборки: брэнды</div>
+    <div class="complitation-list__title">Подборки: бренды</div>
     <div class="complitation-list__more more">См. ещё</div>
     </div>`;
     const complitationlistitems = createHTMLElement('complitation-list__items');
