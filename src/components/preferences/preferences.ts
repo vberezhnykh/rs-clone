@@ -16,6 +16,8 @@ const CHANGE_PREF_FLAVOR_HASH = '/change-pref/flavors';
 const CHANGE_PREF_BRAND_HASH = `/change-pref/brands`;
 const PREFERENCES_FLAVOR_HASH = '/mixer/preferences/flavors';
 const PREFERENCES_BRAND_HASH = '/mixer/preferences/brands';
+const MIXER_PAGE = '/mixer';
+const MAIN_PAGE = '#';
 const PREFERRED_FLAVORS_KEY = 'preferredFlavors';
 const PREFERRED_STRENGTH_KEY = 'preferredStrength';
 const PREFERRED_BRANDS_KEY = 'preferredBrands';
@@ -76,7 +78,8 @@ export class PreferencesPage implements InterfaceContainerElement {
   private handleClickOnBackBtn() {
     const locationHash = location.hash.slice(1);
     if (locationHash === PREFERENCES_BRAND_HASH) location.hash = PREFERENCES_FLAVOR_HASH;
-    if (locationHash === PREFERENCES_FLAVOR_HASH || locationHash === CHANGE_PREF_FLAVOR_HASH) location.hash = '#';
+    if (locationHash === PREFERENCES_FLAVOR_HASH) location.hash = MIXER_PAGE;
+    if (locationHash === CHANGE_PREF_FLAVOR_HASH) location.hash = MAIN_PAGE;
     if (locationHash === CHANGE_PREF_BRAND_HASH) location.hash = CHANGE_PREF_FLAVOR_HASH;
   }
 

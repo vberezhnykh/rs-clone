@@ -21,9 +21,10 @@ import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import Preloader from '../../components/preloader/preloader';
 import { getImgSrc } from '../../utils/getImgUrl';
 import ApiUsers from '../../components/api_users/apiUsers';
+import { getDataFromLS } from '../../utils/getAllData';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
-const FAKE_POPULAR_QUERIES = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
+const POPULAR_QUERIES_PLACEHOLDER = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
 const POPULAR_QUERIES_TITLE = 'Популярные запросы';
 const SEARCH_INPUT_PLACEHOLDER = 'Бренд, микс, вкус';
 const TABS_NUM = 4;
@@ -65,17 +66,16 @@ class SearchPage implements InterfaceContainerElement {
 
   private async createPopularQueriesContainer() {
     const popularQueriesContainer = createHTMLElement('queries');
-    const POPULAR_QUERIES: Awaited<Promise<string[] | undefined>> = await this.apiUsers.searchAccessor();
+    const popularQueries: string[] = getDataFromLS('popularQueries') ?? POPULAR_QUERIES_PLACEHOLDER;
     popularQueriesContainer.appendChild(createHTMLElement('queries__title', 'h3', POPULAR_QUERIES_TITLE));
-    popularQueriesContainer.appendChild(this.createPopularQueriesBtns(POPULAR_QUERIES));
+    popularQueriesContainer.appendChild(this.createPopularQueriesBtns(popularQueries));
     return popularQueriesContainer;
   }
 
-  private createPopularQueriesBtns(POPULAR_QUERIES?: string[]) {
-    const POPULAR_QUERIES_TO_ITERATE = POPULAR_QUERIES ? POPULAR_QUERIES : FAKE_POPULAR_QUERIES;
+  private createPopularQueriesBtns(popularQueries: string[]) {
     const buttons = createHTMLElement('queries-buttons');
-    for (let i = 0; i < POPULAR_QUERIES_TO_ITERATE.length; i++) {
-      buttons.appendChild(this.createSinglePopularQuery(i, POPULAR_QUERIES_TO_ITERATE));
+    for (let i = 0; i < popularQueries.length; i++) {
+      buttons.appendChild(this.createSinglePopularQuery(i, popularQueries));
     }
     return buttons;
   }
@@ -275,12 +275,9 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private async updateData() {
-    const brandsInLS = localStorage.getItem('brands');
-    this.brands = brandsInLS ? JSON.parse(brandsInLS) : await this.api.getAllBrands();
-    const flavorsInLs = localStorage.getItem('flavors');
-    this.flavors = flavorsInLs ? JSON.parse(flavorsInLs) : await this.api.getAllFlavors();
-    const mixesInLs = localStorage.getItem('mixes');
-    this.mixes = mixesInLs ? JSON.parse(mixesInLs) : await this.api.getAllMixes();
+    this.brands = getDataFromLS('brands') ?? (await this.api.getAllBrands());
+    this.flavors = getDataFromLS('flavors') ?? (await this.api.getAllFlavors());
+    this.mixes = getDataFromLS('mixes') ?? (await this.api.getAllMixes());
     await this.getSuggestions();
   }
 
