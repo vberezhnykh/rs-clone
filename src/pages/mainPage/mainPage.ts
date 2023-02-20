@@ -1,13 +1,14 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement, Mixes, Rates } from '../../components/types/types';
+import { Brands, InterfaceContainerElement, Mixes, Rates } from '../../components/types/types';
 import Api from '../../components/api/api';
 import changePrefIconSrc from '../../assets/images/change-pref-icon.png';
-import emptystar from '../../assets/images/star-empty.svg';
+import getRatingStar from '../../components/getRatingStar/getRatingStar';
 
 class MainPage implements InterfaceContainerElement {
   private api;
   private rates: Rates;
   private popularmixes: Mixes;
+  private brands: Brands
   constructor() {
     this.api = new Api();
     this.getData();
@@ -16,6 +17,7 @@ class MainPage implements InterfaceContainerElement {
   private async getData() {
     this.popularmixes = await this.api.getTop10();
     this.rates = await this.api.getAllRate();
+    this.brands = await this.api.getAllBrands();
     this.draw();
   }
 
@@ -100,7 +102,7 @@ class MainPage implements InterfaceContainerElement {
       items += `<div class="popular-list__item">
       <img src="${this.api.getImage(this.popularmixes[i].image)}" class="item-img">
       <div class="item-name">${this.popularmixes[i].name}</div>
-      <div class="item-rating"><div class="item-rate">${rate}</div><img src="${emptystar}" class="item-star"></div>
+      <div class="item-rating"><div class="item-rate">${rate}</div><img src="${getRatingStar(this.popularmixes[i].id)}" class="item-star"></div>
     </div>`;
     }
     const popularMixes = createHTMLElement('popular-list');
@@ -133,27 +135,24 @@ class MainPage implements InterfaceContainerElement {
     brandsComplitation.innerHTML = `<div class="complitation-list__header">
     <div class="complitation-list__title">Подборки: брэнды</div>
     <div class="complitation-list__more more">См. ещё</div>
-    </div>
-    <div class="complitation-list__items">
-    <div class="complitation-list__item item-brusko">
-      <div class="complitation-name">Brusko</div>
-      <div class="complitation-desc">Миксы на все случаи жизни от Brusko - кальянного гуру Hookan Blender</div>
-    </div>
-    <div class="complitation-list__item item-musthave">
-      <div class="complitation-name">Musthave</div>
-      <div class="complitation-desc">Миксы на все случаи жизни от Макса - кальянного гуру Hookan Blender</div>
-    </div>
-    <div class="complitation-list__item item-burn">
-      <div class="complitation-name">Burn</div>
-      <div class="complitation-desc">Миксы на все случаи жизни от Макса - кальянного гуру Hookan Blender</div>
-    </div>
     </div>`;
+    const complitationlistitems=createHTMLElement("complitation-list__items");
+    brandsComplitation.append(complitationlistitems);
+    this.brands.forEach((e,i) => {
+      if (i < 3) {
+        const brand = e.name.replace(/[\s-]/g, '').toLocaleLowerCase();
+        const item = createHTMLElement([`complitation-list__item`, `item-${brand}`]);
+        item.innerHTML = `<div class="complitation-name">${e.name}</div>
+      <div class="complitation-desc">Миксы на все случаи жизни от ${brand} - кальянного гуру Hookan Blender</div>`;
+        item.onclick = () => {
+          window.location.hash = `/complitation/${e.id}`;
+        };
+        complitationlistitems?.append(item);
+      }
+    });
     brandsComplitation.onclick = (e: Event) => {
       if (e.target instanceof HTMLElement) {
         if (e.target.className.includes('more')) window.location.hash = `/list-complitation`;
-        else if (e.target.className.includes('item-brusko')) window.location.hash = `/complitation/1`;
-        else if (e.target.className.includes('item-musthave')) window.location.hash = `/complitation/5`;
-        else if (e.target.className.includes('item-burn')) window.location.hash = `/complitation/2`;
       }
     };
     return brandsComplitation;

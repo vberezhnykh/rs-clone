@@ -31,6 +31,8 @@ class ListComplitationPage implements InterfaceContainerElement {
     this.preloader = new Preloader();
     this.preloader.draw();
     this.brands = await this.api.getAllBrands();
+    this.flavors = await this.api.getAllFlavors();
+    this.mixes = await this.api.getAllMixes();
     this.draw();
     this.preloader.removePreloader();
   }
@@ -71,7 +73,11 @@ class ListComplitationPage implements InterfaceContainerElement {
       main.append(maincontainer);
       const complitationlistitems = document.querySelector('.complitation-list__items');
       this.brands.forEach((e) => {
-        if (Object.keys(e).length < 4) {
+        const brandArr = this.flavors.filter((f) => f.brand == e.name).map((f) => f.id);
+      const brandComplitationArr = this.mixes.filter((e) =>
+        Object.values(e.compositionById).every((v) => brandArr.includes(v))
+      );
+        if (brandComplitationArr.length > 0) {
           const brand = e.name.replace(/[\s-]/g, '').toLocaleLowerCase();
           const item = createHTMLElement([`complitation-list__item`, `item-${brand}`]);
           item.innerHTML = `<div class="complitation-name">${e.name}</div>

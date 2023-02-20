@@ -1,11 +1,11 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { Mixes } from '../types/types';
+import { Mixes} from '../types/types';
 import Api from '../api/api';
 import ApiMix from '../api_mix/api_mix';
-import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import ProfileUser from '../profile_user/profile_user';
+import getRatingStar from '../getRatingStar/getRatingStar';
 
 const ERROR_MESSAGE = 'Ничего не найдено. Попробуйте снова...';
 
@@ -22,7 +22,7 @@ export class MixesList {
   constructor(mixes?: Mixes) {
     this.api = new Api();
     this.apiMix = new ApiMix();
-    this.profileUser = new ProfileUser();
+    this.profileUser = new ProfileUser();    
     if (mixes && mixes.length > 0) this.mixes = mixes;
   }
   public create(options?: MixesListOptions): HTMLElement {
@@ -68,7 +68,7 @@ export class MixesList {
       });
     }
     const ratingStarIcon = <HTMLImageElement>createHTMLElement('mixes-list__rating-icon', 'img');
-    ratingStarIcon.src = ratingStarIconSrc;
+    ratingStarIcon.src = getRatingStar(this.mixes[i].id);
     ratingContainer.appendChild(favoriteIcon);
     ratingContainer.appendChild(ratingStarIcon);
     const ratingNum = createHTMLElement('mixes-list__rating-num', 'span');
