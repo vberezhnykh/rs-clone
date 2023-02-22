@@ -4,6 +4,10 @@ import backArrowImgSrc from '../../assets/images/back-arrow.png';
 import Api from '../api/api';
 import Preloader from '../preloader/preloader';
 import { MixerNowResult } from '../mixerResult/mixer-result';
+import ApiUsers from '../api_users/apiUsers';
+import CheckAuth from '../checkAuth/checkAuth';
+import ProfileUser from '../profile_user/profile_user';
+import { getDataFromLS } from '../../utils/getAllData';
 
 const FLAVORS_TAGS = ['цитрусовый', 'ягодный', 'травяной', 'фруктовый', 'тропический', 'десертный', 'напиточный'];
 const STRENGTH = ['легкий', 'средний', 'крепкий'];
@@ -25,15 +29,22 @@ const PREFERRED_BRANDS_KEY = 'preferredBrands';
 export class PreferencesPage implements InterfaceContainerElement {
   brands: string[] = [];
   api: Api;
+  apiUsers: ApiUsers;
+  checkAuth: CheckAuth;
   preloader: Preloader;
+  profileUser: ProfileUser;
   flavors: string[] = [];
   strength = '';
   selectedBrands: string[] = [];
   allFlavors: Flavors = [];
   allMixes: Mixes = [];
+  userId?: string;
   constructor() {
     this.api = new Api();
+    this.apiUsers = new ApiUsers();
     this.preloader = new Preloader();
+    this.checkAuth = new CheckAuth();
+    this.profileUser = new ProfileUser();
     const brandsInLS = localStorage.getItem('brands');
     if (brandsInLS) this.brands = JSON.parse(brandsInLS).map((brand: Brand) => brand.name);
     const flavorsInLS = localStorage.getItem('flavors');
@@ -54,7 +65,18 @@ export class PreferencesPage implements InterfaceContainerElement {
     const PreferencesContainer = createHTMLElement('preferences');
     PreferencesContainer.appendChild(this.createPreferencesHeader());
     const locationHash = location.hash.slice(1);
-    if (locationHash === CHANGE_PREF_FLAVOR_HASH || locationHash === PREFERENCES_FLAVOR_HASH) {
+    if (locationHash === CHANGE_PREF_FLAVOR_HASH) {
+      this.preloader.draw();
+      if (!(await this.checkAuth.checkUserAuth())) {
+        PreferencesContainer.appendChild(this.showErrorMessage());
+        this.preloader.removePreloader();
+        return PreferencesContainer;
+      }
+      this.checkPref();
+      this.preloader.removePreloader();
+      PreferencesContainer.appendChild(this.createFlavorsContainer());
+      PreferencesContainer.appendChild(this.createStrengthContainer());
+    } else if (locationHash === PREFERENCES_FLAVOR_HASH) {
       PreferencesContainer.appendChild(this.createFlavorsContainer());
       PreferencesContainer.appendChild(this.createStrengthContainer());
     } else {
@@ -63,6 +85,18 @@ export class PreferencesPage implements InterfaceContainerElement {
     }
     PreferencesContainer.appendChild(this.createContinueButton());
     return PreferencesContainer;
+  }
+
+  private showErrorMessage() {
+    const error = createHTMLElement('', 'div', 'Please log in.');
+    return error;
+  }
+
+  private async checkPref() {
+    const id = getDataFromLS('blenderProfile')._id;
+    if (id == null) return;
+    const pref = await this.apiUsers.flavorPreferenceAccessor(id);
+    console.log(pref);
   }
 
   private createPreferencesHeader() {
@@ -177,10 +211,6 @@ export class PreferencesPage implements InterfaceContainerElement {
   }
 
   private continueToChangePrefBrands() {
-    /* 
-      TO-DO:
-      отправить на бэк информацию о предпочтениях по вкусам и крепости 
-      */
     location.hash = CHANGE_PREF_BRAND_HASH;
   }
 
@@ -193,7 +223,15 @@ export class PreferencesPage implements InterfaceContainerElement {
       TO-DO:
       отправить на бэк информацию о предпочтениях
        */
-    location.hash = '';
+    const id = getDataFromLS('blenderProfile')._id;
+    if (id == null) return;
+    const preferredFlavors = this.getItemPreferencesFromStorage(PREFERRED_FLAVORS_KEY);
+    const preferredBrands = this.getItemPreferencesFromStorage(PREFERRED_BRANDS_KEY);
+    const preferredStrength = localStorage.getItem(PREFERRED_STRENGTH_KEY);
+    if (preferredStrength == null) return;
+    this.apiUsers.flavorPreferenceAccessor(id, preferredFlavors, preferredStrength, preferredBrands);
+    alert('Предпочтения сохранены.');
+    location.hash = MAIN_PAGE;
   }
 
   private async showMixesOnPreferences() {
