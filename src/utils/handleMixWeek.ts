@@ -8,7 +8,8 @@ type MixWeek = {
   number: number;
 };
 
-const MS_IN_HOUR = 60000 * 60;
+const MS_IN_MINUTE = 60000;
+const MS_IN_HOUR = MS_IN_MINUTE * 60;
 
 export function handleMixWeek() {
   setInterval(() => {
@@ -17,7 +18,7 @@ export function handleMixWeek() {
     const now = Date.now();
     if (now - (MixWeek as MixWeek).lastUpdate < MS_IN_HOUR) return;
     setMixWeek();
-  }, 10000);
+  }, MS_IN_MINUTE);
 }
 
 function getMixWeek(): MixWeek | null {
