@@ -42,18 +42,14 @@ class MainPage implements InterfaceContainerElement {
 
   private createMixWeekCard() {
     const mixWeekCard = createHTMLElement('mix-week-card');
-    mixWeekCard.appendChild(createHTMLElement('mix-week-card__title', 'h4', 'ВКУС НЕДЕЛИ'));
+    mixWeekCard.appendChild(createHTMLElement('mix-week-card__title', 'h4', 'ВКУС ЧАСА'));
     mixWeekCard.appendChild(createHTMLElement('mix-week-card__text', 'div', 'Вкусно и точка.'));
     mixWeekCard.onclick = () => this.openMixWeekCard();
     return mixWeekCard;
   }
 
   private openMixWeekCard() {
-    /* 
-    TO-DO: реализовать открытие карточки микса недели
-    Как вариант изменить карточку на "Микс этого часа"
-    Раз в час на сервере меняется микс
-    */
+    window.location.hash = `/mix/${getDataFromLS('MixWeek').id ?? 1}`;
   }
 
   private createUserMixesCard() {

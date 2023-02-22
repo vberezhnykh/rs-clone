@@ -35,7 +35,7 @@ class MixPage implements InterfaceContainerElement {
   private mixId: number;
   private vote: number;
   private getRateResult: mixRate;
-  private chart: Chart;
+  private chart: Chart<'doughnut', number[], string>;
   constructor() {
     this.mixId = Number(window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1]);
     this.api = new Api();
@@ -107,19 +107,24 @@ class MixPage implements InterfaceContainerElement {
       });
       this.mixStrength(strength);
       this.updateflavorsPercentages();
-      this.chart.data.datasets[0].data=this.flavorsPercentages;
+      this.chart.data.datasets[0].data = this.flavorsPercentages;
       this.chart.update();
     }
   };
-  private updateflavorsPercentages=():void=>{
-    const inputs=document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>;
-    this.flavorsPercentages=Array.from(inputs).map(e=>Number(e.value));
-  }
-  private updateSliderValuePosition=():void=>{
-    const tab1=document.querySelector('#tab-mix-btn-1') as HTMLInputElement;
-    if((document.querySelector('#component1LabelMin') as HTMLElement).classList.contains('hidden') && (document.querySelector('#component1LabelMax') as HTMLElement).classList.contains('hidden'))
-    Array.from(document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>).forEach(e=>onSliderChange(e));
-  }
+  private updateflavorsPercentages = (): void => {
+    const inputs = document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>;
+    this.flavorsPercentages = Array.from(inputs).map((e) => Number(e.value));
+  };
+  private updateSliderValuePosition = (): void => {
+    const tab1 = document.querySelector('#tab-mix-btn-1') as HTMLInputElement;
+    if (
+      (document.querySelector('#component1LabelMin') as HTMLElement).classList.contains('hidden') &&
+      (document.querySelector('#component1LabelMax') as HTMLElement).classList.contains('hidden')
+    )
+      Array.from(document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>).forEach((e) =>
+        onSliderChange(e)
+      );
+  };
   private switcher = (): void => {
     initSlider();
     if ((<HTMLInputElement>document.querySelector('#switch')).checked)
@@ -175,7 +180,7 @@ class MixPage implements InterfaceContainerElement {
       if (i < colorsArray.length) colors.push(colorsArray[i]);
       else colors.push('#' + ((Math.random() * 0x1000000) | 0x1000000).toString(16).slice(1));
     }
-    this.chart=new Chart(<HTMLCanvasElement>ctx, {
+    this.chart = new Chart(<HTMLCanvasElement>ctx, {
       type: 'doughnut',
       data: {
         labels: this.flavorsNames,
