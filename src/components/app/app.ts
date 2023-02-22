@@ -29,7 +29,6 @@ import PopularMixes from '../../pages/popularMixes/popularMixes';
 import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
 import { getAllData, isDatabaseOutdated, isDataInLocalStorage } from '../../utils/getAllData';
 import Preloader from '../preloader/preloader';
-import { handleMixWeek } from '../../utils/handleMixWeek';
 
 enum LocationPath {
   MainPage = `/`,
@@ -170,7 +169,6 @@ class App {
     window.addEventListener('hashchange', () => this.loadHashPage());
     window.addEventListener('load', () => {
       this.loadHashPage(preloader);
-      handleMixWeek();
     });
   }
 

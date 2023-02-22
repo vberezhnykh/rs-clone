@@ -42,14 +42,15 @@ class MainPage implements InterfaceContainerElement {
 
   private createMixWeekCard() {
     const mixWeekCard = createHTMLElement('mix-week-card');
-    mixWeekCard.appendChild(createHTMLElement('mix-week-card__title', 'h4', 'ВКУС ЧАСА'));
+    mixWeekCard.appendChild(createHTMLElement('mix-week-card__title', 'h4', 'ВКУС МЕСЯЦА'));
     mixWeekCard.appendChild(createHTMLElement('mix-week-card__text', 'div', 'Вкусно и точка.'));
     mixWeekCard.onclick = () => this.openMixWeekCard();
     return mixWeekCard;
   }
 
-  private openMixWeekCard() {
-    window.location.hash = `/mix/${getDataFromLS('MixWeek').id ?? 1}`;
+  private async openMixWeekCard() {
+    const mix = await this.api.getRandomMix();
+    window.location.hash = `/mix/${mix.id}`;
   }
 
   private createUserMixesCard() {
