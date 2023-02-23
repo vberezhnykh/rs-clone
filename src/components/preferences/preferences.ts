@@ -72,7 +72,6 @@ export class PreferencesPage implements InterfaceContainerElement {
         this.preloader.removePreloader();
         return PreferencesContainer;
       }
-      this.checkPref();
       this.preloader.removePreloader();
       PreferencesContainer.appendChild(this.createFlavorsContainer());
       PreferencesContainer.appendChild(this.createStrengthContainer());
@@ -88,15 +87,11 @@ export class PreferencesPage implements InterfaceContainerElement {
   }
 
   private showErrorMessage() {
-    const error = createHTMLElement('', 'div', 'Please log in.');
+    const error = createHTMLElement('preferences-error', 'div');
+    const errorMessage = createHTMLElement('preferences-error__message', 'span');
+    errorMessage.innerHTML = `Чтобы изменить вкусовые предпочтения, пожалуйста, <a href="/#/account">войдите в аккаунт</a>.`;
+    error.appendChild(errorMessage);
     return error;
-  }
-
-  private async checkPref() {
-    const id = getDataFromLS('blenderProfile')._id;
-    if (id == null) return;
-    const pref = await this.apiUsers.flavorPreferenceAccessor(id);
-    console.log(pref);
   }
 
   private createPreferencesHeader() {
@@ -219,10 +214,6 @@ export class PreferencesPage implements InterfaceContainerElement {
   }
 
   private savePreferencesChange() {
-    /* 
-      TO-DO:
-      отправить на бэк информацию о предпочтениях
-       */
     const id = getDataFromLS('blenderProfile')._id;
     if (id == null) return;
     const preferredFlavors = this.getItemPreferencesFromStorage(PREFERRED_FLAVORS_KEY);
@@ -230,8 +221,22 @@ export class PreferencesPage implements InterfaceContainerElement {
     const preferredStrength = localStorage.getItem(PREFERRED_STRENGTH_KEY);
     if (preferredStrength == null) return;
     this.apiUsers.flavorPreferenceAccessor(id, preferredFlavors, preferredStrength, preferredBrands);
-    alert('Предпочтения сохранены.');
-    location.hash = MAIN_PAGE;
+    document.body.before(this.createPopUp());
+  }
+
+  private createPopUp() {
+    const overlay = createHTMLElement('preferences-overlay');
+    const popUp = createHTMLElement('preferences-popup');
+    popUp.appendChild(createHTMLElement('preferences-popup__text', 'p', 'Ваши вкусовые редпочтения сохранены.'));
+    const button = <HTMLButtonElement>createHTMLElement('preferences-popup__button', 'button', 'Хорошо');
+    button.type = 'button';
+    button.onclick = () => {
+      location.hash = MAIN_PAGE;
+      document.querySelector('.preferences-overlay')?.remove();
+    };
+    popUp.appendChild(button);
+    overlay.appendChild(popUp);
+    return overlay;
   }
 
   private async showMixesOnPreferences() {

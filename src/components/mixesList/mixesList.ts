@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { Mixes} from '../types/types';
+import { Mixes } from '../types/types';
 import Api from '../api/api';
 import ApiMix from '../api_mix/api_mix';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
@@ -22,7 +22,7 @@ export class MixesList {
   constructor(mixes?: Mixes) {
     this.api = new Api();
     this.apiMix = new ApiMix();
-    this.profileUser = new ProfileUser();    
+    this.profileUser = new ProfileUser();
     if (mixes && mixes.length > 0) this.mixes = mixes;
   }
   public create(options?: MixesListOptions): HTMLElement {
