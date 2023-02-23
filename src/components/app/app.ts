@@ -180,7 +180,6 @@ class App {
     }
     this.drawNewPage(hash, preloader);
     handleChangeOfFlavorsInMixer();
-    // if (preloader) preloader.removePreloader();
   };
 
   async start(): Promise<void> {

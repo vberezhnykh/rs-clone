@@ -74,9 +74,9 @@ class ListComplitationPage implements InterfaceContainerElement {
       const complitationlistitems = document.querySelector('.complitation-list__items');
       this.brands.forEach((e) => {
         const brandArr = this.flavors.filter((f) => f.brand == e.name).map((f) => f.id);
-      const brandComplitationArr = this.mixes.filter((e) =>
-        Object.values(e.compositionById).every((v) => brandArr.includes(v))
-      );
+        const brandComplitationArr = this.mixes.filter((e) =>
+          Object.values(e.compositionById).every((v) => brandArr.includes(v))
+        );
         if (brandComplitationArr.length > 0) {
           const brand = e.name.replace(/[\s-]/g, '').toLocaleLowerCase();
           const item = createHTMLElement([`complitation-list__item`, `item-${brand}`]);

@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Flash226/rs-clone#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
     "clean-webpack-plugin": "^4.0.0",
@@ -46,6 +47,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "chartjs-plugin-outerlabels": "^2.0.0"
+    "chartjs-plugin-outerlabels": "^2.0.0",
+    "lodash": "^4.17.21"
   }
 }

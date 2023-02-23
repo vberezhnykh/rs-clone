@@ -98,3 +98,9 @@ export interface NewFlavor {
 export type DateResponse = {
   message: Date;
 };
+
+export type Preferences = {
+  flavors: string[];
+  strange: string;
+  brands: string[];
+};

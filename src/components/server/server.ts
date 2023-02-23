@@ -1,1 +1,1 @@
-export const server = 'https://rs-clone-back-production-247c.up.railway.app';
+export const server = 'https://rs-clone-vs2c.onrender.com';

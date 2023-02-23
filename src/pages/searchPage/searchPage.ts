@@ -12,16 +12,25 @@ import {
   Flavor,
   Brand,
   TabBtnIds,
+  Preferences,
 } from '../../components/types/types';
 import Api from '../../components/api/api';
 import searchImgSrc from '../../assets/images/search.svg';
-import { sortFoundBrandResults, sortFoundFlavorResults, sortFoundMixResults } from '../../utils/sortFoundResults';
+import {
+  sortBrandsByPreferences,
+  sortFlavorsByPreferences,
+  sortFlavorsByStrengthPref,
+  sortFoundBrandResultsByTheStringStart,
+  sortFoundFlavorResultsByTheStringStart,
+  sortFoundMixResultsByTheStringStart,
+} from '../../utils/sortFoundResults';
 import { MixesList } from '../../components/mixesList/mixesList';
 import { createPopup, openFlavorPopup } from '../../components/popup/popup';
 import Preloader from '../../components/preloader/preloader';
 import { getImgSrc } from '../../utils/getImgUrl';
 import ApiUsers from '../../components/api_users/apiUsers';
 import { getDataFromLS } from '../../utils/getAllData';
+import { isPreferencesType } from '../../utils/isPreferencesType';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 const POPULAR_QUERIES_PLACEHOLDER = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
@@ -40,6 +49,7 @@ class SearchPage implements InterfaceContainerElement {
   private preloader: Preloader;
   private apiUsers: ApiUsers;
   private popularQueries: string[];
+  private preferences?: Preferences;
 
   constructor() {
     this.api = new Api();
@@ -181,9 +191,20 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private createResultListForFlavorTab(resultByTab: Flavors) {
+    let flavorsToIterate: Flavors = resultByTab;
+    if (this.preferences) {
+      const preferredFlavors = this.preferences?.flavors;
+      flavorsToIterate = resultByTab.sort((flavor1, flavor2) =>
+        sortFlavorsByPreferences(flavor1, flavor2, preferredFlavors)
+      );
+      const preferredStrength = this.preferences.strange;
+      flavorsToIterate = flavorsToIterate.sort((flavor1, flavor2) =>
+        sortFlavorsByStrengthPref(flavor1, flavor2, preferredStrength)
+      );
+    }
     const list = createHTMLElement('search-list', 'ul');
     list.classList.add('flavors-list');
-    for (let i = 0; i < resultByTab.length; i++) {
+    for (let i = 0; i < flavorsToIterate.length; i++) {
       list.appendChild(this.createListItemForFlavorTab(resultByTab, i));
     }
     return list;
@@ -202,10 +223,16 @@ class SearchPage implements InterfaceContainerElement {
   }
 
   private createResultListForBrandTab(resultByTab: Brands) {
+    let brandsToIterate: Brands = resultByTab;
+    if (this.preferences) {
+      brandsToIterate = resultByTab.sort((brand1, brand2) =>
+        sortBrandsByPreferences(brand1, brand2, (this.preferences as Preferences).brands)
+      );
+    }
     const list = createHTMLElement('search-list', 'ul');
     list.classList.add('brands-list');
     if (!this.flavors) return list;
-    for (let i = 0; i < resultByTab.length; i++) list.appendChild(this.createListItemForBrandTab(resultByTab, i));
+    for (let i = 0; i < brandsToIterate.length; i++) list.appendChild(this.createListItemForBrandTab(resultByTab, i));
     return list;
   }
 
@@ -259,9 +286,11 @@ class SearchPage implements InterfaceContainerElement {
     const foundFlavors = <Flavors | null>this.searchBy(inputValue, 'flavors');
     const foundMixes = <Mixes | null>this.searchBy(inputValue, 'mixes');
     const foundBrands = <Brands | null>this.searchBy(inputValue, 'brands');
-    if (foundFlavors instanceof Array) foundFlavors.sort((a, b) => sortFoundFlavorResults(a, b, inputValue));
-    if (foundMixes instanceof Array) foundMixes.sort((a, b) => sortFoundMixResults(a, b, inputValue));
-    if (foundBrands instanceof Array) foundBrands.sort((a, b) => sortFoundBrandResults(a, b, inputValue));
+    if (foundFlavors instanceof Array)
+      foundFlavors.sort((a, b) => sortFoundFlavorResultsByTheStringStart(a, b, inputValue));
+    if (foundMixes instanceof Array) foundMixes.sort((a, b) => sortFoundMixResultsByTheStringStart(a, b, inputValue));
+    if (foundBrands instanceof Array)
+      foundBrands.sort((a, b) => sortFoundBrandResultsByTheStringStart(a, b, inputValue));
     return {
       foundFlavors,
       foundMixes,
@@ -279,6 +308,14 @@ class SearchPage implements InterfaceContainerElement {
     this.flavors = getDataFromLS('flavors') ?? (await this.api.getAllFlavors());
     this.mixes = getDataFromLS('mixes') ?? (await this.api.getAllMixes());
     await this.getSuggestions();
+    await this.checkPref();
+  }
+
+  private async checkPref() {
+    const profile = getDataFromLS('blenderProfile');
+    if (profile == null) return;
+    const pref = await this.apiUsers.flavorPreferenceAccessor(profile._id);
+    if (isPreferencesType(pref)) this.preferences = pref;
   }
 
   private async handleEnterKeyOnSearchInput(event: KeyboardEvent) {
