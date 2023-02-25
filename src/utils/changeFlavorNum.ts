@@ -34,7 +34,7 @@ export function changeFlavorNumInHeader() {
 }
 
 export function changeFlavorNumInFooter() {
-  changeFlavorNum('footer');
+  changeFlavorNum('main');
   /* const mixerFooter = document.querySelector('.footer__mixer-image');
   if (!mixerFooter) return;
   const flavorsNumInDom = document.querySelector('.footer__mixer-number');
