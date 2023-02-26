@@ -16,6 +16,10 @@ import CheckAuth from '../../components/checkAuth/checkAuth';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 import rating from '../../components/rating/rating';
 import { getImgSrc } from '../../utils/getImgUrl';
+import { getRandomMixNumber } from '../../utils/getRandomMixNum';
+import headerChange from '../../components/headerChange/headerChange';
+import getMainHeader from '../../components/getMainHeader/getMainHeader';
+
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -49,7 +53,7 @@ class MixPage implements InterfaceContainerElement {
   private async getData() {
     this.preloader = new Preloader();
     this.preloader.draw();
-    if (isNaN(this.mixId)) this.mixId = (await this.api.getRandomMix()).id;
+    if (isNaN(this.mixId)) this.mixId = await getRandomMixNumber();
     this.vote = this.apiMix.getVote(this.mixId);
     this.getRateResult = await this.apiMix.getRate(this.mixId);
     let allMixes: Mixes;
@@ -110,19 +114,24 @@ class MixPage implements InterfaceContainerElement {
       });
       this.mixStrength(strength);
       this.updateflavorsPercentages();
-      this.chart.data.datasets[0].data=this.flavorsPercentages;
+      this.chart.data.datasets[0].data = this.flavorsPercentages;
       this.chart.update();
     }
   };
-  private updateflavorsPercentages=():void=>{
-    const inputs=document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>;
-    this.flavorsPercentages=Array.from(inputs).map(e=>Number(e.value));
-  }
-  private updateSliderValuePosition=():void=>{
-    const tab1=document.querySelector('#tab-mix-btn-1') as HTMLInputElement;
-    if((document.querySelector('#component1LabelMin') as HTMLElement).classList.contains('hidden') && (document.querySelector('#component1LabelMax') as HTMLElement).classList.contains('hidden'))
-    Array.from(document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>).forEach(e=>onSliderChange(e));
-  }
+  private updateflavorsPercentages = (): void => {
+    const inputs = document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>;
+    this.flavorsPercentages = Array.from(inputs).map((e) => Number(e.value));
+  };
+  private updateSliderValuePosition = (): void => {
+    const tab1 = document.querySelector('#tab-mix-btn-1') as HTMLInputElement;
+    if (
+      (document.querySelector('#component1LabelMin') as HTMLElement).classList.contains('hidden') &&
+      (document.querySelector('#component1LabelMax') as HTMLElement).classList.contains('hidden')
+    )
+      Array.from(document.querySelectorAll('.tick-slider-input') as NodeListOf<HTMLInputElement>).forEach((e) =>
+        onSliderChange(e)
+      );
+  };
   private switcher = (): void => {
     initSlider();
     if ((<HTMLInputElement>document.querySelector('#switch')).checked)
@@ -178,7 +187,7 @@ class MixPage implements InterfaceContainerElement {
       if (i < colorsArray.length) colors.push(colorsArray[i]);
       else colors.push('#' + ((Math.random() * 0x1000000) | 0x1000000).toString(16).slice(1));
     }
-    this.chart=new Chart(<HTMLCanvasElement>ctx, {
+    this.chart = new Chart(<HTMLCanvasElement>ctx, {
       type: 'doughnut',
       data: {
         labels: this.flavorsNames,
@@ -315,6 +324,9 @@ class MixPage implements InterfaceContainerElement {
             </div>
           </div>
         </div>
+        <div class="mix-card__back">
+          <img src="http://localhost:4000/2e1f267b0bd1a5b14089.png" alt="back-arrow" class="arrow-back"/>
+        </div>
       </div>
 
       <div id="tabs-mix" class="tabs">
@@ -347,7 +359,11 @@ class MixPage implements InterfaceContainerElement {
         document.querySelector('.mix-card__buttons-row')?.addEventListener('click', this.setGram);
         document.querySelector('#composition')?.addEventListener('input', this.changeRange);
         document.querySelector('#tab-mix-btn-1')?.addEventListener('click', this.updateSliderValuePosition);
-
+        headerChange(this.mix.name, `secondary-mix`);
+        document.querySelector('.mix-card__back')?.addEventListener('click', () => {
+          window.history.back();
+          getMainHeader();
+        });
         const userId = this.profileUser.getUserId();
         if (typeof userId === 'string' && userId.length > 12) {
           this.apiMix.getFavorite(userId).then((data) => {
