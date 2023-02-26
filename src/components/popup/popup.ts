@@ -98,8 +98,8 @@ function handleClickOnAddButton(addButton: HTMLElement, flavor: Flavor, addBtnOn
     addFlavorToMixer(addButton, flavorsInMixer, flavor, addBtnOnBrandPageOrMixerPage);
   } else {
     removeFlavorFromMixer(addButton, flavorsInMixer, indexOfFlavorInMixer, addBtnOnBrandPageOrMixerPage);
-    if (!addBtnOnBrandPageOrMixerPage?.classList.contains('mixer-now__info-btn')) return;
-    removeFlavorFromMixerPage(addBtnOnBrandPageOrMixerPage);
+    if (addBtnOnBrandPageOrMixerPage?.classList.contains('mixer-now__info-btn'))
+      removeFlavorFromMixerPage(addBtnOnBrandPageOrMixerPage);
   }
   localStorage.setItem('flavorsInMixer', JSON.stringify(flavorsInMixer));
   handleChangeOfFlavorsInMixer();
