@@ -9,6 +9,7 @@ import ratingStarIconSrc from '../../assets/images/star-empty.svg';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import getMainHeader from '../../components/getMainHeader/getMainHeader';
+import headerChange from '../../components/headerChange/headerChange';
 
 class ListComplitationPage implements InterfaceContainerElement {
   private api: Api;
@@ -35,30 +36,6 @@ class ListComplitationPage implements InterfaceContainerElement {
     this.mixes = await this.api.getAllMixes();
     this.draw();
     this.preloader.removePreloader();
-  }
-
-  changeHeader(): void {
-    const header = document.querySelector('.header');
-    const headercontainer = document.querySelector('.header__container');
-    if (header && headercontainer) {
-      header.className = 'header header-complitation';
-      headercontainer.classList.add('container-complitation');
-      headercontainer.innerHTML = '';
-      const complitationbuttons = createHTMLElement('complitation__buttons');
-      const imgarrow = new Image();
-      imgarrow.src = backArrow;
-      imgarrow.alt = 'back-arrow';
-      imgarrow.className = 'arrow-back';
-      imgarrow.onclick = () => {
-        window.location.hash = `/`;
-        getMainHeader();
-      };
-      complitationbuttons.append(imgarrow);
-      headercontainer.append(complitationbuttons);
-      const complitationtitle = createHTMLElement('complitation__title');
-      complitationtitle.innerHTML = 'Подборки: бренды';
-      headercontainer.append(complitationtitle);
-    }
   }
 
   draw(): HTMLElement {
@@ -91,7 +68,7 @@ class ListComplitationPage implements InterfaceContainerElement {
       });
       window.onpopstate = getMainHeader;
       setTimeout(() => {
-        this.changeHeader();
+        headerChange('Подборки: бренды');
       }, 0);
       return main;
     }

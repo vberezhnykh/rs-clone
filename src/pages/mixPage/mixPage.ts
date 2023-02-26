@@ -16,6 +16,8 @@ import CheckAuth from '../../components/checkAuth/checkAuth';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 import rating from '../../components/rating/rating';
 import { getRandomMixNumber } from '../../utils/getRandomMixNum';
+import headerChange from '../../components/headerChange/headerChange';
+import getMainHeader from '../../components/getMainHeader/getMainHeader';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -318,6 +320,9 @@ class MixPage implements InterfaceContainerElement {
             </div>
           </div>
         </div>
+        <div class="mix-card__back">
+          <img src="http://localhost:4000/2e1f267b0bd1a5b14089.png" alt="back-arrow" class="arrow-back"/>
+        </div>
       </div>
 
       <div id="tabs-mix" class="tabs">
@@ -350,7 +355,11 @@ class MixPage implements InterfaceContainerElement {
         document.querySelector('.mix-card__buttons-row')?.addEventListener('click', this.setGram);
         document.querySelector('#composition')?.addEventListener('input', this.changeRange);
         document.querySelector('#tab-mix-btn-1')?.addEventListener('click', this.updateSliderValuePosition);
-
+        headerChange(this.mix.name, `secondary-mix`);
+        document.querySelector('.mix-card__back')?.addEventListener('click', () => {
+          window.history.back();
+          getMainHeader();
+        });
         const userId = this.profileUser.getUserId();
         if (typeof userId === 'string' && userId.length > 12) {
           this.apiMix.getFavorite(userId).then((data) => {

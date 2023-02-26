@@ -1,11 +1,12 @@
 .header {
+  margin-bottom: 20px;
   &__container {
     width: 100%;
     min-height: 80px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    .header__logo{
+    .header__logo {
       flex-grow: 1;
       display: flex;
       justify-content: center;
@@ -13,12 +14,12 @@
     }
     nav {
       flex-grow: 3;
-        ul {
-          display: flex;
-          justify-content: space-evenly;
-          align-items: center;
-          list-style: none;
-  
+      ul {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        list-style: none;
+
         a {
           font-size: 20px;
           text-decoration: none;
@@ -39,7 +40,21 @@
       }
     }
   }
-
+  & .secondary,
+  & .secondary-mix {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+    background: #0d0a24;
+    box-shadow: 0 0px 2px rgb(228 220 220 / 76%);
+    padding: 10px 25px;
+    min-height: 65px;
+    font-size: 1.2rem;
+  }
+  .secondary__title {
+    margin-top: 0;
+  }
 }
 
 .header__mixer {

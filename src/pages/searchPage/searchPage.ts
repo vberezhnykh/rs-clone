@@ -65,6 +65,15 @@ class SearchPage implements InterfaceContainerElement {
     container.appendChild(this.createSearchPanel());
     container.appendChild(this.createAsidePanel());
     createPopup(main);
+    const button = document.createElement('button');
+    button.id = 'mixer-now';
+    button.className = 'main__mixer';
+    button.onclick = () => {
+      location.hash = '/mixer/mixer-now';
+    };
+    // const count = createHTMLElement('main__mixer-number');
+    // button.append(count);
+    main.appendChild(button);
     return main;
   }
 
