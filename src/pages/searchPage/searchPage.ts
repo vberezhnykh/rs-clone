@@ -161,7 +161,7 @@ class SearchPage implements InterfaceContainerElement {
     tab.id = `tab-btn-${i}`;
     tab.value = Tabs[i];
     if (i === 1) tab.checked = true;
-    if (i === TABS_NUM) tab.disabled = true;
+    // if (i === TABS_NUM) tab.disabled = true;
     tab.onclick = () => this.handleClickOnTab(tab.id as TabBtnId);
     return tab;
   }
