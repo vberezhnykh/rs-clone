@@ -66,7 +66,7 @@ class MainPage implements InterfaceContainerElement {
     flavorPreferencesCard.appendChild(
       createHTMLElement('flavor-preferences-card__title', 'h4', 'Изменить вкусовые предпочтения')
     );
-    const changePrefIcon = <HTMLImageElement>createHTMLElement('lavor-preferences-card__image', 'img');
+    const changePrefIcon = <HTMLImageElement>createHTMLElement('flavor-preferences-card__image', 'img');
     changePrefIcon.src = changePrefIconSrc;
     flavorPreferencesCard.appendChild(changePrefIcon);
     flavorPreferencesCard.onclick = () => (window.location.hash += 'change-pref/flavors');
