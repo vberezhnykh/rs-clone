@@ -21,7 +21,10 @@ export class BrandPage implements InterfaceContainerElement {
   api: Api;
   preloader: Preloader;
   constructor() {
-    this.brand = decodeURI(window.location.hash.split('/')[3]);
+    this.brand =
+      decodeURI(window.location.hash.split('/')[1]) === 'create-new'
+        ? decodeURI(window.location.hash.split('/')[4])
+        : decodeURI(window.location.hash.split('/')[3]);
     this.api = new Api();
     this.preloader = new Preloader();
     const flavorsInLS = localStorage.getItem('flavors');
@@ -70,7 +73,12 @@ export class BrandPage implements InterfaceContainerElement {
     if (flavorsInMixerNum !== 0) {
       mixerBtn.append(createHTMLElement('catalog__mixer-number', 'div', flavorsInMixerNum.toString()));
     }
-    mixerBtn.onclick = () => (location.hash = '/mixer/mixer-now');
+    mixerBtn.onclick = () => {
+      location.hash =
+        decodeURI(window.location.hash.split('/')[1]) === 'create-new'
+          ? '/create-new/mixer/mixer-now'
+          : '/mixer/mixer-now';
+    };
     return mixerBtn;
   }
 

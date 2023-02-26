@@ -10,11 +10,10 @@ import Api from '../../components/api/api';
 import { MixerNowResult } from '../../components/mixerResult/mixer-result';
 import Preloader from '../../components/preloader/preloader';
 
-const MIXER_PAGE_URL = `/mixer`;
+// const MIXER_PAGE_URL = `/mixer`;
 const PAGE_TITLE = 'Миксер';
 const EMPTY_MESSAGE = 'Сейчас в миксере пусто. Чтобы найти миксы, добавьте в миксер вкусы из каталога';
 const NOT_EMPTY_MESSAGE = 'Сейчас в миксере:';
-const CONTINUE_BTN_TEXT = 'Найти миксы';
 
 export class MixerNowPage implements InterfaceContainerElement {
   api: Api;
@@ -42,7 +41,7 @@ export class MixerNowPage implements InterfaceContainerElement {
   private createHeaderBackBtn() {
     const backBtn = createHTMLElement('mixer-now__back-button', 'button');
     backBtn.style.backgroundImage = `url(${backArrowImgSrc})`;
-    backBtn.onclick = () => (window.location.hash = MIXER_PAGE_URL);
+    backBtn.onclick = () => history.back();
     return backBtn;
   }
 
@@ -112,25 +111,33 @@ export class MixerNowPage implements InterfaceContainerElement {
 
   private rerenderMixerNowContainer() {
     const mixerNow = document.querySelector('.mixer-now__container');
+    const buttonContinue = document.querySelector('.mixer-now__continue-btn');
+    if (!buttonContinue) return;
     if (!mixerNow) return;
     mixerNow.replaceWith(this.createMixerNowContainer());
+    buttonContinue.replaceWith(this.createContinueButton());
   }
 
   private createContinueButton() {
+    const CONTINUE_BTN_TEXT =
+      decodeURI(window.location.hash.split('/')[1]) === 'create-new' ? 'Продолжить' : 'Найти миксы';
     const continueButton = <HTMLButtonElement>createHTMLElement('mixer-now__continue-btn', 'button', CONTINUE_BTN_TEXT);
     const flavorsInMixer = getFlavorsInMixer();
     if (flavorsInMixer.length === 0) continueButton.disabled = true;
     else continueButton.disabled = false;
     continueButton.onclick = () => this.handleClickOnContinueBtn();
-
     return continueButton;
   }
 
   private async handleClickOnContinueBtn() {
-    this.preloader.draw();
-    const matchingMixes = await this.getMatchingMixes();
-    this.preloader.removePreloader();
-    document.body.appendChild(new MixerNowResult(matchingMixes).create());
+    if (decodeURI(window.location.hash.split('/')[1]) !== 'create-new') {
+      this.preloader.draw();
+      const matchingMixes = await this.getMatchingMixes();
+      this.preloader.removePreloader();
+      document.body.appendChild(new MixerNowResult(matchingMixes).create());
+    } else {
+      window.location.hash = '/create-new/new';
+    }
   }
 
   private async getMatchingMixes() {

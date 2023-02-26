@@ -29,14 +29,18 @@ import PopularMixes from '../../pages/popularMixes/popularMixes';
 import { FlavorSuggest } from '../../pages/flavorPage_suggest/flavorSuggest';
 import { getAllData, isDatabaseOutdated, isDataInLocalStorage } from '../../utils/getAllData';
 import Preloader from '../preloader/preloader';
+import CreateNewMix from '../../pages/create_new_mix/create_new_mix';
 
 enum LocationPath {
   MainPage = `/`,
   SearchPage = `/search`,
   MixerPage = `/mixer`,
   CatalogPage = `/mixer/brands`,
+  CatalogPageCreateNewMix = `/create-new/mixer/brands`,
+  CreateNewMix = `/create-new/new`,
   FlavorsSuggestPage = `/flavor-suggest`,
   MixerNowPage = `/mixer/mixer-now`,
+  MixerNowPageCreateNewMix = `/create-new/mixer/mixer-now`,
   BrandSuggestPage = `/brand-suggest`,
   PreferencesFlavorsPage = `/mixer/preferences/flavors`,
   PreferencesBrandsPage = `/mixer/preferences/brands`,
@@ -105,11 +109,11 @@ class App {
       changePage = new SearchPage();
     } else if (location === LocationPath.MixerPage) {
       changePage = new MixerPage();
-    } else if (location === LocationPath.CatalogPage) {
+    } else if (location === LocationPath.CatalogPage || location === LocationPath.CatalogPageCreateNewMix) {
       changePage = new Catalog();
     } else if (location === LocationPath.FlavorsSuggestPage) {
       changePage = new FlavorSuggest();
-    } else if (location === LocationPath.MixerNowPage) {
+    } else if (location === LocationPath.MixerNowPage || location === LocationPath.MixerNowPageCreateNewMix) {
       changePage = new MixerNowPage();
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
@@ -133,6 +137,8 @@ class App {
       } else {
         changePage = new AccountPage();
       }
+    } else if (location === LocationPath.CreateNewMix && (await this.checkAuth.checkUserAuth()) === true) {
+      changePage = new CreateNewMix();
     } else if (location === LocationPath.ListComplitationPage) {
       changePage = new ListComplitationPage();
     } else if (location.includes(LocationPath.ComplitationPage)) {

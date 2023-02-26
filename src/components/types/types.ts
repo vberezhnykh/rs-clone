@@ -31,6 +31,10 @@ export interface Mix {
   compositionByPercentage: Composition;
   image: string;
   id: number;
+  idUser?: string;
+  userName?: string;
+  instagramAccount?: string;
+  avatar?: string;
 }
 
 export type Mixes = Mix[];

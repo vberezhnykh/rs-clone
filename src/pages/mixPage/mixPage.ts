@@ -15,6 +15,7 @@ import ApiMix from '../../components/api_mix/api_mix';
 import CheckAuth from '../../components/checkAuth/checkAuth';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 import rating from '../../components/rating/rating';
+import { getImgSrc } from '../../utils/getImgUrl';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -35,7 +36,7 @@ class MixPage implements InterfaceContainerElement {
   private mixId: number;
   private vote: number;
   private getRateResult: mixRate;
-  private chart: Chart;
+  private chart: Chart<'doughnut', number[], string>;
   constructor() {
     this.mixId = Number(window.location.hash.split('mix/')[window.location.hash.split('mix/').length - 1]);
     this.api = new Api();
@@ -53,11 +54,13 @@ class MixPage implements InterfaceContainerElement {
     this.getRateResult = await this.apiMix.getRate(this.mixId);
     let allMixes: Mixes;
     const mixesInLS = localStorage.getItem('mixes');
-    if (mixesInLS) {
-      allMixes = JSON.parse(mixesInLS);
-      const matchedMix = allMixes.find((mix) => mix.id === this.mixId);
-      if (matchedMix) this.mix = matchedMix;
-    } else this.mix = await this.api.getMix(this.mixId);
+    // if (mixesInLS) {
+    //   allMixes = JSON.parse(mixesInLS);
+    //   const matchedMix = allMixes.find((mix) => mix.id === this.mixId);
+    //   if (matchedMix) this.mix = matchedMix;
+    // } else {
+      this.mix = await this.api.getMix(this.mixId);
+    // }
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
     this.flavorsOfMix = await Promise.allSettled(this.flavorsIds.map((id) => this.api.getFlavor(id))).then(
@@ -286,7 +289,7 @@ class MixPage implements InterfaceContainerElement {
       <div class="mix-card">
         
         <div class="mix-card__img">
-          <img src="${this.api.getImage(this.mix.image)}" alt="name" width="220" height="220">
+          <img src="${getImgSrc(this.mix.image, this.api.getImage(this.mix.image))}" alt="name" width="220" height="220">
         </div>
         <div class="mix-card__container">
         <div class="mix-card__title-container">
