@@ -82,7 +82,7 @@
   }
 
   &__remove-btn {
-    background-color: red;
+    background-color: var(--red);
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
@@ -96,7 +96,7 @@
 
   &__continue-btn {
     padding: 0.8rem;
-    background-color: yellowgreen;
+    background-color: var(--green);
     border-radius: 0.6rem;
 
     &:hover {

@@ -8,7 +8,7 @@ import { Brand } from '../../components/types/types';
 
 const PAGE_TITLE = 'Добавить бренд';
 const NAME_LABEL_TEXT = 'Название бренда';
-const LOGO_LABEL_TEXT = 'Логотипа бренда';
+const LOGO_LABEL_TEXT = 'Логотип бренда';
 const BUTTON_TEXT = 'Добавить в каталог';
 const POPUP_TITLE = 'Спасибо за заявку!';
 const POPUP_TEXT = 'Заявка на добавление бренда отправлена. Бренд скоро появится в каталоге.';

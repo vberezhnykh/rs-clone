@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  background-color: hsl(237, 79%, 12%);
+  background-color: var(--color-bg);
   width: 100%;
   height: 100%;
   z-index: 2;
@@ -18,7 +18,6 @@
     gap: 1rem;
     margin-bottom: 1rem;
     padding: 0.5rem;
-    background-color: #4cc9f0ff;
   }
 
   &__back-button {
@@ -40,7 +39,10 @@
   &__mixer-image {
     width: 3rem;
     height: 3rem;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.8901960784);
+    // background-color: var(--green);
+    background-size: contain;
+    border-radius: 1rem;
     position: relative;
 
     &:hover {
@@ -51,11 +53,10 @@
 
   &__mixer-number {
     border-radius: 50%;
-    border: 1px solid green;
-    background-color: greenyellow;
+    background-color: var(--green);
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: -0.5rem;
+    left: -0.5rem;
     width: 1.5rem;
     height: 1.5rem;
     font-size: 1.2rem;
@@ -72,8 +73,7 @@
     padding: 0.5rem;
     width: calc(100% - 2rem);
     border-radius: 0.8rem;
-    background-color: greenyellow;
-    // margin-bottom: 1rem;
+    background-color: var(--green);
     margin: 1rem;
 
     &:hover {

@@ -36,7 +36,7 @@ const NOT_FOUND_ERROR = 'К сожалению, по данному запрос
 const POPULAR_QUERIES_PLACEHOLDER = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
 const POPULAR_QUERIES_TITLE = 'Популярные запросы';
 const SEARCH_INPUT_PLACEHOLDER = 'Бренд, микс, вкус';
-const TABS_NUM = 4;
+const TABS_NUM = 3;
 const SHORTENED_WORD_LENGTH = 4;
 
 class SearchPage implements InterfaceContainerElement {

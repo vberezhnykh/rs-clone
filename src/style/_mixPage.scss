@@ -1,7 +1,6 @@
 .mix-card {
   display: flex;
   justify-content: center;
-  // align-items: center;
   gap: 30px;
   margin: 0 15vw;
   &__back {
@@ -489,7 +488,7 @@
 }
 
 .popup-flavor__added-button {
-  background-color: red !important;
+  background-color: var(--red) !important;
 }
 
 @media (max-width: 960px) {
