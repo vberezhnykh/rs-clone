@@ -13,6 +13,8 @@ import turkIcon from '../../assets/images/turk.png';
 import killerIcon from '../../assets/images/killer.png';
 import fanelIcon from '../../assets/images/fanel.png';
 import siliconIcon from '../../assets/images/silicon.png';
+import addImgSrc from '../../assets/images/add.svg';
+import ApiUsers from '../../components/api_users/apiUsers';
 
 const cupList = [
   {
@@ -47,13 +49,17 @@ class CreateNewMix implements InterfaceContainerElement {
   mixes?: Mixes;
   api: Api;
   preloader: Preloader;
+  newMix: Mix;
   private apiMix;
   private userId;
+  private apiUsers;
   constructor() {
     this.api = new Api();
     this.preloader = new Preloader();
     this.apiMix = new ApiMix();
     this.userId = new ProfileUser().getUserId();
+    this.apiUsers = new ApiUsers();
+    this.handlerButtonNext = this.handlerButtonNext.bind(this);
   }
   draw() {
     const main = createHTMLElement('main', 'main');
@@ -73,7 +79,7 @@ class CreateNewMix implements InterfaceContainerElement {
 
   private async createNewMixPopup() {
     const newMixContainer = createHTMLElement('user-mixes-container') as HTMLElement;
-    newMixContainer.appendChild(this.createUserMixesPopupHeader());
+    newMixContainer.appendChild(this.createUserMixesPopupHeader(1));
     if (getFlavorsInMixer().length < 2) {
       const newMixError = createHTMLElement('new-mix__error', 'div', 'Для начала добавьте хотя бы 2 вкуса!') as HTMLElement;
       newMixContainer.append(newMixError);
@@ -88,7 +94,7 @@ class CreateNewMix implements InterfaceContainerElement {
     //   }
     //   this.preloader.removePreloader();
     // } 
-      newMixContainer.append(this.floversList(), this.createCupList(), changedCup, this.createButtonNext());
+      newMixContainer.append(this.floversList(), this.createCupList(), changedCup, this.createButtonNext('Далее'));
       return newMixContainer;
     }
   }
@@ -146,20 +152,61 @@ class CreateNewMix implements InterfaceContainerElement {
     return containerList;
   }
 
-  private createButtonNext() {
-    const button = createHTMLElement('new-mix__button-next', 'button', 'Далее') as HTMLElement;
+  private createButtonNext(textButton: string) {
+    const button = createHTMLElement('new-mix__button-next', 'button', `${textButton}`) as HTMLElement;
     button.addEventListener('click', this.handlerButtonNext);
     return button;
   }
 
-  private async handlerButtonNext(e: Event) {
+  private async handlerButtonFinish(e?: Event) {
+    const fileInputEl = document.getElementById('file-input') as HTMLInputElement;
+    const file = (fileInputEl.files as FileList)[0];
+    if (e) {
+      if (file.size > 1024 * 1024 * 6) {
+        alert('Файл превышает лимит (6 MB)');
+        e.preventDefault();
+        return;
+      }
+      const imageUrl = URL.createObjectURL(file);
+      const addPhoto = document.querySelector('.new-mix__add-photo') as HTMLElement;
+      addPhoto.innerHTML = `<img src="${imageUrl}" style="width: 180px; height: 180px; margin-top: -45px">`;
+    }
+    const mixName = document.querySelector('.new-mix__add-name') as HTMLInputElement;
+    const mixDescription = document.querySelector('.new-mix__add-discription') as HTMLInputElement;
+    if (mixName.value.length < 4) {
+      mixName.style.borderBottomColor = 'red';
+      const warning = document.querySelector('.new-mix__warning-info') as HTMLElement;
+      warning.innerHTML = 'Название микса должно быть больше 3-х символов';
+      return;
+    }
+    this.newMix.name = mixName.value;
+    this.newMix.description = mixDescription.value;
+    if (file) {
+      this.apiUsers.uploadImage(file).then((data) => {
+        this.newMix.image = data.filename;
+        this.apiMix.setMyMix(this.newMix);
+      });
+    } else {
+      this.apiMix.setMyMix(this.newMix);
+    }
+    const infoPage = document.querySelector('.new-mix__info') as HTMLElement;
+    setTimeout(() => {
+      infoPage.remove();
+      window.location.hash = `/account`;
+    }, 500);
+  }
+
+  private handlerButtonNext(e: Event): void {
     const target = e.target as HTMLElement;
+    if (target.textContent !== 'Далее') {
+      this.handlerButtonFinish();
+      return;
+    }
     const inputsPercentage = document.querySelectorAll('.new-mix__flover__input') as NodeListOf<HTMLInputElement>;
     const container = document.querySelector('.user-mixes-container') as HTMLElement;
     let sumInput = 0;
     const warningMessage = createHTMLElement('new-mix__warning', 'div');
     let error = false;
-    // console.log(33, this.userId)
     inputsPercentage.forEach((input) => {
       sumInput += parseFloat(input.value);
       if (parseFloat(input.value) === 0 || input.value === '') {
@@ -203,14 +250,66 @@ class CreateNewMix implements InterfaceContainerElement {
       } else {
         newMix.image = `my-mix-${Math.floor(Math.random() * 8) + 1}.jpg`;
       }
-      // console.log(11, this.profileUser.getUserId())
-      // const userId = this.profileUser.getUserId();
-      // console.log(userId)
-      // console.log(await this.profileUser.getProfile())
-      // if (userId) newMix.idUser = userId;
-      // console.log(newMix)
-
+      if (this.userId) newMix.idUser = this.userId;
+      this.newMix = newMix;
+      this.drawInfo();
     }
+  }
+
+  private drawInfo() {
+    const container = createHTMLElement(['main__container', 'container', 'new-mix__info'], 'div') as HTMLElement;
+    const addPhoto = createHTMLElement('new-mix__add-photo', 'div') as HTMLElement;
+    addPhoto.innerHTML = `<img src="${addImgSrc}" class="new-mix__add-img"> <br><span>Картинка микса</span>`;
+    addPhoto.addEventListener('click', () => {
+      const fileInputEl = document.getElementById('file-input') as HTMLInputElement;
+      fileInputEl.click();
+      fileInputEl.addEventListener('change', this.handlerButtonFinish);
+    });
+    const containerName = createHTMLElement('new-mix__name-container', 'div') as HTMLElement;
+    const nameSignature = createHTMLElement('new-mix__name-signature', 'div') as HTMLElement;
+    nameSignature.innerHTML = `Название микса <span style="color: red;">*</span>`
+    const nameCount = createHTMLElement('new-mix__name-count', 'div', '30') as HTMLElement;
+    const inputName = document.createElement('input') as HTMLInputElement;
+    inputName.setAttribute('type', 'text');
+    inputName.setAttribute('maxlength', '30');
+    inputName.classList.add('new-mix__add-name');
+    inputName.addEventListener('input', () => {
+      nameCount.textContent = `${30 - inputName.value.length}`;
+      inputName.style.borderBottomColor = '#898989';
+      const warning = document.querySelector('.new-mix__warning-info') as HTMLElement;
+      warning.innerHTML = '';
+    });
+    containerName.append(inputName, nameCount);
+
+    const descriptionSignature = createHTMLElement('new-mix__name-signature', 'div', 'Описание микса') as HTMLElement;
+    const containerDescription = createHTMLElement('new-mix__name-container', 'div') as HTMLElement;
+    const descriptionCount = createHTMLElement('new-mix__name-count', 'div', '250') as HTMLElement;
+    const inputDescription = document.createElement('input') as HTMLInputElement;
+    inputDescription.setAttribute('type', 'text');
+    inputDescription.setAttribute('maxlength', '250');
+    inputDescription.classList.add('new-mix__add-discription');
+    inputDescription.addEventListener('input', () => {
+      descriptionCount.textContent = `${250 - inputDescription.value.length}`;
+    });
+    containerDescription.append(inputDescription, descriptionCount);
+    const warningMessage = createHTMLElement('new-mix__warning-info', 'div');
+    const inputFile = document.createElement('input') as HTMLInputElement;
+    inputFile.setAttribute('type', 'file');
+    inputFile.setAttribute('accept', '.jpg,.jpeg,.png');
+    inputFile.id = 'file-input';
+    inputFile.style.display = 'none';
+    container.append(
+      this.createUserMixesPopupHeader(2),
+      this.createButtonNext('Сохранить микс'),
+      addPhoto,
+      nameSignature,
+      containerName,
+      descriptionSignature,
+      containerDescription,
+      warningMessage,
+      inputFile
+    );
+    window.document.body.append(container);
   }
 
   private handlerList(e: Event) {
@@ -258,16 +357,23 @@ class CreateNewMix implements InterfaceContainerElement {
     }
   }
 
-  private createUserMixesPopupHeader() {
+  private createUserMixesPopupHeader(type: number) {
     const header = createHTMLElement('user-mixes__header');
     const navBar = createHTMLElement('user-mixes__nav new-mix__nav', 'nav');
     const backArrowImage = new Image();
     backArrowImage.className = 'user-mixes__back-arrow';
     backArrowImage.src = backArrowImgSrc;
-    backArrowImage.onclick = () => history.back();
+    if (type === 1) {
+      backArrowImage.onclick = () => history.back();
+    } else {
+      backArrowImage.onclick = () => {
+        const infoPage = document.querySelector('.new-mix__info') as HTMLElement;
+        infoPage.remove();
+      };
+    }
     navBar.append(backArrowImage);
     const heading = createHTMLElement('user-mixes__heading, new-mix__heading', 'h3');
-    heading.textContent = 'Настройки микса';
+    heading.textContent = type === 1 ? 'Настройки микса' : 'Описание микса';
     navBar.append(heading);
     header.append(navBar);
     return header;
