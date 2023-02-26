@@ -9,7 +9,7 @@ export async function isBrandPage() {
   const BRANDS = BrandsInLS
     ? JSON.parse(BrandsInLS).map((brand: Brand) => brand.name.toLowerCase())
     : (await new Api().getAllBrands()).map((brand) => brand.name.toLowerCase());
-  const locationArr = window.location.hash.split('/');
+  const locationArr = window.location.hash.replace('create-new/', '').split('/');
   loader.removePreloader();
   if (locationArr.length !== 4 || locationArr[0] !== '#' || locationArr[1] !== 'mixer' || locationArr[2] !== 'brands')
     return false;

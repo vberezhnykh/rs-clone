@@ -1,6 +1,6 @@
 import ProfileUser from '../profile_user/profile_user';
 import { server } from '../server/server';
-import { mixRate } from '../types/types';
+import { mixRate, Mix } from '../types/types';
 
 class ApiMix {
   private static instance: ApiMix;
@@ -10,6 +10,7 @@ class ApiMix {
   private favoriteFlavor;
   private brand;
   private profileUser;
+  private myMix;
 
   constructor() {
     if (ApiMix.instance) {
@@ -21,6 +22,7 @@ class ApiMix {
     this.favorite = `${this.base}/auth/favorite/`;
     this.favoriteFlavor = `${this.base}/auth/favoriteflavor/`;
     this.brand = `${this.base}/auth/brand/`;
+    this.myMix = `${this.base}/auth/my-mix/`;
     this.profileUser = new ProfileUser();
   }
 
@@ -125,6 +127,37 @@ class ApiMix {
       this.profileUser?.updateProfile();
       return await res.json();
     }
+  }
+
+  public async getAllUsersMix() {
+    const res = await fetch(`${this.base}/auth/mix-users-all`, {
+      method: 'GET',
+    });
+    return await res.json();
+  }
+
+  public async getMyMix(userId: string) {
+    const localStorageAuth: string | null = window.localStorage.getItem('blenderProfile');
+    if (localStorageAuth) {
+      const myMix = JSON.parse(localStorageAuth).myMix;
+      return myMix;
+    }
+    const res = await fetch(`${this.myMix}:${userId}`, {
+      method: 'GET',
+    });
+    return await res.json();
+  }
+
+  public async setMyMix(newMix: Mix) {
+    const res = await fetch(`${this.myMix}`, {
+      method: 'POST',
+      body: JSON.stringify(newMix),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    this.profileUser?.updateProfile();
+    return await res.json();
   }
 }
 

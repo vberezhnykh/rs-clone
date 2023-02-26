@@ -6,6 +6,7 @@ import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import ProfileUser from '../profile_user/profile_user';
 import getRatingStar from '../getRatingStar/getRatingStar';
+import { getImgSrc } from '../../utils/getImgUrl';
 
 const ERROR_MESSAGE = 'Ничего не найдено. Попробуйте снова...';
 
@@ -44,7 +45,7 @@ export class MixesList {
     if (!this.mixes) return;
     const listItem = createHTMLElement('mixes-list__card', 'li');
     const mixImg = <HTMLImageElement>createHTMLElement('mixes-list__card-img', 'img');
-    mixImg.src = this.api.getImage(this.mixes[i].image);
+    mixImg.src = getImgSrc(this.mixes[i].image, this.api.getImage(this.mixes[i].image));
     listItem.appendChild(mixImg);
     const container = createHTMLElement('mixes-list__card-container');
     const mixTitle = createHTMLElement('mixes-list__title', 'span');
