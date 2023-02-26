@@ -18,6 +18,7 @@
 
   &__github {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 10px;
     flex: 2 1 100%;
@@ -50,40 +51,4 @@
   //   text-align: center;
   //   font-weight: bold;
   // }
-}
-
-@media (max-width: 960px) {
-  .footer__content {
-    padding-bottom: 70px;
-  }
-  .footer__nav {
-    display: flex;
-  }
-  .header__menu {
-    display: none;
-  }
-  .mix-card,
-  .tabs#tabs-mix {
-    margin-right: 10vw;
-    margin-left: 10vw;
-  }
-}
-@media (max-width: 768px) {
-  .header {
-    display: none;
-  }
-  .mix-card {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    & &__img {
-      img {
-        width: 100%;
-        border-radius: 0;
-      }
-    }
-  }
-  .mix-card__container {
-    padding: 0 10vw;
-  }
 }

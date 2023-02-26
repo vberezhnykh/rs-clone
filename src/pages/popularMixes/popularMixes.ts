@@ -9,6 +9,7 @@ import favoriteIconSrc from '../../assets/images/favorite.svg';
 import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import getMainHeader from '../../components/getMainHeader/getMainHeader';
 import getRatingStar from '../../components/getRatingStar/getRatingStar';
+import headerChange from '../../components/headerChange/headerChange';
 
 class PopularMixes implements InterfaceContainerElement {
   private api: Api;
@@ -30,29 +31,29 @@ class PopularMixes implements InterfaceContainerElement {
     this.preloader.removePreloader();
   }
 
-  changeHeader(): void {
-    const header = document.querySelector('.header');
-    const headercontainer = document.querySelector('.header__container');
-    if (header && headercontainer) {
-      header.className = `header header-complitation`;
-      headercontainer.classList.add('container-complitation');
-      headercontainer.innerHTML = '';
-      const complitationbuttons = createHTMLElement('complitation__buttons');
-      const imgarrow = new Image();
-      imgarrow.src = backArrow;
-      imgarrow.alt = 'back-arrow';
-      imgarrow.className = 'arrow-back';
-      imgarrow.onclick = () => {
-        window.history.back();
-        getMainHeader();
-      };
-      complitationbuttons.append(imgarrow);
-      headercontainer.append(complitationbuttons);
-      const complitationtitle = createHTMLElement('complitation__title');
-      complitationtitle.innerHTML = 'Популярные миксы';
-      headercontainer.append(complitationtitle);
-    }
-  }
+  // changeHeader(): void {
+  //   const header = document.querySelector('.header');
+  //   const headercontainer = document.querySelector('.header__container');
+  //   if (header && headercontainer) {
+  //     header.className = `header header-complitation`;
+  //     headercontainer.classList.add('container-complitation');
+  //     headercontainer.innerHTML = '';
+  //     const complitationbuttons = createHTMLElement('complitation__buttons');
+  //     const imgarrow = new Image();
+  //     imgarrow.src = backArrow;
+  //     imgarrow.alt = 'back-arrow';
+  //     imgarrow.className = 'arrow-back';
+  //     imgarrow.onclick = () => {
+  //       window.history.back();
+  //       getMainHeader();
+  //     };
+  //     complitationbuttons.append(imgarrow);
+  //     headercontainer.append(complitationbuttons);
+  //     const complitationtitle = createHTMLElement('complitation__title');
+  //     complitationtitle.innerHTML = 'Популярные миксы';
+  //     headercontainer.append(complitationtitle);
+  //   }
+  // }
 
   draw(): HTMLElement {
     if (this.popularMixes === undefined) {
@@ -86,7 +87,7 @@ class PopularMixes implements InterfaceContainerElement {
 
       window.onpopstate = getMainHeader;
       setTimeout(() => {
-        this.changeHeader();
+        headerChange(`Популярные миксы`);
       }, 0);
       return main;
     }

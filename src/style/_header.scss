@@ -40,6 +40,21 @@
       }
     }
   }
+  & .secondary,
+  & .secondary-mix {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+    background: #0d0a24;
+    box-shadow: 0 0px 2px rgb(228 220 220 / 76%);
+    padding: 10px 25px;
+    min-height: 65px;
+    font-size: 1.2rem;
+  }
+  .secondary__title {
+    margin-top: 0;
+  }
 }
 
 .header__mixer {
