@@ -19,33 +19,10 @@ function changeFlavorNum(className: string) {
 
 export function changeFlavorNumInHeader() {
   changeFlavorNum('header');
-  /* const mixerHeader = document.querySelector('.header__mixer');
-  if (!mixerHeader) return;
-  const flavorsNumInDom = document.querySelector('.header__mixer-number');
-  const flavorsInMixerNum = getFlavorsInMixer().length;
-  if (flavorsInMixerNum !== 0) {
-    if (!flavorsNumInDom) mixerHeader.appendChild(createHTMLElement('header__mixer-number', 'div'));
-    const flavorsNum = document.querySelector('.header__mixer-number');
-    if (!flavorsNum) return;
-    flavorsNum.textContent = flavorsInMixerNum.toString();
-  } else {
-    flavorsNumInDom?.remove();
-  } */
 }
 
 export function changeFlavorNumInFooter() {
   changeFlavorNum('main');
-  /* const mixerFooter = document.querySelector('.footer__mixer-image');
-  if (!mixerFooter) return;
-  const flavorsNumInDom = document.querySelector('.footer__mixer-number');
-  if (getFlavorsInMixer().length !== 0) {
-    if (!flavorsNumInDom) mixerFooter.appendChild(createHTMLElement('footer__mixer-number', 'div'));
-    const flavorsNum = document.querySelector('.footer__mixer-number');
-    if (!flavorsNum) return;
-    flavorsNum.textContent = getFlavorsInMixer().length.toString();
-  } else {
-    flavorsNumInDom?.remove();
-  } */
 }
 
 export function changeFlavorNumInBrandPageHeader() {

@@ -1,25 +1,5 @@
-/* $content-width: 1281px;
-@mixin margin-on-small-monitors {
-  @media (width < calc($content-width + 1rem)) {
-    margin: 1rem;
-  }
-} */
-
-$rose: #f72585ff;
-$fandango: #b5179eff;
-$grape: #7209b7ff;
-$chrysler-blue: #560badff;
-$dark-blue: #480ca8ff;
-$zaffre: #3a0ca3ff;
-$palatinate-blue: #3f37c9ff;
-$neon-blue: #4361eeff;
-$chefchaouen-blue: #4895efff;
-$vivid-sky-blue: #4cc9f0ff;
-
 .search__container {
-  // max-width: $content-width;
   padding: 2rem;
-  // background-color: hsl(237, 79%, 12%);
   flex-grow: 1;
 }
 
@@ -40,8 +20,6 @@ $vivid-sky-blue: #4cc9f0ff;
     border-radius: 25px;
     padding: 10px 25px;
   }
-
-  // @include margin-on-small-monitors();
 
   @media (width < 426px) {
     margin: 0;
@@ -80,8 +58,6 @@ $vivid-sky-blue: #4cc9f0ff;
     display: none;
   }
 
-  // @include margin-on-small-monitors();
-
   @media (width < 426px) {
     margin: 1rem;
   }
@@ -103,7 +79,7 @@ $vivid-sky-blue: #4cc9f0ff;
   background-color: transparent;
   color: #fff;
   border: 1px solid #fff;
-  background-color: $dark-blue;
+  background-color: var(--blue);
 
   &:hover {
     cursor: pointer;
@@ -139,8 +115,6 @@ $vivid-sky-blue: #4cc9f0ff;
   text-align: center;
   margin: 0 auto;
 
-  // @include margin-on-small-monitors();
-
   @media (width < 426px) {
     margin: 0 1rem;
   }
@@ -167,6 +141,7 @@ $vivid-sky-blue: #4cc9f0ff;
 .tabs {
   font-size: 0;
   margin: 2rem auto;
+  // display: flex;
 
   // @include margin-on-small-monitors();
 
@@ -194,13 +169,24 @@ $vivid-sky-blue: #4cc9f0ff;
     user-select: none;
     background-color: hsla(0deg, 0%, 100%, 0.06);
     padding: 10px;
-    width: 25%;
+    width: calc(100% / 3);
     font-size: 16px;
     line-height: 1.5;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
     cursor: pointer;
     position: relative;
     top: 1px;
+
+    &:nth-of-type(1) {
+      border-radius: 25px 0 0;
+    }
+
+    &:nth-of-type(3) {
+      border-radius: 0 25px 0 0;
+      @media (width < 426px) {
+        border-radius: 0 0 25px 0;
+      }
+    }
 
     @media (width < 426px) {
       width: 100%;
@@ -210,17 +196,6 @@ $vivid-sky-blue: #4cc9f0ff;
 
       &:nth-of-type(3) {
         border-radius: 0 0 0 25px;
-      }
-    }
-
-    &:nth-of-type(1) {
-      border-radius: 25px 0 0;
-    }
-
-    &:nth-of-type(4) {
-      border-radius: 0 25px 0 0;
-      @media (width < 426px) {
-        border-radius: 0 0 25px 0;
       }
     }
 
@@ -304,20 +279,3 @@ $vivid-sky-blue: #4cc9f0ff;
     font-weight: bold;
   }
 }
-
-/* .collection-list{
-  display: flex;
-  flex-direction: column;
-  gap: 15px 0;
-  .collection-list__item{
-    background-image: url(https\:\/\/hookahapp\.ru\/Images\/MixCompilation\/MaxVozduh\.jpg);
-    border-radius: 10px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    padding: 20px 30px;
-    height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-} */

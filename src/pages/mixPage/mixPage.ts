@@ -20,7 +20,6 @@ import { getRandomMixNumber } from '../../utils/getRandomMixNum';
 import headerChange from '../../components/headerChange/headerChange';
 import getMainHeader from '../../components/getMainHeader/getMainHeader';
 
-
 class MixPage implements InterfaceContainerElement {
   private api: Api;
   private mix: Mix;
@@ -63,7 +62,7 @@ class MixPage implements InterfaceContainerElement {
     //   const matchedMix = allMixes.find((mix) => mix.id === this.mixId);
     //   if (matchedMix) this.mix = matchedMix;
     // } else {
-      this.mix = await this.api.getMix(this.mixId);
+    this.mix = await this.api.getMix(this.mixId);
     // }
     this.flavorsIds = Object.values(this.mix.compositionById);
     this.flavorsPercentages = Object.values(this.mix.compositionByPercentage);
@@ -298,7 +297,10 @@ class MixPage implements InterfaceContainerElement {
       <div class="mix-card">
         
         <div class="mix-card__img">
-          <img src="${getImgSrc(this.mix.image, this.api.getImage(this.mix.image))}" alt="name" width="220" height="220">
+          <img src="${getImgSrc(
+            this.mix.image,
+            this.api.getImage(this.mix.image)
+          )}" alt="name" width="220" height="220">
         </div>
         <div class="mix-card__container">
         <div class="mix-card__title-container">
@@ -362,6 +364,7 @@ class MixPage implements InterfaceContainerElement {
         headerChange(this.mix.name, `secondary-mix`);
         document.querySelector('.mix-card__back')?.addEventListener('click', () => {
           window.history.back();
+          location.hash = '/';
           getMainHeader();
         });
         const userId = this.profileUser.getUserId();

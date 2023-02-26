@@ -1,7 +1,7 @@
 .flavor-suggest {
   position: fixed;
   top: 0;
-  background-color: hsl(237, 79%, 12%);
+  background-color: var(--color-bg);
   width: 100%;
   height: 100vh;
   z-index: 1;
@@ -18,7 +18,7 @@
 .flavor-suggest-header {
   display: flex;
   gap: 1rem;
-  background-color: #4cc9f0ff;
+  // background-color: #4cc9f0ff;
   padding: 0.5rem;
 
   &__back-button {
@@ -63,7 +63,7 @@
 
     &::after {
       content: '*';
-      color: red;
+      color: var(--red);
     }
   }
 
@@ -73,7 +73,7 @@
     padding: 0.5rem;
     outline: none;
     background-color: transparent;
-    border-bottom: 1px solid yellowgreen;
+    border-bottom: 1px solid var(--green);
     color: white;
     font-size: 1.4rem;
 
@@ -141,7 +141,7 @@
 .name {
   &__label::after {
       content: '*';
-      color: red;
+      color: var(--red);
   }
 
   &__input {
@@ -149,7 +149,7 @@
     padding: 0.5rem;
     outline: none;
     background-color: transparent;
-    border-bottom: 1px solid yellowgreen;
+    border-bottom: 1px solid var(--green);
     color: white;
     font-size: 1.4rem;
     
@@ -164,7 +164,7 @@
   padding: 0.5rem;
   outline: none;
   background-color: transparent;
-  border-bottom: 1px solid yellowgreen;
+  border-bottom: 1px solid var(--green);
   color: white;
   font-size: 1.4rem;
   height: 3rem;
@@ -184,7 +184,7 @@
 
     &::after {
       content: '*';
-      color: red;
+      color: var(--red);
     }
   }
 
@@ -204,7 +204,7 @@
 
     &::after {
       content: '*';
-      color: red;
+      color: var(--red);
     }
   }
 
@@ -317,7 +317,7 @@
 }
 
 .tags__counter--exceed {
-  color: red;
+  color: var(--red);
 }
 
 .image-container {
@@ -342,7 +342,7 @@
   padding: 0.6rem;
   border-radius: 0.8rem;
   cursor: pointer;
-  background-color: yellowgreen;
+  background-color: var(--green);
 
   &:hover {
     opacity: 0.8;
