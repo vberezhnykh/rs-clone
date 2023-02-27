@@ -159,6 +159,9 @@ class App {
       }
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
+    } else if (location === ``) {
+      window.location.hash = `#/`;
+      changePage = new MainPage();
     } else {
       changePage = new ErrorPage();
     }
