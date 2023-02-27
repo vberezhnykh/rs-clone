@@ -56,7 +56,6 @@ class PopularMixes implements InterfaceContainerElement {
     </div>`;
         card.onclick = () => {
           window.location.hash = `/mix/${e.id}`;
-          getMainHeader();
         };
         mixeslist?.append(card);
       });

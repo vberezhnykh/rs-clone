@@ -409,6 +409,7 @@ class MixPage implements InterfaceContainerElement {
           location.hash = '/';
           getMainHeader();
         });
+        document.querySelector('.header')?.classList.add('header-mix');
         const userId = this.profileUser.getUserId();
         if (typeof userId === 'string' && userId.length > 12) {
           this.apiMix.getFavorite(userId).then((data) => {
