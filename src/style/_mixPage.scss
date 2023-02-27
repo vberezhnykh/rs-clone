@@ -490,6 +490,12 @@
 .popup-flavor__added-button {
   background-color: var(--red) !important;
 }
+.widen {
+  width: 640px;
+}
+.hidden {
+  visibility: hidden;
+}
 
 @media (max-width: 960px) {
   .footer__content {
@@ -516,6 +522,7 @@
   .tabs#tabs-mix {
     margin-right: 5vw;
     margin-left: 5vw;
+    display: block;
   }
   .mix-card__container {
     padding: 0 5vw;
