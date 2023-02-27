@@ -110,7 +110,6 @@ export class UserMixes implements InterfaceContainerElement {
     document
       .querySelector('.user-mixes-container')
       ?.append(new MixesList(this.mixes, this.rates).create({ sortBy: this.sortOption }));
-    clickedOption.parentElement?.classList.remove('selector--visible');
   }
 
   private handleClickOnSelector(event: MouseEvent, selectorDropDown: HTMLElement, expandArrowImg: HTMLImageElement) {
