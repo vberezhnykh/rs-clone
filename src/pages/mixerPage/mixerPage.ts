@@ -38,7 +38,12 @@ class MixerPage implements InterfaceContainerElement {
     return main;
   }
   private changeheader = (): void => {
-    if (window.innerWidth <= 960 && !document.querySelector('.header__container')?.classList.contains('secondary')) {
+    const hash = window.location.hash;
+    if (
+      window.innerWidth <= 960 &&
+      !document.querySelector('.header__container')?.classList.contains('secondary') &&
+      hash == '#mixer'
+    ) {
       headerChange(`Миксер`);
     } else if (
       window.innerWidth > 960 &&
