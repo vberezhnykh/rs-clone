@@ -86,7 +86,7 @@ export interface mixRate {
 interface Rate {
   id: number;
   rate: number;
-  vote: number;
+  votes: number;
 }
 export type Rates = Rate[];
 

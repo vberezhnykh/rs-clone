@@ -1,5 +1,5 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { Mixes } from '../types/types';
+import { Mixes, Rates } from '../types/types';
 import Api from '../api/api';
 import ApiMix from '../api_mix/api_mix';
 import favoriteIconSrc from '../../assets/images/favorite.svg';
@@ -7,6 +7,7 @@ import favoriteActiveIconSrc from '../../assets/images/favorite_active.svg';
 import ProfileUser from '../profile_user/profile_user';
 import getRatingStar from '../getRatingStar/getRatingStar';
 import { getImgSrc } from '../../utils/getImgUrl';
+import { sortByPopularity, sortByRating } from '../../utils/sortUserMixes';
 
 const ERROR_MESSAGE = 'Ничего не найдено. Попробуйте снова...';
 
@@ -17,15 +18,19 @@ type MixesListOptions = {
 
 export class MixesList {
   private mixes?: Mixes;
+  private rates?: Rates;
   private api: Api;
   private apiMix: ApiMix;
   private profileUser;
-  constructor(mixes?: Mixes) {
+
+  constructor(mixes?: Mixes, rates?: Rates) {
     this.api = new Api();
     this.apiMix = new ApiMix();
     this.profileUser = new ProfileUser();
     if (mixes && mixes.length > 0) this.mixes = mixes;
+    if (rates) this.rates = rates;
   }
+
   public create(options?: MixesListOptions): HTMLElement {
     const list = createHTMLElement('mixes-list', 'ul');
     if (options?.isSearchList) list.classList.add('search-list');
@@ -33,6 +38,13 @@ export class MixesList {
       list.classList.add('mixes-list--error-message');
       list.textContent = ERROR_MESSAGE;
       return list;
+    }
+    if (options?.sortBy === 'высокие рейтинги') {
+      this.mixes = this.mixes.sort((mix1, mix2) => sortByRating(mix1, mix2, this.rates));
+    } else if (options?.sortBy === 'популярные') {
+      this.mixes = this.mixes.sort((mix1, mix2) => sortByPopularity(mix1, mix2, this.rates));
+    } else if (options?.sortBy === 'новинки') {
+      this.mixes = this.mixes.sort((mix1, mix2) => mix2.id - mix1.id);
     }
     for (let i = 0; i < this.mixes.length; i++) {
       const listItem = this.createListItem(i);
