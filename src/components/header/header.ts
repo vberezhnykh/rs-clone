@@ -56,7 +56,7 @@ class Header implements InterfaceContainerElement {
           <ul>
             <li><a>Главная</a></li>
             <li><a>Поиск</a></li>
-            <li class="header__mixer"><a>Миксер</a></li>
+            <li><a>Миксер</a></li>
             <li><a>Профиль</a></li>
           </ul>
         </nav>

@@ -93,7 +93,6 @@ class App {
       location = location.slice(0, -1);
       window.location.hash = location;
     }
-    console.log(location);
 
     if (location === LocationPath.MainPage) {
       changePage = new MainPage();

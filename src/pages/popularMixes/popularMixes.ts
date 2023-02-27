@@ -31,30 +31,6 @@ class PopularMixes implements InterfaceContainerElement {
     this.preloader.removePreloader();
   }
 
-  // changeHeader(): void {
-  //   const header = document.querySelector('.header');
-  //   const headercontainer = document.querySelector('.header__container');
-  //   if (header && headercontainer) {
-  //     header.className = `header header-complitation`;
-  //     headercontainer.classList.add('container-complitation');
-  //     headercontainer.innerHTML = '';
-  //     const complitationbuttons = createHTMLElement('complitation__buttons');
-  //     const imgarrow = new Image();
-  //     imgarrow.src = backArrow;
-  //     imgarrow.alt = 'back-arrow';
-  //     imgarrow.className = 'arrow-back';
-  //     imgarrow.onclick = () => {
-  //       window.history.back();
-  //       getMainHeader();
-  //     };
-  //     complitationbuttons.append(imgarrow);
-  //     headercontainer.append(complitationbuttons);
-  //     const complitationtitle = createHTMLElement('complitation__title');
-  //     complitationtitle.innerHTML = 'Популярные миксы';
-  //     headercontainer.append(complitationtitle);
-  //   }
-  // }
-
   draw(): HTMLElement {
     if (this.popularMixes === undefined) {
       const main = createHTMLElement('main', 'main');
@@ -80,7 +56,6 @@ class PopularMixes implements InterfaceContainerElement {
     </div>`;
         card.onclick = () => {
           window.location.hash = `/mix/${e.id}`;
-          getMainHeader();
         };
         mixeslist?.append(card);
       });

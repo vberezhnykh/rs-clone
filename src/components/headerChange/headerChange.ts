@@ -15,7 +15,11 @@ export default function headerChange(title: string, className = `secondary`): vo
     imgarrow.alt = 'back-arrow';
     imgarrow.className = 'arrow-back';
     imgarrow.onclick = () => {
-      window.history.back();
+      if (window.location.hash == `#/mixer`) {
+        window.location.hash = `#/`;
+      } else {
+        window.history.back();
+      }
       getMainHeader();
     };
     complitationbuttons.append(imgarrow);

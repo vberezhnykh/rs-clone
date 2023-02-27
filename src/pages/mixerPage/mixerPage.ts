@@ -1,7 +1,9 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-const blender = require('../../assets/images/blender.svg');
-
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
+import headerChange from '../../components/headerChange/headerChange';
+import blender from '../../assets/images/blender.svg';
+import getMainHeader from '../../components/getMainHeader/getMainHeader';
 class MixerPage implements InterfaceContainerElement {
   draw(): HTMLElement {
     const main = createHTMLElement('main', 'main');
@@ -21,8 +23,30 @@ class MixerPage implements InterfaceContainerElement {
 
     </div>
     `;
+    const button = document.createElement('button');
+    button.id = 'mixer-now';
+    button.className = 'main__mixer';
+    button.onclick = () => {
+      location.hash = '/mixer/mixer-now';
+    };
+    main.appendChild(button);
+    setTimeout(() => {
+      handleChangeOfFlavorsInMixer();
+      this.changeheader();
+      window.addEventListener('resize', this.changeheader);
+    }, 0);
     return main;
   }
+  private changeheader = (): void => {
+    if (window.innerWidth <= 960 && !document.querySelector('.header__container')?.classList.contains('secondary')) {
+      headerChange(`Миксер`);
+    } else if (
+      window.innerWidth > 960 &&
+      document.querySelector('.header__container')?.classList.contains('secondary')
+    ) {
+      getMainHeader();
+    }
+  };
 }
 
 export default MixerPage;

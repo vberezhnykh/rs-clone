@@ -3,6 +3,7 @@ import { InterfaceContainerElement, Mixes } from '../../components/types/types';
 import info from '../../assets/images/info.svg';
 import { initSlider, onResizeSlider, onSliderChange } from '../../components/slider/slider';
 import Chart from 'chart.js/auto';
+import { ChartItem } from '../../../node_modules/chartjs-plugin-outerlabels';
 import '../../../node_modules/chartjs-plugin-outerlabels';
 import { Mix, PromiseFlavors, Flavor, mixRate } from '../../components/types/types';
 import Api from '../../components/api/api';
@@ -19,6 +20,7 @@ import { getImgSrc } from '../../utils/getImgUrl';
 import { getRandomMixNumber } from '../../utils/getRandomMixNum';
 import headerChange from '../../components/headerChange/headerChange';
 import getMainHeader from '../../components/getMainHeader/getMainHeader';
+import backArrow from '../../assets/images/back-arrow-white.png';
 
 class MixPage implements InterfaceContainerElement {
   private api: Api;
@@ -114,7 +116,24 @@ class MixPage implements InterfaceContainerElement {
       this.mixStrength(strength);
       this.updateflavorsPercentages();
       this.chart.data.datasets[0].data = this.flavorsPercentages;
+    }
+  };
+  private changeSize = (): void => {
+    const myChart = document.querySelector('#myChart');
+    if (window.innerWidth < 640 && myChart?.getAttribute('name') == 'desk') {
+      myChart?.setAttribute('name', 'mob');
+      this.chart.destroy();
+      this.doughnutChart(-50, (n: ChartItem) => `${n.value + '%'}`);
+      const chartplugins = this.chart.options.plugins;
+      if (chartplugins && chartplugins.legend && chartplugins.outerLabels) {
+        chartplugins.legend.display = true;
+      }
+      Chart.defaults.font.size = 14;
       this.chart.update();
+    } else if (window.innerWidth >= 640 && myChart?.getAttribute('name') == 'mob') {
+      myChart?.setAttribute('name', 'desk');
+      this.chart.destroy();
+      this.doughnutChart();
     }
   };
   private updateflavorsPercentages = (): void => {
@@ -178,7 +197,7 @@ class MixPage implements InterfaceContainerElement {
       }
     }
   };
-  private doughnutChart = (): void => {
+  private doughnutChart = (myOffset = 15, callback = (n: any) => `${n.value + '%'} ${n.label}`): void => {
     const ctx = document.getElementById('myChart');
     const colorsArray = ['#06a396', '#fa320a', '#f6bc25', '#202d91', '#f96509', '#987e41', '#914198'];
     const colors: string[] = [];
@@ -189,6 +208,7 @@ class MixPage implements InterfaceContainerElement {
     this.chart = new Chart(<HTMLCanvasElement>ctx, {
       type: 'doughnut',
       data: {
+        // outerLabels: this.flavorsNames,
         labels: this.flavorsNames,
         datasets: [
           {
@@ -200,15 +220,18 @@ class MixPage implements InterfaceContainerElement {
         ],
       },
       options: {
+        cutout: `40%`,
         plugins: {
           outerLabels: {
+            // formatter: (val) => val.label,
             fontNormalSize: 18,
             fontNormalColor: '#FFFFFF',
             fontBoldSize: 18,
             fontBoldColor: '#FFFFFF',
             twoLines: true,
-            offset: 20,
-            formatter: (n) => `${n.value + '%'} ${n.label}`,
+            offset: myOffset,
+            // formatter:
+            formatter: callback,
             // debug: true,
           },
           tooltip: {
@@ -216,6 +239,9 @@ class MixPage implements InterfaceContainerElement {
           },
           legend: {
             display: false,
+            labels: {
+              color: '#FFFFFF',
+            },
           },
         },
         responsive: true,
@@ -223,7 +249,7 @@ class MixPage implements InterfaceContainerElement {
         animation: false,
 
         layout: {
-          padding: 50,
+          padding: 10,
         },
         events: [],
       },
@@ -327,7 +353,7 @@ class MixPage implements InterfaceContainerElement {
           </div>
         </div>
         <div class="mix-card__back">
-          <img src="http://localhost:4000/2e1f267b0bd1a5b14089.png" alt="back-arrow" class="arrow-back"/>
+          <img src="${backArrow}" alt="back-arrow" class="arrow-back"/>
         </div>
       </div>
 
@@ -339,8 +365,8 @@ class MixPage implements InterfaceContainerElement {
         <div id="composition">${components}
         </div>
         <div id="diagram">
-          <div class="compotion-chart">
-            <canvas id="myChart"></canvas>
+          <div class="compotion-chart widen hidden">
+            <canvas id="myChart" name="desk"></canvas>
           </div>
         </div>
       </div>
@@ -349,7 +375,10 @@ class MixPage implements InterfaceContainerElement {
     `;
 
       main.addEventListener('click', this.popupOpenClose);
-      window.addEventListener('resize', onResizeSlider);
+      window.addEventListener('resize', () => {
+        onResizeSlider();
+        this.changeSize();
+      });
       setTimeout(() => {
         this.mixStrength(strength);
         createPopup(main);
@@ -357,16 +386,30 @@ class MixPage implements InterfaceContainerElement {
         this.rating.draw();
         initSlider();
         this.doughnutChart();
+        // this.changeSize();
         document.querySelector('#switch')?.addEventListener('click', this.switcher);
         document.querySelector('.mix-card__buttons-row')?.addEventListener('click', this.setGram);
         document.querySelector('#composition')?.addEventListener('input', this.changeRange);
         document.querySelector('#tab-mix-btn-1')?.addEventListener('click', this.updateSliderValuePosition);
+        document.querySelector('#tab-mix-btn-2')?.addEventListener(
+          'click',
+          () => {
+            const chartcontainer = document.querySelector('.compotion-chart') as HTMLElement;
+            setTimeout(() => {
+              chartcontainer.classList.remove('widen');
+              this.changeSize();
+              chartcontainer.classList.remove('hidden');
+            }, 0);
+          },
+          { once: true }
+        );
         headerChange(this.mix.name, `secondary-mix`);
         document.querySelector('.mix-card__back')?.addEventListener('click', () => {
           window.history.back();
           location.hash = '/';
           getMainHeader();
         });
+        document.querySelector('.header')?.classList.add('header-mix');
         const userId = this.profileUser.getUserId();
         if (typeof userId === 'string' && userId.length > 12) {
           this.apiMix.getFavorite(userId).then((data) => {
