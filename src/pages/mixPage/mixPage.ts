@@ -116,6 +116,7 @@ class MixPage implements InterfaceContainerElement {
       this.mixStrength(strength);
       this.updateflavorsPercentages();
       this.chart.data.datasets[0].data = this.flavorsPercentages;
+      this.chart.update();
     }
   };
   private changeSize = (): void => {

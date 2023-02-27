@@ -1,9 +1,10 @@
 .flex-container {
   display: flex;
   flex-wrap: wrap;
-  width: 50%;
-  margin: 0 auto;
-  margin-top: 100px;
+  margin: 100px 10rem 0;
+  @media (max-width: 960px) {
+    margin: 100px 3rem 0;
+  }
 }
 
 .row {
@@ -11,6 +12,10 @@
   flex-direction: row;
   width: 100%;
   margin-bottom: 15px;
+  @media (max-width: 640px) {
+    flex-direction: column;
+    gap: 15px;
+  }
 }
 
 .column {
@@ -28,6 +33,9 @@
   img {
     height: 100px;
   }
+  @media (max-width: 640px) {
+    text-align: center;
+  }
 }
 
 .img-profile {
@@ -44,7 +52,7 @@
     margin-top: -20px;
     height: 120%;
   }
-  & img[src$=".svg"] {
+  & img[src$='.svg'] {
     margin-top: 0px;
     height: 80px;
   }
@@ -66,7 +74,7 @@
     margin: 5px 0 0 10px;
     color: #da63e2;
     cursor: pointer;
-    }
+  }
   a {
     text-decoration: none;
     color: #da63e2;
@@ -90,43 +98,62 @@
 }
 
 .button-edit {
- padding: 10px;
-    border: 2px solid #6148ff;
-    border-radius: 10px;
-    text-align: center;
-    width: 230px;
-    cursor: pointer;
-    font-size: 1.2rem;
+  padding: 10px;
+  border: 2px solid #6148ff;
+  border-radius: 10px;
+  text-align: center;
+  width: 230px;
+  cursor: pointer;
+  font-size: 1.2rem;
   span {
-    margin: 10px
+    margin: 10px;
   }
-  }
-  .button-edit:hover{
-    color: #c7cdcd;
-  }
+}
+.button-edit:hover {
+  color: #c7cdcd;
+}
 
-  .avatar-column {
-    flex-basis: 150px;
-    flex-shrink: 0;
-    order: -1;
+.avatar-column {
+  flex-basis: 150px;
+  flex-shrink: 0;
+  order: -1;
+  @media (max-width: 640px) {
+    justify-content: center;
+    display: flex;
   }
-  .name-column {
-    font-size: 1.7rem;
-    font-weight: 800;
-  }
+}
+.name-column {
+  font-size: 1.7rem;
+  font-weight: 800;
+}
 
-  .button-exit {
-    color: #e03d3d;
-    font-size: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    margin-top: 20px;
-  }
+.button-exit {
+  color: #e03d3d;
+  font-size: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 20px;
+}
 
-  .button-exit:hover {
-    color: #b13131;
-  }
+.button-exit:hover {
+  color: #b13131;
+}
 
-  .button-exit:active {
-    font-size: 1.4rem;
+.button-exit:active {
+  font-size: 1.4rem;
+}
+
+.wrap-account {
+  @media (max-width: 640px) {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
+}
+
+.column .button-column {
+  @media (max-width: 640px) {
+    justify-content: center;
+    display: flex;
+  }
+}
