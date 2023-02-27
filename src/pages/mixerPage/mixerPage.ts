@@ -1,7 +1,8 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import { InterfaceContainerElement } from '../../components/types/types';
-const blender = require('../../assets/images/blender.svg');
-
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
+import headerChange from '../../components/headerChange/headerChange';
+import blender from '../../assets/images/blender.svg';
 class MixerPage implements InterfaceContainerElement {
   draw(): HTMLElement {
     const main = createHTMLElement('main', 'main');
@@ -28,6 +29,7 @@ class MixerPage implements InterfaceContainerElement {
       location.hash = '/mixer/mixer-now';
     };
     main.appendChild(button);
+
     return main;
   }
 }

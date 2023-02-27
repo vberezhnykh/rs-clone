@@ -33,6 +33,7 @@ import { getDataFromLS } from '../../utils/getAllData';
 import { isPreferencesType } from '../../utils/isPreferencesType';
 import ApiMix from '../../components/api_mix/api_mix';
 import headerChange from '../../components/headerChange/headerChange';
+import { handleChangeOfFlavorsInMixer } from '../../utils/changeFlavorNum';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 const POPULAR_QUERIES_PLACEHOLDER = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
@@ -77,6 +78,9 @@ class SearchPage implements InterfaceContainerElement {
     };
     main.appendChild(button);
     headerChange(`Поиск`);
+    setTimeout(() => {
+      handleChangeOfFlavorsInMixer();
+    }, 0);
     return main;
   }
 
