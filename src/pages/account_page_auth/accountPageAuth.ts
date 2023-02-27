@@ -75,7 +75,7 @@ class AccountPage implements InterfaceContainerElement {
                   <img class="profile" src="${photo}">
                 </div>
               </div>  
-              <div class="wrap">
+              <div class="wrap-account">
               <div class="column name-column">${data.name}</div>
               <div class="instagram-column">
               <div class="img-instagram"><a href="https://www.instagram.com/${data.instagramAccount.slice(
