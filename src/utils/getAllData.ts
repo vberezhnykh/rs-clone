@@ -1,10 +1,12 @@
 import Api from '../components/api/api';
+import ApiMix from '../components/api_mix/api_mix';
 import ApiUsers from '../components/api_users/apiUsers';
 import Preloader from '../components/preloader/preloader';
 
 export async function getAllData() {
   const api = new Api();
   const apiUsers = new ApiUsers();
+  const apiMix = new ApiMix();
   localStorage.setItem('brands', JSON.stringify(await api.getAllBrands()));
   localStorage.setItem('mixes', JSON.stringify(await api.getAllMixes()));
   localStorage.setItem('flavors', JSON.stringify(await api.getAllFlavors()));
@@ -12,6 +14,7 @@ export async function getAllData() {
   localStorage.setItem('top10', JSON.stringify(await api.getTop10()));
   localStorage.setItem('rates', JSON.stringify(await api.getAllRate()));
   localStorage.setItem('popularQueries', JSON.stringify(await apiUsers.searchAccessor()));
+  localStorage.setItem('userMixes', JSON.stringify(await apiMix.getAllUsersMix()));
 }
 
 export async function isDatabaseOutdated() {
@@ -38,7 +41,8 @@ export function isDataInLocalStorage() {
     localStorage.getItem('mixes') !== null &&
     localStorage.getItem('top10') !== null &&
     localStorage.getItem('rates') !== null &&
-    localStorage.getItem('popularQueries') !== null
+    localStorage.getItem('popularQueries') !== null &&
+    localStorage.getItem('userMixes') !== null
   );
 }
 

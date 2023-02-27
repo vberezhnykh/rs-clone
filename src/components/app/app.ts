@@ -93,6 +93,7 @@ class App {
       location = location.slice(0, -1);
       window.location.hash = location;
     }
+    console.log(location);
 
     if (location === LocationPath.MainPage) {
       changePage = new MainPage();
@@ -180,7 +181,6 @@ class App {
 
   private loadHashPage = (preloader?: Preloader): void => {
     const hash = window.location.hash.slice(1);
-    console.log(hash);
     if (!hash) {
       window.location.hash = `/`;
     }
