@@ -26,7 +26,7 @@ const cupList = [
   {
     cup: 'Убивашка',
     description:
-      'Чаша с плоским дном и большими отверстиями. Позволяет курить любой табак крепче, насыщеннее. Предназначена для забивки жаростойких табаков.', 
+      'Чаша с плоским дном и большими отверстиями. Позволяет курить любой табак крепче, насыщеннее. Предназначена для забивки жаростойких табаков.',
     image: killerIcon,
     imageMix: ['my-mix-3.jpg', 'my-mix-4.jpg'],
   },
@@ -81,19 +81,23 @@ class CreateNewMix implements InterfaceContainerElement {
     const newMixContainer = createHTMLElement('user-mixes-container') as HTMLElement;
     newMixContainer.appendChild(this.createUserMixesPopupHeader(1));
     if (getFlavorsInMixer().length < 2) {
-      const newMixError = createHTMLElement('new-mix__error', 'div', 'Для начала добавьте хотя бы 2 вкуса!') as HTMLElement;
+      const newMixError = createHTMLElement(
+        'new-mix__error',
+        'div',
+        'Для начала добавьте хотя бы 2 вкуса!'
+      ) as HTMLElement;
       newMixContainer.append(newMixError);
       return newMixContainer;
     } else {
       const changedCup = createHTMLElement('new-mix__dropdown__result', 'div') as HTMLElement;
-    // if (!this.mixes) {
-    //   this.preloader.draw();
-    //   const userId = this.profileUser.getUserId();
-    //   if (typeof userId === 'string') {
+      // if (!this.mixes) {
+      //   this.preloader.draw();
+      //   const userId = this.profileUser.getUserId();
+      //   if (typeof userId === 'string') {
 
-    //   }
-    //   this.preloader.removePreloader();
-    // } 
+      //   }
+      //   this.preloader.removePreloader();
+      // }
       newMixContainer.append(this.floversList(), this.createCupList(), changedCup, this.createButtonNext('Далее'));
       return newMixContainer;
     }
@@ -267,7 +271,7 @@ class CreateNewMix implements InterfaceContainerElement {
     });
     const containerName = createHTMLElement('new-mix__name-container', 'div') as HTMLElement;
     const nameSignature = createHTMLElement('new-mix__name-signature', 'div') as HTMLElement;
-    nameSignature.innerHTML = `Название микса <span style="color: red;">*</span>`
+    nameSignature.innerHTML = `Название микса <span style="color: red;">*</span>`;
     const nameCount = createHTMLElement('new-mix__name-count', 'div', '30') as HTMLElement;
     const inputName = document.createElement('input') as HTMLInputElement;
     inputName.setAttribute('type', 'text');

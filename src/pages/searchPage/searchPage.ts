@@ -31,6 +31,7 @@ import { getImgSrc } from '../../utils/getImgUrl';
 import ApiUsers from '../../components/api_users/apiUsers';
 import { getDataFromLS } from '../../utils/getAllData';
 import { isPreferencesType } from '../../utils/isPreferencesType';
+import ApiMix from '../../components/api_mix/api_mix';
 
 const NOT_FOUND_ERROR = 'К сожалению, по данному запросу ничего не найдено.';
 const POPULAR_QUERIES_PLACEHOLDER = ['малина', 'клубника', 'травяной', 'фруктовый', 'ягодный'];
@@ -44,6 +45,7 @@ class SearchPage implements InterfaceContainerElement {
   private flavors?: Flavors;
   private mixes?: Mixes;
   private api: Api;
+  private apiMix: ApiMix;
   private foundResults?: FoundResults | null = null;
   private suggestions: string[] = [];
   private preloader: Preloader;
@@ -53,6 +55,7 @@ class SearchPage implements InterfaceContainerElement {
 
   constructor() {
     this.api = new Api();
+    this.apiMix = new ApiMix();
     this.checkDataBase();
     this.apiUsers = new ApiUsers();
     this.preloader = new Preloader();
@@ -71,8 +74,6 @@ class SearchPage implements InterfaceContainerElement {
     button.onclick = () => {
       location.hash = '/mixer/mixer-now';
     };
-    // const count = createHTMLElement('main__mixer-number');
-    // button.append(count);
     main.appendChild(button);
     return main;
   }
@@ -161,7 +162,6 @@ class SearchPage implements InterfaceContainerElement {
     tab.id = `tab-btn-${i}`;
     tab.value = Tabs[i];
     if (i === 1) tab.checked = true;
-    // if (i === TABS_NUM) tab.disabled = true;
     tab.onclick = () => this.handleClickOnTab(tab.id as TabBtnId);
     return tab;
   }
@@ -315,7 +315,9 @@ class SearchPage implements InterfaceContainerElement {
   private async updateData() {
     this.brands = getDataFromLS('brands') ?? (await this.api.getAllBrands());
     this.flavors = getDataFromLS('flavors') ?? (await this.api.getAllFlavors());
-    this.mixes = getDataFromLS('mixes') ?? (await this.api.getAllMixes());
+    const userMixes = getDataFromLS('userMixes') ?? (await this.apiMix.getAllUsersMix());
+    const defaultMixes = getDataFromLS('mixes') ?? (await this.api.getAllMixes());
+    this.mixes = [...defaultMixes, ...userMixes];
     await this.getSuggestions();
     await this.checkPref();
   }

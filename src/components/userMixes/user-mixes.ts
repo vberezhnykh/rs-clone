@@ -1,22 +1,25 @@
 import { createHTMLElement } from '../../utils/createHTMLElement';
-import { InterfaceContainerElement, Mixes } from '../types/types';
+import { InterfaceContainerElement, Mixes, Rates } from '../types/types';
 import backArrowImgSrc from '../../assets/images/back-arrow.png';
 import { MixesList } from '../mixesList/mixesList';
 import selectorImgSrc from '../../assets/images/selector-icon.png';
 import expandArrowImgSrc from '../../assets/images/expand-arrow.png';
 import Api from '../api/api';
 import Preloader from '../preloader/preloader';
-import { getDataFromLS } from '../../utils/getAllData';
+import ApiMix from '../api_mix/api_mix';
 
 const SELECT_OPTIONS = ['Популярные', 'Новинки', 'Высокие рейтинги'];
 
 export class UserMixes implements InterfaceContainerElement {
   mixes?: Mixes;
+  rates?: Rates;
   api: Api;
+  apiMix: ApiMix;
   preloader: Preloader;
   sortOption = 'популярные';
   constructor() {
     this.api = new Api();
+    this.apiMix = new ApiMix();
     this.preloader = new Preloader();
   }
   draw() {
@@ -24,8 +27,8 @@ export class UserMixes implements InterfaceContainerElement {
     const container = createHTMLElement(['main__container', 'container']);
     main.appendChild(container);
     let UserMixesContainer;
-    this.createUserMixesPopup().then((data) => {
-      UserMixesContainer = data;
+    this.createUserMixesPopup().then((element) => {
+      UserMixesContainer = element;
       container.appendChild(UserMixesContainer);
     });
     return main;
@@ -35,13 +38,13 @@ export class UserMixes implements InterfaceContainerElement {
     const UserMixesContainer = createHTMLElement('user-mixes-container');
     UserMixesContainer.appendChild(this.createUserMixesPopupHeader());
     UserMixesContainer.appendChild(this.createUserMixesSelector());
-    this.mixes = getDataFromLS('mixes');
-    if (!this.mixes) {
+    if (!this.mixes || !this.rates) {
       this.preloader.draw();
-      this.mixes = await this.api.getAllMixes();
+      this.mixes = await this.apiMix.getAllUsersMix();
+      this.rates = await this.api.getAllRate();
       this.preloader.removePreloader();
     }
-    const userMixesList = new MixesList(this.mixes).create();
+    const userMixesList = new MixesList(this.mixes, this.rates).create();
     UserMixesContainer.appendChild(userMixesList);
     return UserMixesContainer;
   }
@@ -52,7 +55,7 @@ export class UserMixes implements InterfaceContainerElement {
     const backArrowImage = new Image();
     backArrowImage.className = 'user-mixes__back-arrow';
     backArrowImage.src = backArrowImgSrc;
-    backArrowImage.onclick = () => (location.hash = '#');
+    backArrowImage.onclick = () => (location.hash = '#/');
     navBar.append(backArrowImage);
     header.append(navBar);
     const heading = createHTMLElement('user-mixes__heading', 'h4');
@@ -103,8 +106,7 @@ export class UserMixes implements InterfaceContainerElement {
     document.querySelector('.mixes-list')?.remove();
     document
       .querySelector('.user-mixes-container')
-      ?.append(new MixesList(this.mixes).create({ sortBy: this.sortOption }));
-    clickedOption.parentElement?.classList.remove('selector--visible');
+      ?.append(new MixesList(this.mixes, this.rates).create({ sortBy: this.sortOption }));
   }
 
   private handleClickOnSelector(event: MouseEvent, selectorDropDown: HTMLElement, expandArrowImg: HTMLImageElement) {

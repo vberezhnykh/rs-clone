@@ -2,7 +2,7 @@ import backArrow from '../../assets/images/back-arrow-white.png';
 import { createHTMLElement } from '../../utils/createHTMLElement';
 import getMainHeader from '../../components/getMainHeader/getMainHeader';
 
-export default function headerChange(title: string, className: string = `secondary`): void {
+export default function headerChange(title: string, className = `secondary`): void {
   const header = document.querySelector('.header');
   const headercontainer = document.querySelector('.header__container');
   if (header && headercontainer) {

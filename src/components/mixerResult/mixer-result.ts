@@ -29,7 +29,7 @@ export class MixerNowResult {
     resetButton.onclick = () => {
       localStorage.removeItem('flavorsInMixer');
       document.querySelector('.result-container')?.remove();
-      location.hash = '/';
+      location.hash = '#/';
     };
     return resetButton;
   }
