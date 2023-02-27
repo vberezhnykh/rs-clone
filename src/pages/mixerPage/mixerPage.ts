@@ -21,6 +21,13 @@ class MixerPage implements InterfaceContainerElement {
 
     </div>
     `;
+    const button = document.createElement('button');
+    button.id = 'mixer-now';
+    button.className = 'main__mixer';
+    button.onclick = () => {
+      location.hash = '/mixer/mixer-now';
+    };
+    main.appendChild(button);
     return main;
   }
 }

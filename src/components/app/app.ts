@@ -93,7 +93,6 @@ class App {
       location = location.slice(0, -1);
       window.location.hash = location;
     }
-    console.log(location);
 
     if (location === LocationPath.MainPage) {
       changePage = new MainPage();
@@ -119,7 +118,6 @@ class App {
     } else if (location === LocationPath.BrandSuggestPage) {
       changePage = new BrandSuggest();
     } else if (location.includes(LocationPath.CatalogPage)) {
-      console.log(location + '999');
       changePage = (await isBrandPage()) ? new BrandPage() : new ErrorPage();
     } else if (location === LocationPath.AccountPage) {
       if ((await this.checkAuth.checkUserAuth()) === true) {
@@ -162,7 +160,6 @@ class App {
     } else if (location.includes(LocationPath.MixPage)) {
       changePage = new MixPage();
     } else {
-      console.log(location);
       changePage = new ErrorPage();
     }
 

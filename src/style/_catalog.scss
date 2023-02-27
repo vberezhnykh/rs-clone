@@ -41,8 +41,12 @@
     height: 3rem;
     background-color: rgba(255, 255, 255, 0.8901960784);
     // background-color: var(--green);
-    background-size: contain;
-    border-radius: 1rem;
+    // background-size: contain;
+    // border-radius: 1rem;
+    border-radius: 25px;
+    background-size: 2rem 2rem;
+    background-repeat: no-repeat;
+    background-position: center;
     position: relative;
 
     &:hover {
