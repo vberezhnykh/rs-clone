@@ -4,6 +4,7 @@ import ApiUsers from '../../components/api_users/apiUsers';
 import ModalWindowRegistration from '../../components/modal_window_registration/modal_window_registration';
 import ApiMix from '../../components/api_mix/api_mix';
 import ProfileUser from '../../components/profile_user/profile_user';
+import getMainHeader from '../../components/getMainHeader/getMainHeader';
 
 class AccountPage implements InterfaceContainerElement {
   private apiUsers;
@@ -102,6 +103,9 @@ class AccountPage implements InterfaceContainerElement {
     </div>
     `;
     main.addEventListener('click', this.handler);
+    setTimeout(() => {
+      getMainHeader();
+    }, 0);
     return main;
   }
 }

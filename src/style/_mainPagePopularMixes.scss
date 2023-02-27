@@ -12,7 +12,8 @@
 
   &__items {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
     gap: 15px;
   }
 
@@ -37,19 +38,19 @@
     border-radius: 10px;
     align-self: center;
   }
-  .item-name{
+  .item-name {
     align-self: center;
   }
-  .item-rating{
+  .item-rating {
     display: flex;
     align-items: center;
     justify-content: space-around;
   }
-  .item-star{
+  .item-star {
     width: 22px;
     height: 22px;
   }
-  .more{
+  .more {
     cursor: pointer;
   }
 }
