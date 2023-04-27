@@ -1,4 +1,4 @@
-# React project
+# RS Clone
 
 ![image](https://user-images.githubusercontent.com/53420013/234938384-7eb489c2-1014-4d99-86ba-a463d3b45b8f.png)
 
